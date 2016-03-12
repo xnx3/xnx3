@@ -37,10 +37,24 @@
 		com.unbind();
 	</pre>
 	<br/>
-	简单使用请参考：<br/>
+  简单使用请参考：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/127.html">http://www.xnx3.com/doc/j2se_util/20150209/127.html</a><br/>
 
   高级使用之前台模拟操作：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/128.html">http://www.xnx3.com/doc/j2se_util/20150210/128.html</a><br/>
   高级使用之新寻仙辅助编写：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/129.html">http://www.xnx3.com/doc/j2se_util/20150211/129.html</a><br/>
+<br/>
+<h1>介绍及说明</h1><br/>
+xnx3-2.0.jar <br/>
+xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
+lib/  : 支持的jar包<br/>
+doc/  : xnx3-2.0.jar的doc文档<br/>
+src/  : xnx3-2.0.jar的源文件<br/>
+demo/ : 一些简单的demo示例<br/>
+<br/>
+<br/>
+作者：管雷鸣<br/>
+交流QQ群：418768360  <br/>
+业务联系QQ：921153866<br/>
+业务联系E-mail：mail@xnx3.com<br/>
