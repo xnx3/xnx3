@@ -48,7 +48,7 @@
 		<default_fileSuffix>unknow</default_fileSuffix>
 		<tracker_servers>
 			<!-- ip:端口号 -->
-			<tracker_server>115.29.108.224:22122</tracker_server>
+			<tracker_server>115.....:22122</tracker_server>
 		</tracker_servers>
 	</FastDFS>
 	
