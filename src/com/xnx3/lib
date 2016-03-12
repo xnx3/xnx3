@@ -1,0 +1,14 @@
+fastdfs.jar FastDFS分布式使用的jar包
+ganymed-ssh2-build210.jar 远程执行SSH
+jacob.jar windows系统下使用dll文件会使用到此jar包
+jintellitype-1.3.9.jar windows系统下热键使用到此jar包
+jsch-0.1.53.jar 链接Linux实现SFTP相关操作
+mail.jar 邮件发送包
+substance.jar Swing程序界面外观包
+
+xml配置文件相关
+commons-collections-3.2.1.jar
+commons-configuration-1.7.jar
+commons-io-1.3.2.jar
+commons-lang-2.5.jar
+commons-logging-1.2.jar
