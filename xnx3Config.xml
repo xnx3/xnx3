@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 使用此配置，需导入：
+		commons-configuration-1.7.jar
+		commons-collections-3.2.1.jar
+		commons-io-1.3.2.jar
+		commons-lang-2.5.jar
+		commons-logging-1.2.jar
+	 -->
+
+	<!-- 短信发送配置,若使用了短信发送功能，需配置此项 -->
+	<sms>
+		<!-- 用户ID -->
+		<uid>80...</uid>
+		<!-- 企业代码 -->
+		<companyCode>....</companyCode>
+		<!-- 登录密码 -->
+		<password>......</password>
+		<!-- 发信服务器IP，固定即可 -->
+		<requestIp>210.5.158.31</requestIp>
+	</sms>
+	
+	<mail>
+		<!-- mail.smtp.host -->
+		<host>smtp.163.com</host>
+		<!-- 邮箱登陆的用户名、邮箱名、邮箱地址，如xnx3@163.com -->
+		<username>xnx3_cs@163.com</username>
+		<!-- 登陆密码 -->
+		<password>123456</password>
+		<!-- 是否开启调试日志 -->
+		<debug>true</debug>
+	</mail>
+	
+	<!-- FastDFS分布式文件上传配置 -->
+	<FastDFS>
+		<connect_timeout>2</connect_timeout>
+		<network_timeout>30</network_timeout>
+		<charset>ISO8859-1</charset>
+		<tracker_http_port>8080</tracker_http_port>
+		<!-- 是否开启token防盗链 -->
+		<anti_steal_token>false</anti_steal_token>
+		<secret_key>FastDFS1234567890</secret_key>
+		<!-- 默认的组 -->
+		<default_group_name>group1</default_group_name>
+		<!-- 是否开启调试，在控制台打印相关运行日志 -->
+		<debug>true</debug>
+		<!-- 如果上传时没有找到文件的后缀，则以此为后缀进行上传 -->
+		<default_fileSuffix>unknow</default_fileSuffix>
+		<tracker_servers>
+			<!-- ip:端口号 -->
+			<tracker_server>115.29.108.224:22122</tracker_server>
+		</tracker_servers>
+	</FastDFS>
+	
+</configuration>
