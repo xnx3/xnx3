@@ -24,7 +24,7 @@
 		<!-- mail.smtp.host -->
 		<host>smtp.163.com</host>
 		<!-- 邮箱登陆的用户名、邮箱名、邮箱地址，如xnx3@163.com -->
-		<username>xnx3_cs@163.com</username>
+		<username>xnx3_css@163.com</username>
 		<!-- 登陆密码 -->
 		<password>123456</password>
 		<!-- 是否开启调试日志 -->
