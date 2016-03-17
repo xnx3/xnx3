@@ -17,6 +17,11 @@
     MailUtil.sendMail("123456@qq.com", "这是邮件标题", "这是内容");
   </pre>
 <br/>  
+微信通过openid获取用户昵称<br/>
+  <pre>
+    WeiXinUtil.getUserInfo("openid").getNickname()
+  </pre>
+<br/>  
 <h2>网游外挂制作(外挂、鼠标、键盘模拟、找图找色、Java版的按键精灵)</h2><br/>
 简单操作示例：<br/>
   <pre>
