@@ -1,7 +1,9 @@
 package com.xnx3;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.xnx3.exception.NotReturnValueException;
@@ -68,7 +70,7 @@ public class DateUtil {
 	 * @return Unix时间戳，失败返回0
 	 */
 	public static int timeForUnix10(){
-		return Lang.stringToInt((timeForUnix13()+"").substring(0, 10), 0);
+		return long13To10(timeForUnix13());
 	}
 	
 	/**
@@ -96,5 +98,65 @@ public class DateUtil {
 		return (int)Math.ceil(d/1000);
 	}
 	
+	
+	/**
+	 * 获取当前传入时间的当天凌晨时间，如 2016-03-19 00:00:00
+	 * @param date {@link java.util.Date}
+	 * @return {@link java.util.Date}
+	 */
+	public static Date weeHours(Date date) {
+	    Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    int hour = cal.get(Calendar.HOUR_OF_DAY);
+	    int minute = cal.get(Calendar.MINUTE);
+	    int second = cal.get(Calendar.SECOND);
+	    //时分秒（毫秒数）
+	    long millisecond = hour*60*60*1000 + minute*60*1000 + second*1000;
+	    //凌晨00:00:00
+	    cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
+
+	    return cal.getTime();
+	}
+	
+	/**
+	 * 获取当前传入时间的当天午夜时间，如 2016-03-19 23:59:59
+	 * @param {@link java.util.Date}
+	 * @return {@link java.util.Date}
+	 */
+	public static Date midnight(Date date){
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+		cal.setTimeInMillis(cal.getTimeInMillis()+23*60*60*1000 + 59*60*1000 + 59*1000);
+		return cal.getTime();
+	}
+	
+	/**
+	 * {@link Date}转为String类型，变成当前显示的文字时间
+	 * @param date {@link java.util.Date}
+	 * @param format 生成的格式化时间，如 yyyy-MM-dd HH:mm:ss
+	 * @return 文字时间
+	 */
+	public static String dateToString(Date date,String format){
+		DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+        return format2.format(date);
+	}
+	
+	/**
+	 * 将 {@link Date} 转化为 10位的时间戳
+	 * @param date {@link Date}
+	 * @return 10位的时间戳
+	 */
+	public static int dateToInt10(Date date){
+		return long13To10(date.getTime());
+	}
+	
+	/**
+	 * 将13位Linux时间戳转换为10位时间戳
+	 * @param time 13位Linux时间戳
+	 * @return 10位Linux时间戳
+	 */
+	public static int long13To10(long time){
+		return Lang.stringToInt((time+"").substring(0, 10), 0);
+	}
 	
 }
