@@ -165,8 +165,8 @@ public class Com {
 			return;
 		}
 		
-		if(this.getClass().getResourceAsStream("dll/msvcr100.dsll")==null){
-			UI.showMessageDialog("请导入 xnx3_microsoft_dll.jar");
+		if(this.getClass().getResourceAsStream("dll/msvcr100.dll")==null){
+			UI.showMessageDialog("请导入 xnx3_dll.jar");
 			return;
 		}
 		
