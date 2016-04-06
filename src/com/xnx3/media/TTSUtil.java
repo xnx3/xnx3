@@ -28,18 +28,37 @@ public class TTSUtil {
 	 * @throws IOException
 	 * @throws JavaLayerException 
 	 */
-	public void speak(String text,int mode) throws MalformedURLException,IOException, JavaLayerException{
-		URL url = new URL("http://tts.baidu.com/text2audio?lan=zh&pid=101&ie=UTF-8&text="+text+"&spd="+mode);
+	public void speak(String text,int mode){
+		URL url = null;
+		try {
+			url = new URL("http://tts.baidu.com/text2audio?lan=zh&pid=101&ie=UTF-8&text="+text+"&spd="+mode);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 		// 打开连接
-		HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection httpConnection = null;
+		try {
+			httpConnection = (HttpURLConnection) url.openConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		httpConnection.setRequestProperty("User-Agent", "Internet Explorer");
 		String sProperty = "bytes=" + 0 + "-";
 		// 告诉服务器book.rar这个文件从nStartPos字节开始传
 		httpConnection.setRequestProperty("RANGE", sProperty);
-		InputStream input = httpConnection.getInputStream();
+		InputStream input = null;
+		try {
+			input = httpConnection.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-        player = new Player(input);
-        player.play();
+        try {
+			player = new Player(input);
+			player.play();
+		} catch (JavaLayerException e) {
+			e.printStackTrace();
+		}
 		
 		httpConnection.disconnect();
 	}
@@ -52,7 +71,7 @@ public class TTSUtil {
 	 * @throws MalformedURLException 
 	 * @see #speak(String, int)
 	 */
-	public void speak(String text) throws MalformedURLException, IOException, JavaLayerException{
+	public void speak(String text){
 		speak(text, 4);
 	}
 	
