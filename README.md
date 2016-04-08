@@ -23,6 +23,17 @@
     WeiXinUtil.getUserInfo("openid").getNickname()
   </pre>
 <br/>  
+
+当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标<br/>
+  <pre>
+    Robot robot = new Robot();
+    robot.setSourcePath(ImageDemo.class);
+    robot.imageDelaySearch(0, 0, 800, 600, robot.getResourceImage("search.png"), Robot.SIM_ACCURATE, 10000);
+    List<CoordBean> list = robot.imageSearch(0, 0, robot.screenWidth, robot.screenHeight, "search.png", Robot.SIM_ACCURATE);
+    System.out.println("搜索到了"+list.size()+"个图片");
+  </pre>
+<br/>  
+
 <h2>网游外挂制作(外挂、鼠标、键盘模拟、找图找色、Java版的按键精灵)</h2><br/>
 简单操作示例：<br/>
   <pre>
