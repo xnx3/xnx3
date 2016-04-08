@@ -17,7 +17,7 @@ public class ClipboardUtil {
 	
 	/**
 	 * 设置剪切板文本内容
-	 * @param content
+	 * @param content 剪切版文本内容
 	 */
 	public static void setText(String content){ 
 		//设置为static是为了直接使用，不用new一个该类的实例即可直接使用,即定义的: 类名.方法名
@@ -40,7 +40,7 @@ public class ClipboardUtil {
 	
 	/**
 	 * 设置剪贴板图片内容
-	 * @param image
+	 * @param image 设置的图片
 	 */
 	public static void setImage(Image image) { 
 		ImageSelection imgSel = new ImageSelection(image); 

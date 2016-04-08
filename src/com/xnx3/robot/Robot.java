@@ -347,60 +347,7 @@ public class Robot{
 		}
 		return false;
 	}
-	
-	/**
-	 * 设置剪切板文本内容
-	 * @param content 内容
-	 */
-	public static void setClipboardText(String content){ 
-		String vc = content.trim();
-		StringSelection ss = new StringSelection(vc);
-		java.awt.datatransfer.Clipboard sysClb=null;
-		sysClb = Toolkit.getDefaultToolkit().getSystemClipboard();
-		sysClb.setContents(ss,null);
-	}
-	
-	/**
-	 * 设置剪切板图片内容
-	 * @param filePath 图片文件所在路径，如：E:\\MyEclipseWork\\refreshTaobao\\logScreen\\a.png 格式限制gif|png|jpg
-	 */
-	public static void setClipboardImage(String filePath){
-		Image img = Toolkit.getDefaultToolkit().getImage(filePath);
-		setClipboardImage(img);  //给剪切板设置图片型内容
-	}
-	
-	/**
-	 * 设置剪贴板图片内容
-	 * @param image 图片
-	 */
-	public static void setClipboardImage(Image image) { 
-		ImageSelection imgSel = new ImageSelection(image); 
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(imgSel, null); 
-	} 
-	
-	/**
-	 * 剪切版相关操作使用
-	 * @author 管雷鸣
-	 */
-	private static class ImageSelection implements Transferable { 
-	 	private Image image; 
-		public ImageSelection(Image image) {
-			this.image = image;
-		} 
-		  
-		public DataFlavor[] getTransferDataFlavors() { 
-			return new DataFlavor[]{DataFlavor.imageFlavor}; 
-		} 
-		public boolean isDataFlavorSupported(DataFlavor flavor) { 
-			return DataFlavor.imageFlavor.equals(flavor); 
-		}
-		  
-		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException { 
-			if (!DataFlavor.imageFlavor.equals(flavor)) {throw new UnsupportedFlavorException(flavor);} 
-			return image; 
-		}
-	}
-	
+
 	/**
 	 * 截取当前屏幕指定区域坐标的图像，将其保存到本地，保存为png格式图片
 	 * @param xStart 截图指定区域的开始X坐标

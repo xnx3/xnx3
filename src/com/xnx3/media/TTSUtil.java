@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -24,9 +25,6 @@ public class TTSUtil {
 	 * @param text 要读的文字，建议80个汉字以内，
 	 * 				<li><i>标点符号注意：</i>逗号、句号、分号等常用符号没问题，其他特殊符号自行测试。有的会终止阅读甚至报错！
 	 * @param mode 阅读的快慢，越小发音越慢，参数范围1-5
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws JavaLayerException 
 	 */
 	public void speak(String text,int mode){
 		URL url = null;
@@ -65,14 +63,23 @@ public class TTSUtil {
 	
 	/**
 	 * 输入文字，以女声读出
-	 * {@link #speak(String, int)}
-	 * @throws JavaLayerException 
-	 * @throws IOException 
-	 * @throws MalformedURLException 
 	 * @see #speak(String, int)
 	 */
 	public void speak(String text){
 		speak(text, 4);
+	}
+	
+	/**
+	 * 输入文字，以女声读出。此单独开启一个线程提供阅读，不阻碍当前线程执行。需注意可能同时多个发音重叠问题。
+	 * @see #speak(String, int)
+	 */
+	public static void speakByThread(final String text){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				new TTSUtil().speak(text);
+			}
+		}).start();
 	}
 	
 	public static void main(String[] args) throws MalformedURLException, IOException, JavaLayerException {

@@ -175,6 +175,7 @@ public class FastDFSUtil{
 	/**
 	 * 文件上传
 	 * @param local_filename 要上传的本地文件绝对路径
+	 * <li>使用之前需先开启，调用 {@link #open()}
 	 * @return {@link UploadBean}
 	 * 			<li>{@link UploadBean#isSuccess()}:判断是否上传成功
 	 */
@@ -196,6 +197,7 @@ public class FastDFSUtil{
 
 	/**
 	 * 文件上传
+	 * <li>使用之前需先开启，调用 {@link #open()}
 	 * @param file_buff byte[]
 	 * @param fix_ext_name 文件后缀名,不包含"."
 	 * @return {@link UploadBean}
