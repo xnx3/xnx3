@@ -505,6 +505,47 @@ public class Robot{
 	}
 	
 	/**
+	 * 当前屏幕指定区域，与指定的图片比较其相似度，如：
+	 * 	<pre>
+	 * 		Robot robot = new Robot();
+	 *		robot.setSourcePath(当前类.class);
+	 *		List<CoordBean> list = robot.imageSearch(0, 0, 100, 200, "xnx3.png", Robot.SIM_ACCURATE);
+	 *  </pre>
+	 * <li>使用此方法前必须先设置：{{@link #setSourcePath(Class)}，不然找不到传入的图片在何处。robot创建后只需设置一次便可
+	 * <li>图片搜索顺序为 由上向下，由左向右
+	 * @param xStart 当前屏幕要对比的区域的开始X坐标
+	 * @param yStart 当前屏幕要对比的区域的开始Y坐标
+	 * @param xEnd 当前屏幕要对比的区域的结束X坐标
+	 * @param yEnd 当前屏幕要对比的区域的结束Y坐标
+	 * @param sim 模糊值，值： 
+	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
+	 * 					<li>{@link Handle#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
+	 * 					<li>{@link Handle#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
+	 * 					<li>{@link Handle#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度最慢，搜索方式：全搜索
+	 * 					<br/>
+	 * 					<hr/>
+	 * 					<i style="margin-left:30px;">
+	 * 						在2300*1100的图片中搜索50*50的图像所在，所耗时分别为:<br/>
+	 * 						<li>{@link Handle#SIM_ACCURATE_VERY}	:	440ms
+	 * 						<li>{@link Handle#SIM_ACCURATE}		:	454ms
+	 * 						<li>{@link Handle#SIM_BLUR}			:	1267ms
+	 * 						<li>{@link Handle#SIM_BLUR_VERY}		:	37518ms
+	 * 					</i>
+	 * @return {@link List} 将所有找到的图像位置的左上坐标返回，如果搜索不到，list.size()为0
+	 */
+	public List<CoordBean> imageSearch(int xStart,int yStart,int xEnd,int yEnd,String searchImageName,int sim){
+		return imageSearch(xStart, yStart, xEnd, yEnd, getResourceImage(searchImageName), sim);
+	}
+	
+	/**
 	 * 当前屏幕上搜索图片
 	 * <li>图片搜索顺序为 由上向下，由左向右
 	 * @param sourceImage 原图，要在这个图上进行搜索目标图，使用 {@link #getResourceImage(String)}传入资源图片

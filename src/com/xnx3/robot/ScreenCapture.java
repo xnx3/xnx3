@@ -40,9 +40,11 @@ import com.xnx3.Lang;
 import com.xnx3.SystemUtil;
 import com.xnx3.UI;
 import com.xnx3.media.ColorUtil;
+import com.xnx3.robot.support.CoordBean;
 import com.xnx3.robot.support.RGBBean;
 
 import java.io.File;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 
