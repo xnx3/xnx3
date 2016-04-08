@@ -1,6 +1,7 @@
 package com.xnx3.microsoft;
 
 import java.io.File;
+
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Variant;
@@ -10,9 +11,11 @@ import com.xnx3.UI;
 import com.xnx3.bean.ActiveBean;
 import com.xnx3.file.FileUtil;
 import com.xnx3.net.HttpUtil;
+import com.xnx3.robot.Robot;
 
 /**
  * 辅助时必须先创建此类，获取此类的 {@link Com#getActiveXComponent()} 对象，所有的都对此对象操作(绑定后为后台操作，不绑定直接获取的话是前台操作)
+ * <br/><b><u>此支持Windows xp、win7系统，Win7以上及Llinux、OS X等系统请使用 {@link Robot}</u></b>
  * <br/><b/>需</b>
  * <br/><i>xnx3-dll.jar</i>
  * <br/><i>jacob.jar</i>

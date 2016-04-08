@@ -52,3 +52,6 @@ com.xnx3.net.MailUtil 类修复
 com.xnx3.ConfigManagerUtil 类增加，xml配置文件读取
 com.xnx3.SendPhoneMsgUtil 类增加，发送短信
 增加xnx3Config.xml全局配置文件。使用时放入项目的src下
+
+1.4->2.1(2016.4.8)
+com.xnx3.robot 包增加，用原生Java进行模拟鼠标点击、键盘按键、找图找色等功能
