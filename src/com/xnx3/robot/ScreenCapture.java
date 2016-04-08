@@ -37,7 +37,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 
 import com.xnx3.Lang;
+import com.xnx3.SystemUtil;
 import com.xnx3.UI;
+import com.xnx3.media.ColorUtil;
+import com.xnx3.robot.support.RGBBean;
 
 import java.io.File;
 
@@ -288,11 +291,11 @@ public class ScreenCapture extends JFrame {
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(null);
 		
-		JLabel lblQq = new JLabel("<html>\n作者：管雷鸣   QQ:921153866<br/>\n纯 Java 模拟鼠标点击、键盘按键、找图找色，加入<a href=\"http://github.com/xnx3/xnx3\" target=\"_black\">xnx3.jar</a>即可实现跨平台辅助开发");
+		JLabel lblQq = new JLabel("<html>\n作者：管雷鸣   QQ交流群:418768360<br/>\n纯 Java 模拟鼠标点击、键盘按键、找图找色，加入<a href=\"http://github.com/xnx3/xnx3\" target=\"_black\">xnx3.jar</a>即可实现跨平台辅助开发");
 		lblQq.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				SystemUtil.openUrl("http://github.com/xnx3/xnx3");
 			}
 		});
 		lblQq.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -591,8 +594,9 @@ public class ScreenCapture extends JFrame {
     	
     	int x = (int) Math.floor(e.getX()/bigMultiple_mainView);
     	int y = (int) Math.floor(e.getY()/bigMultiple_mainView);
-    	if(x>=0 && x<=bufferedImage.getWidth() && y>=0 && y<=bufferedImage.getHeight()){
-    		pxColorTextField.setText(robot.getPixelColor(x, y).getRGB()+"｜"+x+","+y);
+    	if(x>=0 && x<bufferedImage.getWidth() && y>=0 && y<bufferedImage.getHeight()){
+    		RGBBean rgbBean = robot.intToRgb(bufferedImage.getRGB(x, y));
+    		pxColorTextField.setText(ColorUtil.RgbToHex(rgbBean.getR(), rgbBean.getG(), rgbBean.getB())+"｜"+x+","+y);
     	}
     }
     

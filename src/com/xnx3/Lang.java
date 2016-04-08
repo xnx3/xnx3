@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Properties;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -15,7 +16,7 @@ public class Lang {
 	/**
 	 * 当前版本号
 	 */
-	public final static float version=2.0f;
+	public final static float version=2.1f;
 	
 	/**
 	 * confirm弹出提示框-选择了是
@@ -296,14 +297,26 @@ public class Lang {
 	/**
 	 * 获取当前项目路径，如当前项目名为j2se_util，则会获得其绝对路径 "E:\MyEclipseWork\j2se_util"
 	 * @return 项目路径
+	 * @deprecated
+	 * @see SystemUtil#getCurrentDir()
 	 */
 	public static String getCurrentDir(){
+		return SystemUtil.getCurrentDir();
+	}
+	
+	/**
+	 * 获取Java运行时环境规范版本,如： 1.6 、1.7
+	 * @return 项目路径
+	 */
+	public static String getJavaSpecificationVersion(){
 		return System.getProperty("user.dir");
 	}
 	
 	/**
 	 * 获取当前Java运行所依赖的Jre的路径所在，绝对路径
 	 * @return 如：D:\Program Files\MyEclipse2014\binary\com.sun.java.jdk7.win32.x86_64_1.7.0.u45\jre
+	 * @deprecated
+	 * @see SystemUtil#getJrePath()
 	 */
 	public static String getCurrentJrePath(){
 		return System.getProperty("java.home");
@@ -511,10 +524,4 @@ public class Lang {
 		return (int)size+"Byte";
 	}
 	
-	public static void main(String[] args) {
-		String u = "asd=245&currentPage=34&";
-		String ur = subString(u, "currentPasge", "&", 2);
-		System.out.println(ur);
-		
-	}
 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import com.xnx3.SystemUtil;
 import com.xnx3.UI;
 import com.xnx3.robot.support.CoordBean;
 import com.xnx3.robot.support.RGBBean;
@@ -69,8 +70,15 @@ public class Robot{
 		screenWidth = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	}
-	
+	/**
+	 * @see Robot
+	 */
 	public Robot() {
+		float v = SystemUtil.getJavaSpecificationVersion();
+		if(v>0 && v<1.7){
+			UI.showMessageDialog("请使用 JDK 1.7 及以上版本进行开发。推荐使用JDK1.7");
+		}
+		
 		try {
 			robot = new java.awt.Robot();
 		} catch (AWTException e) {
@@ -695,15 +703,15 @@ public class Robot{
 
 	/**
 	 * 两像素点的颜色值比较，是否匹配
-	 * @param pxSource 像素1，原像素
-	 * @param pxSearch 像素2，要搜索对比的像素 
+	 * @param pxSource 像素1，原像素，十进制的颜色值
+	 * @param pxSearch 像素2，要搜索对比的像素，十进制的颜色值
 	 * @param sim 模糊值，如： 
 	 * 					<li>非常精确，无误差：{@link Handle#SIM_ACCURATE_VERY}
 	 * 					<li>精确，极小的误差：{@link Handle#SIM_ACCURATE}
 	 * 					<li>模糊，有误差，模糊搜索：{@link Handle#SIM_BLUR}
 	 * 					<li>非常模糊，误差很大：{@link Handle#SIM_BLUR_VERY}
 	 */
-	private boolean pxCompare(int pxSource,int pxSearch,int sim){
+	public boolean pxCompare(int pxSource,int pxSearch,int sim){
 		if(sim == SIM_ACCURATE_VERY){
 			return pxSearch==pxSource;
 		}else{
@@ -722,7 +730,7 @@ public class Robot{
 	 * @param value 十进制的图像颜色，FFFFFF颜色转成10进制便是这个传入值
 	 * @return {@link RGBBean}
 	 */
-	private RGBBean intToRgb(int value){
+	public RGBBean intToRgb(int value){
 		RGBBean rgb = new RGBBean();		//searchRGB
 		rgb.setR((value & 0xff0000) >> 16);
 		rgb.setG((value & 0xff00) >> 8);
