@@ -57,7 +57,7 @@ public class ClipboardUtil {
 		public boolean isDataFlavorSupported(DataFlavor flavor) { 
 			return DataFlavor.imageFlavor.equals(flavor); 
 		}
-		  
+		
 		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException { 
 			if (!DataFlavor.imageFlavor.equals(flavor)) {throw new UnsupportedFlavorException(flavor);} 
 			return image; 

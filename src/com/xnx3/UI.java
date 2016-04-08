@@ -8,10 +8,12 @@ import java.awt.TrayIcon;
 import java.awt.Window.Type;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +28,9 @@ import org.jvnet.substance.skin.BusinessBlackSteelSkin;
 import org.jvnet.substance.skin.SubstanceOfficeBlue2007LookAndFeel;
 import org.jvnet.substance.utils.SubstanceConstants.ImageWatermarkKind;
 import org.jvnet.substance.watermark.SubstanceImageWatermark;
+import org.jvnet.substance.watermark.SubstanceMarbleVeinWatermark;
+
+import com.xnx3.file.FileUtil;
 
 
 /**
@@ -89,6 +94,7 @@ public class UI {
 	 * <li>设置边框 SubstanceLookAndFeel.setCurrentBorderPainter(new StandardBorderPainter());
 	 * <li>设置渐变渲染 SubstanceLookAndFeel.setCurrentGradientPainter(new StandardGradientPainter());  
 	 * <li>设置标题 SubstanceLookAndFeel.setCurrentTitlePainter(new MatteHeaderPainter()); 
+	 * <li>设置水印 SubstanceOfficeBlue2007LookAndFeel.setCurrentWatermark(new SubstanceMarbleVeinWatermark());
 	 * @param watermarkBackgroundImage 水印背景图片 ，传入如：MainEntry.class.getResourceAsStream("res/bg.jpg") 使用当前目录下res内的bg.jpg作为水印图
 	 * @param watermarkOpacity 水印图片的透明度，取值范围0.1~1之间，越接近1越真实，数字越小越模糊
 	 * @return SubstanceOfficeBlue2007LookAndFeel外观包操作对象，可继续扩展
@@ -132,6 +138,7 @@ public class UI {
 	 * <li>设置边框 SubstanceLookAndFeel.setCurrentBorderPainter(new StandardBorderPainter());
 	 * <li>设置渐变渲染 SubstanceLookAndFeel.setCurrentGradientPainter(new StandardGradientPainter());  
 	 * <li>设置标题 SubstanceLookAndFeel.setCurrentTitlePainter(new MatteHeaderPainter()); 
+	 * <li>设置水印 SubstanceOfficeBlue2007LookAndFeel.setCurrentWatermark(new SubstanceMarbleVeinWatermark());
 	 * @return SubstanceOfficeBlue2007LookAndFeel 外观包操作对象，可继续扩展
 	 * @see UI#UseLookAndFeelBySubstance(InputStream, float)
 	 */
@@ -230,5 +237,29 @@ public class UI {
 			return null;
 		}
     }  
+    
+    /**
+     * 读取文件内容，通过用户自己打开文件选择框的方式
+     * @param encode 以什么编码读取文件，如：{@link FileUtil#UTF8}
+     * @return 文件的内容，若用户没有打开或者打开失败，返回null
+     */
+    public static String readFileByJFileChooser(String encode){
+    	String xnx3_content = null;
+    	JFileChooser jfc=new JFileChooser(".");
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int result=jfc.showOpenDialog(jfc);
+		if(result==0){	//用户选择了打开
+			try{
+				File file=jfc.getSelectedFile();
+				FileUtil f = new FileUtil();
+				xnx3_content = f.read(file, encode);
+				file=null;
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		jfc=null;
+		return xnx3_content;
+    }
     
 }
