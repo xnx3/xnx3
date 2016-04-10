@@ -28,7 +28,6 @@
   <pre>
     Robot robot = new Robot();
     robot.setSourcePath(ImageDemo.class);
-    robot.imageDelaySearch(0, 0, 800, 600, robot.getResourceImage("search.png"), Robot.SIM_ACCURATE, 10000);
     List<CoordBean> list = robot.imageSearch(0, 0, robot.screenWidth, robot.screenHeight, "search.png", Robot.SIM_ACCURATE);
     System.out.println("搜索到了"+list.size()+"个图片");
   </pre>
