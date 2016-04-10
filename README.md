@@ -63,6 +63,7 @@
 <br/>
 <h1>介绍及说明</h1><br/>
 xnx3-2.0.jar <br/>
+ScreenCapture.jar：纯Java编写的图片处理小工具，配合 com.xnx3.robot.Robot 进行屏幕找图的纯Java按键精灵事件操作。 <br/>
 xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
 lib/  : 支持的jar包<br/>
 doc/  : xnx3-2.0.jar的doc文档<br/>
