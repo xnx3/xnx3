@@ -595,7 +595,6 @@ public class Robot{
 					contrast = true;
 				}
 				
-				
 				//模糊搜索的大模糊不进行纵横十字搜索
 				if(sim < 62){
 					//如果图片四角点对比通过，进而进行要搜索的图片的纵横中心点，十字形像素条的比较之横向像素条比较
@@ -696,8 +695,17 @@ public class Robot{
 	 * @return {@link List} 若 list.size()>0 则搜索到了数值，若＝0则没有搜索到图片
 	 */
 	public List<CoordBean> imageSearch(int xStart,int yStart,int xEnd,int yEnd,BufferedImage searchImage,int sim){
-		BufferedImage cutImage = robot.createScreenCapture(new Rectangle(xStart, yStart, xEnd-xStart,yEnd-yStart));  
-		return imageSearch(cutImage, searchImage,SIM_ACCURATE);
+		BufferedImage cutImage = robot.createScreenCapture(new Rectangle(xStart, yStart, xEnd-xStart,yEnd-yStart)); 
+		List<CoordBean> list = imageSearch(cutImage, searchImage,SIM_ACCURATE);
+		List<CoordBean> l = new ArrayList<CoordBean>(); 
+		for (int i = 0; i < list.size(); i++) {
+			CoordBean c = list.get(i);
+			c.setX(xStart+c.getX());
+			c.setY(yStart+c.getY());
+			l.add(c);
+		}
+		
+		return l;
 	}
 
 	/**
