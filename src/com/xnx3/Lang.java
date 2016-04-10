@@ -3,7 +3,9 @@ package com.xnx3;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -524,4 +526,33 @@ public class Lang {
 		return (int)size+"Byte";
 	}
 	
+	/**
+	 * 两个同样数据类型的List合并,要求两个list包含的数据类型要相同
+	 * @param list 合并后组合起来的结果list
+	 * @param appendList 要合并入的list的另一个集合
+	 * @return
+	 */
+	public static boolean listAppend(List list,List appendList){
+		if(appendList == null){
+			return true;
+		}
+		
+		for (int i = 0; i < appendList.size(); i++) {
+			list.add(appendList.get(i));
+		}
+		
+		return true;
+	}
+	
+	public static void main(String[] args) {
+		List<String> l = new ArrayList<String>();
+		l.add("1");
+		
+		List<String> l2 = new ArrayList<String>();
+		l2.add("2");
+		
+		for (int i = 0; i <l2.size(); i++) {
+			System.out.println(l2.get(i));
+		}
+	}
 }

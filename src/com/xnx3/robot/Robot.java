@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
+
+import com.xnx3.Lang;
 import com.xnx3.SystemUtil;
 import com.xnx3.UI;
 import com.xnx3.robot.support.CoordBean;
@@ -464,6 +467,7 @@ public class Robot{
 	 * @param yStart 当前屏幕要对比的区域的开始Y坐标
 	 * @param xEnd 当前屏幕要对比的区域的结束X坐标
 	 * @param yEnd 当前屏幕要对比的区域的结束Y坐标
+	 * @param searchImageName 要搜索的目标图片文件名字，如果多个，则用英文输入法下的符号 | 隔开，如：a.png|b.png|c.png
 	 * @param sim 模糊值，值： 
 	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -489,7 +493,14 @@ public class Robot{
 	 * @return {@link List} 将所有找到的图像位置的左上坐标返回，如果搜索不到，list.size()为0
 	 */
 	public List<CoordBean> imageSearch(int xStart,int yStart,int xEnd,int yEnd,String searchImageName,int sim){
-		return imageSearch(xStart, yStart, xEnd, yEnd, getResourceImage(searchImageName), sim);
+		String[] names = searchImageName.split("\\|");
+		List<CoordBean> list = new ArrayList<CoordBean>();
+		for (int i = 0; i < names.length; i++) {
+			List<CoordBean> l = imageSearch(xStart, yStart, xEnd, yEnd, getResourceImage(names[i]), sim);
+			Lang.listAppend(list, l);
+		}
+		
+		return list;
 	}
 	
 	/**
