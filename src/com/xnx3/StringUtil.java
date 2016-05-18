@@ -222,6 +222,12 @@ public class StringUtil {
 		}
 	}
 	
-	
-	
+	/**
+	 * 过滤HTML标签，返回文本内容
+	 * @param text 要过滤的字符串
+	 * @return 过滤掉HTML标签的内容
+	 */
+	public static String filterHtmlTag(String text){
+		return text.replaceAll("<[.[^<]]*>","");
+	}
 }

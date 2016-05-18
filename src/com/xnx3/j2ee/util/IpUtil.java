@@ -34,6 +34,9 @@ public class IpUtil {
 	    	ip=Lang.subString(ip, null, ",", 2);
 	    }
 	    
+	    if(ip.equals("0:0:0:0:0:0:0:1")){
+	    	ip = "127.0.0.1";
+	    }
 	    return ip;  
 	}   
 	

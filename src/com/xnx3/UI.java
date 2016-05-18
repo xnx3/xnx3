@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.InputStream;
-
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -22,14 +21,11 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
 import org.jvnet.substance.SubstanceLookAndFeel;
 import org.jvnet.substance.skin.BusinessBlackSteelSkin;
 import org.jvnet.substance.skin.SubstanceOfficeBlue2007LookAndFeel;
 import org.jvnet.substance.utils.SubstanceConstants.ImageWatermarkKind;
 import org.jvnet.substance.watermark.SubstanceImageWatermark;
-import org.jvnet.substance.watermark.SubstanceMarbleVeinWatermark;
-
 import com.xnx3.file.FileUtil;
 
 
