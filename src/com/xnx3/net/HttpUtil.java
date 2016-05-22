@@ -51,6 +51,22 @@ public class HttpUtil {
     } 
     
     /**
+     * 获取上次请求完成后获得的Cookies
+     * @return
+     */
+    public String getCookies() {
+		return cookies;
+	}
+    
+    /**
+     * 设置请求时会附带传递的cookies
+     * @param cookies
+     */
+	public void setCookies(String cookies) {
+		this.cookies = cookies;
+	}
+
+	/**
      * GET请求
      * @param url URL地址
      * @return 响应对象 若是返回null则相应失败抛出异常
@@ -71,8 +87,14 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */ 
-    public HttpResponse get(String urlString, Map<String, String> params) throws IOException { 
-        return this.send(urlString, "GET", params, null); 
+    public HttpResponse get(String urlString, Map<String, String> params){ 
+        try {
+			return this.send(urlString, "GET", params, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null; 
+		} 
     } 
    
     /**
@@ -83,9 +105,14 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */ 
-    public HttpResponse get(String urlString, Map<String, String> params, Map<String, String> propertys) 
-            throws IOException { 
-        return this.send(urlString, "GET", params, propertys); 
+    public HttpResponse get(String urlString, Map<String, String> params, Map<String, String> propertys){ 
+        try {
+			return this.send(urlString, "GET", params, propertys);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} 
     } 
    
     /**
@@ -94,8 +121,14 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */ 
-    public HttpResponse post(String urlString) throws IOException { 
-        return this.send(urlString, "POST", null, null); 
+    public HttpResponse post(String urlString) { 
+        try {
+			return this.send(urlString, "POST", null, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} 
     } 
    
     /**
@@ -105,8 +138,14 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */ 
-    public HttpResponse post(String urlString, Map<String, String> params) throws IOException { 
-        return this.send(urlString, "POST", params, null); 
+    public HttpResponse post(String urlString, Map<String, String> params) { 
+        try {
+			return this.send(urlString, "POST", params, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} 
     } 
    
     /**
@@ -117,9 +156,13 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */ 
-    public HttpResponse post(String urlString, Map<String, String> params, Map<String, String> propertys) 
-            throws IOException { 
-        return this.send(urlString, "POST", params, propertys); 
+    public HttpResponse post(String urlString, Map<String, String> params, Map<String, String> propertys){ 
+        try {
+			return this.send(urlString, "POST", params, propertys);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} 
     } 
    
 
@@ -299,5 +342,4 @@ public class HttpUtil {
     	return result;
     }
     
-       
 }
