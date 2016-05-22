@@ -6,9 +6,13 @@ import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.Event;
 import com.pingplusplus.model.Webhooks;
 import com.xnx3.ConfigManagerUtil;
+import com.xnx3.DateUtil;
 import com.xnx3.j2ee.module.pingxx.bean.SmallCharge;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.codec.binary.Base64;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,7 +24,9 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.security.KeyFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,7 +66,7 @@ public class PingxxUtil {
     	/****测试创建Charge*****/
 ////    	Charge charge = createCharge(12, "标题啊", "描述啊", "3423425", SmallCharge.CHANNEL_ALIPAY, "129.12.12.12");
 //    	System.out.println(charge.toString());
-    	
+    	System.out.println(generateOrderNo());
     	/*******测试webhooks异步回调接受******/
 		//签名
     	String sign = "l4EUlkWgJD0cUNRshtGhrV/qQ6tXhnCANTDR5D3iHyo0F2WqhubbTUJEzp8Ym00TTIM37lv1mfVozpHF811Vy2ZXwnqPLrLl9SyWMnRML2OOYDpD0XrStHMyE774yf6HyaFD8fcmwlOOFeY26NyfCx3cmbLWHT+me/ZnKtA1N5eZmKkteUIMSgk8jhBHA4RT2nSapKiVbMqueBXrKmtekvuUHwRmuqHmi0ee/7uesIqWfhtGXRbwQvygIo+Mx2OV7qAvl0IyENipZUa+TTJ05GZDM/s6goPkH9pcp/hQ/lUTbIMU42jZJO30W6zCoDsZKUjTo6+Quz1XVW1lK/KuSw==";
@@ -75,6 +81,15 @@ public class PingxxUtil {
 			}
 		}
     	
+    }
+    
+    /**
+     * 生成12位全数字的订单号，10位时间戳＋2位随机数
+     * @return
+     */
+    public static String generateOrderNo(){
+    	Random random = new Random();
+		return random.nextInt(10)+""+random.nextInt(10)+DateUtil.timeForUnix10();
     }
     
     /**
