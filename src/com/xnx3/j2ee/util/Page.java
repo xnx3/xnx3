@@ -38,11 +38,17 @@ public class Page{
 	private boolean currentFirstPage;	//当前是否是首页，第一页
 	private List<TagA> upList;	//向上的list分页标签
 	private List<TagA> nextList;	//向下的分页list标签
+	private String orderBy;	//排序规则
 	
 	/**
 	 * @param allRecordNumber 共多少条
 	 * @param everyNumber 每页多少条
 	 * @param request HttpServletRequest
+	 * 			get方式传入值：
+	 * 			<ul>
+	 * 				<li>currentPage：请求第几页。若不传，默认请求第一页</li>
+	 * 				<li>orderBy：排序方式，如"user.id_DESC"，若不传则sql不会拼接上ORDER BY</li>
+	 * 			</ul>
 	 * @return
 	 */
 	public Page(int allRecordNumber , int everyNumber  ,HttpServletRequest request){
@@ -94,6 +100,15 @@ public class Page{
 		
 		this.currentFirstPage = currentPage == 1;		//当前页是否是第一页
 		this.currentLastPage = currentPage == this.lastPageNumber;		//当前页是否是最后一页
+		
+		String ob = request.getParameter("orderBy");
+		if(ob != null && ob.length()>0){
+			if(ob.indexOf("_ASC")>0){
+				orderBy = ob.replace("_ASC", "")+" ASC";
+			}else if (ob.indexOf("_DESC")>0) {
+				orderBy = ob.replace("_DESC", "")+" DESC";
+			}
+		}
 	}
 	
 	/**
@@ -281,5 +296,22 @@ public class Page{
 		
 		return upList;
 	}
+
+	/**
+	 * 排序规则，里面数值如：  user.id DESC
+	 * @return
+	 */
+	public String getOrderBy() {
+		return orderBy;
+	}
+	
+	/**
+	 * 排序规则，里面数值如：  user.id DESC
+	 * @param orderBy
+	 */
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+	
 	
 }
