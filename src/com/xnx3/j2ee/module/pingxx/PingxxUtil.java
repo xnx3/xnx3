@@ -67,20 +67,23 @@ public class PingxxUtil {
 ////    	Charge charge = createCharge(12, "标题啊", "描述啊", "3423425", SmallCharge.CHANNEL_ALIPAY, "129.12.12.12");
 //    	System.out.println(charge.toString());
     	System.out.println(generateOrderNo());
-    	/*******测试webhooks异步回调接受******/
-		//签名
-    	String sign = "l4EUlkWgJD0cUNRshtGhrV/qQ6tXhnCANTDR5D3iHyo0F2WqhubbTUJEzp8Ym00TTIM37lv1mfVozpHF811Vy2ZXwnqPLrLl9SyWMnRML2OOYDpD0XrStHMyE774yf6HyaFD8fcmwlOOFeY26NyfCx3cmbLWHT+me/ZnKtA1N5eZmKkteUIMSgk8jhBHA4RT2nSapKiVbMqueBXrKmtekvuUHwRmuqHmi0ee/7uesIqWfhtGXRbwQvygIo+Mx2OV7qAvl0IyENipZUa+TTJ05GZDM/s6goPkH9pcp/hQ/lUTbIMU42jZJO30W6zCoDsZKUjTo6+Quz1XVW1lK/KuSw==";
-		//模拟ping＋＋ 通过webhooks发送过来的json数据,实际web应用使用 webhooks(request, response)
-		String dataString = "{\"id\":\"evt_ugB6x3K43D16wXCcqbplWAJo\",\"created\":1440407501,\"livemode\":false,\"type\":\"charge.succeeded\",\"data\":{\"object\":{\"id\":\"ch_Xsr7u35O3m1Gw4ed2ODmi4Lw\",\"object\":\"charge\",\"created\":1440407501,\"livemode\":true,\"paid\":true,\"refunded\":false,\"app\":\"app_urj1WLzvzfTK0OuL\",\"channel\":\"upacp\",\"order_no\":\"123456789\",\"client_ip\":\"127.0.0.1\",\"amount\":100,\"amount_settle\":0,\"currency\":\"cny\",\"subject\":\"Your Subject\",\"body\":\"Your Body\",\"extra\":{},\"time_paid\":1440407501,\"time_expire\":1440407501,\"time_settle\":null,\"transaction_no\":\"1224524301201505066067849274\",\"refunds\":{\"object\":\"list\",\"url\":\"/v1/charges/ch_Xsr7u35O3m1Gw4ed2ODmi4Lw/refunds\",\"has_more\":false,\"data\":[]},\"amount_refunded\":0,\"failure_code\":null,\"failure_msg\":null,\"metadata\":{},\"credential\":{},\"description\":null}},\"object\":\"event\",\"pending_webhooks\":0,\"request\":\"iar_qH4y1KbTy5eLGm1uHSTS00s\"}";
-		com.xnx3.j2ee.module.pingxx.bean.Event event = getEventByContent(dataString, sign);
-		if(event!=null){
-			if(event.getType().equals(com.xnx3.j2ee.module.pingxx.bean.Event.TYPE_CHARGE_SUCCEEDED)){
-				System.out.println("支付成功的回调，支付成功的订单号："+event.getSmallCharge().getOrderNo());
-			}else if (event.getType().equals(com.xnx3.j2ee.module.pingxx.bean.Event.TYPE_REFUND_SUCCEEDED)) {
-				System.out.println("退款成功的回调，退款成功的订单号："+event.getSmallCharge().getOrderNo());
-			}
-		}
     	
+//    	/*******测试webhooks异步回调接受******/
+//		//签名
+//    	String sign = "l4EUlkWgJD0cUNRshtGhrV/qQ6tXhnCANTDR5D3iHyo0F2WqhubbTUJEzp8Ym00TTIM37lv1mfVozpHF811Vy2ZXwnqPLrLl9SyWMnRML2OOYDpD0XrStHMyE774yf6HyaFD8fcmwlOOFeY26NyfCx3cmbLWHT+me/ZnKtA1N5eZmKkteUIMSgk8jhBHA4RT2nSapKiVbMqueBXrKmtekvuUHwRmuqHmi0ee/7uesIqWfhtGXRbwQvygIo+Mx2OV7qAvl0IyENipZUa+TTJ05GZDM/s6goPkH9pcp/hQ/lUTbIMU42jZJO30W6zCoDsZKUjTo6+Quz1XVW1lK/KuSw==";
+//		//模拟ping＋＋ 通过webhooks发送过来的json数据,实际web应用使用 webhooks(request, response)
+//		String dataString = "{\"id\":\"evt_ugB6x3K43D16wXCcqbplWAJo\",\"created\":1440407501,\"livemode\":false,\"type\":\"charge.succeeded\",\"data\":{\"object\":{\"id\":\"ch_Xsr7u35O3m1Gw4ed2ODmi4Lw\",\"object\":\"charge\",\"created\":1440407501,\"livemode\":true,\"paid\":true,\"refunded\":false,\"app\":\"app_urj1WLzvzfTK0OuL\",\"channel\":\"upacp\",\"order_no\":\"123456789\",\"client_ip\":\"127.0.0.1\",\"amount\":100,\"amount_settle\":0,\"currency\":\"cny\",\"subject\":\"Your Subject\",\"body\":\"Your Body\",\"extra\":{},\"time_paid\":1440407501,\"time_expire\":1440407501,\"time_settle\":null,\"transaction_no\":\"1224524301201505066067849274\",\"refunds\":{\"object\":\"list\",\"url\":\"/v1/charges/ch_Xsr7u35O3m1Gw4ed2ODmi4Lw/refunds\",\"has_more\":false,\"data\":[]},\"amount_refunded\":0,\"failure_code\":null,\"failure_msg\":null,\"metadata\":{},\"credential\":{},\"description\":null}},\"object\":\"event\",\"pending_webhooks\":0,\"request\":\"iar_qH4y1KbTy5eLGm1uHSTS00s\"}";
+//		com.xnx3.j2ee.module.pingxx.bean.Event event = getEventByContent(dataString, sign);
+//		if(event!=null){
+//			if(event.getType().equals(com.xnx3.j2ee.module.pingxx.bean.Event.TYPE_CHARGE_SUCCEEDED)){
+//				System.out.println("支付成功的回调，支付成功的订单号："+event.getSmallCharge().getOrderNo());
+//			}else if (event.getType().equals(com.xnx3.j2ee.module.pingxx.bean.Event.TYPE_REFUND_SUCCEEDED)) {
+//				System.out.println("退款成功的回调，退款成功的订单号："+event.getSmallCharge().getOrderNo());
+//			}
+//		}
+    	
+    	String a = "12345";
+    	System.out.println(a.substring(0, 2));
     }
     
     /**
@@ -173,7 +176,18 @@ public class PingxxUtil {
      * @return 若成功，返回 {@link Charge}，若失败，返回null
      */
     public static Charge createCharge(Integer amount, String subject, String body, String orderNo, String channel, String clientIp) {
-        Charge charge = null;
+		if(body == null || body.length()==0){
+			body=subject;
+		}
+		if(subject.length()>16){
+			subject = subject.substring(0, 16);
+		}
+		
+		if(body.length()>64){
+			body = body.substring(0, 64);
+		}
+    	
+    	Charge charge = null;
         Map<String, Object> chargeMap = new HashMap<String, Object>();
         chargeMap.put("amount", amount);
         chargeMap.put("currency", "cny");
