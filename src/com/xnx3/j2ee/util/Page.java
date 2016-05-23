@@ -1,8 +1,30 @@
 package com.xnx3.j2ee.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+
 import com.xnx3.Lang;
 import com.xnx3.bean.TagA;
 
@@ -39,6 +61,7 @@ public class Page{
 	private List<TagA> upList;	//向上的list分页标签
 	private List<TagA> nextList;	//向下的分页list标签
 	private String orderBy;	//排序规则
+	private String defaultOrderBy;	//默认排序规则。当网址里没有传递指定排序规则时，并且此项有值，则会使用此项排序规则
 	
 	/**
 	 * @param allRecordNumber 共多少条
@@ -102,6 +125,9 @@ public class Page{
 		this.currentLastPage = currentPage == this.lastPageNumber;		//当前页是否是最后一页
 		
 		String ob = request.getParameter("orderBy");
+		if((ob == null || ob.length()==0) && (defaultOrderBy!=null && defaultOrderBy.length()>0)){
+			ob = defaultOrderBy;
+		}
 		if(ob != null && ob.length()>0){
 			if(ob.indexOf("_ASC")>0){
 				orderBy = ob.replace("_ASC", "")+" ASC";
@@ -299,6 +325,7 @@ public class Page{
 
 	/**
 	 * 排序规则，里面数值如：  user.id DESC
+	 * <br/>若设置了此项，get传入的排序方式则不起作用
 	 * @return
 	 */
 	public String getOrderBy() {
@@ -307,11 +334,31 @@ public class Page{
 	
 	/**
 	 * 排序规则，里面数值如：  user.id DESC
+	 * <br/>若设置了此项，get传入的排序方式则不起作用
 	 * @param orderBy
 	 */
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
 	}
+
+	/**
+	 * 默认排序规则。当网址里没有传递指定排序规则时，并且此项有值，则会使用此项排序规则
+	 * <br/>不会覆盖get传入的指定排序规则。
+	 * @return 如user.id_DESC
+	 */
+	public String getDefaultOrderBy() {
+		return defaultOrderBy;
+	}
+	
+	/**
+	 * 默认排序规则。当网址里没有传递指定排序规则时，并且此项有值，则会使用此项排序规则
+	 * <br/>不会覆盖get传入的指定排序规则。
+	 * @param defaultOrderBy 如user.id_DESC
+	 */
+	public void setDefaultOrderBy(String defaultOrderBy) {
+		this.defaultOrderBy = defaultOrderBy;
+	}
+	
 	
 	
 }
