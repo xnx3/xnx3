@@ -2,6 +2,8 @@ package com.xnx3.media;
 
 import java.awt.Color;
 
+import com.xnx3.robot.support.RGBBean;
+
 
 /**
  * 颜色相关操作
@@ -10,13 +12,12 @@ import java.awt.Color;
  */
 public class ColorUtil {
 	
-	/** 
-	 * 
-     * Color对象转换成字符串 
-     * @param color Color对象 
-     * @return 16进制颜色字符串 
-     */  
-    public static String toHexFromColor(Color color){  
+    /**
+     * {@link Color}转换为十六进制颜色
+     * @param color {@link Color}
+     * @return 十六进制颜色，如 FFFFFF
+     */
+    public static String colorToHex(Color color){  
         String r,g,b;  
         StringBuilder su = new StringBuilder();  
         r = Integer.toHexString(color.getRed());  
@@ -37,7 +38,7 @@ public class ColorUtil {
     }
     
     /** 
-     * 字符串转换成Color对象 
+     * 十六进制字符串转换成Color对象 
      * @param colorStr 16进制颜色字符串 
      * @return Color对象 
      */ 
@@ -48,12 +49,12 @@ public class ColorUtil {
     }  
     
     /**
-     * {@link Color}转换为十六进制颜色
-     * @param color {@link Color}
-     * @return 十六进制颜色，如 FFFFFF
+     * 将十六进制颜色转换为10进制int
+     * @param hex 十六进制颜色
+     * @return 10进制int
      */
-    public static String colorToHex(Color color){
-    	return RgbToHex(color.getRed(), color.getGreen(), color.getBlue());
+    public static int hexToInt(String hex){
+    	return Integer.valueOf(hex,16);
     }
     
     /** 
@@ -66,6 +67,23 @@ public class ColorUtil {
     public static String RgbToHex(int r,int g,int b){ 
         return vali(getHexNum(r))+vali(getHexNum(g))+vali(getHexNum(b)); 
     } 
+    
+    public static void main(String[] args) {
+    	System.out.println(hexToInt("F1F1F1"));
+		System.out.println(intToHex(-921103));
+	}
+    
+    /**
+     * 将十进制rgb颜色转换为十六进制颜色字符串
+     * @param rgb 十进制rgb颜色
+     * @return 十六进制颜色字符串
+     */
+    public static String intToHex(int rgb){
+    	RGBBean rgbBean = intToRgb(rgb);
+    	System.out.println("r:"+rgbBean.getR()+",g:"+rgbBean.getG()+",b:"+rgbBean.getB());
+    	return RgbToHex(rgbBean.getR(), rgbBean.getG(), rgbBean.getB());
+    }
+    
     private static String vali(String s){ 
         if (s.length()<2) { 
             s="0"+s; 
@@ -86,5 +104,18 @@ public class ColorUtil {
         } 
         s.append(H[mod]); 
     } 
+	
+	/**
+	 * 将颜色值int型转换为RGB类型，三原色数值单独分开
+	 * @param value 十进制的图像颜色，FFFFFF颜色转成10进制便是这个传入值
+	 * @return {@link RGBBean}
+	 */
+	public static RGBBean intToRgb(int value){
+		RGBBean rgb = new RGBBean();		//searchRGB
+		rgb.setR((value & 0xff0000) >> 16);
+		rgb.setG((value & 0xff00) >> 8);
+		rgb.setB((value & 0xff));
+		return rgb;
+	}
 	
 }
