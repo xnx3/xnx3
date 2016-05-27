@@ -2,10 +2,11 @@
 
 快速开发工具类，用最简洁的命令实现想要的功能。
 
+
 将指定文字发音读出：<br/>
-  <pre>
-    new TTSUtil().speak("这是要读出的文字内容");
-  </pre>
+```Java
+new TTSUtil().speak("这是要读出的文字内容");
+```
 
 发送一条短信<br/>
   <pre>
@@ -28,7 +29,7 @@
   <pre>
     Robot robot = new Robot();
     robot.setSourcePath(ImageDemo.class);
-    List<CoordBean> list = robot.imageSearch(0, 0, robot.screenWidth, robot.screenHeight, "search.png", Robot.SIM_ACCURATE);
+    List<CoordBean> list1 = robot.imageSearch("search.png", Robot.SIM_ACCURATE);
     System.out.println("搜索到了"+list.size()+"个图片");
   </pre>
 <br/>  
