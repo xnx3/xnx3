@@ -9,34 +9,34 @@ new TTSUtil().speak("这是要读出的文字内容");
 ```
 
 发送一条短信<br/>
-  <pre>
+```Java
     SendPhoneMsgUtil.send("13011658091", "这是短信内容");
-  </pre>
+```
   
 发送给123456@qq.com一封邮件<br/>
-  <pre>
+```Java
     MailUtil.sendMail("123456@qq.com", "这是邮件标题", "这是内容");
-  </pre>
+```
 <br/>  
 
 微信通过openid获取用户昵称<br/>
-  <pre>
+```Java
     WeiXinUtil.getUserInfo("openid").getNickname()
-  </pre>
+```
 <br/>  
 
 当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标<br/>
-  <pre>
+```Java
     Robot robot = new Robot();
     robot.setSourcePath(ImageDemo.class);
     List<CoordBean> list1 = robot.imageSearch("search.png", Robot.SIM_ACCURATE);
     System.out.println("搜索到了"+list.size()+"个图片");
-  </pre>
+```
 <br/>  
 
 <h2>网游外挂制作(外挂、鼠标、键盘模拟、找图找色、Java版的按键精灵)</h2><br/>
 简单操作示例：<br/>
-  <pre>
+```Java
     //所有辅助的，模拟进行某种操作(键盘、鼠标、..)要先创建此类,在new Com()时，会自动检测运行环境是否符合、部署、注册Dll
 		Com com=new Com();
 		//返回创建Com()的结果，如果自检过程中发现异常，创建Com失败，则调用此会返回false
@@ -52,7 +52,7 @@ new TTSUtil().speak("这是要读出的文字内容");
 		}
 		//用完后一定要记得释放，释放内存
 		com.unbind();
-	</pre>
+```
 	<br/>
   简单使用请参考：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/127.html">http://www.xnx3.com/doc/j2se_util/20150209/127.html</a><br/>
