@@ -2,15 +2,19 @@ package com.xnx3.media;
 
 import java.awt.Color;
 
-import com.xnx3.robot.support.RGBBean;
-
-
 /**
  * 颜色相关操作
  * @author 管雷鸣
  *
  */
 public class ColorUtil {
+	
+    public static void main(String[] args) {
+    	System.out.println(hexToInt("F1F1F1"));
+		System.out.println(intToHex(-921103));
+		System.out.println(intToColor(-921102));
+		System.out.println(colorToHex(new Color(340)));
+	}
 	
     /**
      * {@link Color}转换为十六进制颜色
@@ -29,7 +33,7 @@ public class ColorUtil {
         r = r.toUpperCase();  
         g = g.toUpperCase();  
         b = b.toUpperCase();  
-        su.append("0xFF");  
+//        su.append("0xFF");  
         su.append(r);  
         su.append(g);  
         su.append(b);  
@@ -39,13 +43,11 @@ public class ColorUtil {
     
     /** 
      * 十六进制字符串转换成Color对象 
-     * @param colorStr 16进制颜色字符串 
+     * @param colorStr 16进制颜色字符串 ,如 FFFFFF
      * @return Color对象 
      */ 
     public static Color hexToColor(String colorStr){  
-        colorStr = colorStr.substring(4);  
-        Color color = new Color(Integer.parseInt(colorStr, 16)) ;  
-        return color;  
+        return intToColor(hexToInt(colorStr));
     }  
     
     /**
@@ -68,20 +70,14 @@ public class ColorUtil {
         return vali(getHexNum(r))+vali(getHexNum(g))+vali(getHexNum(b)); 
     } 
     
-    public static void main(String[] args) {
-    	System.out.println(hexToInt("F1F1F1"));
-		System.out.println(intToHex(-921103));
-	}
-    
     /**
      * 将十进制rgb颜色转换为十六进制颜色字符串
      * @param rgb 十进制rgb颜色
      * @return 十六进制颜色字符串
      */
     public static String intToHex(int rgb){
-    	RGBBean rgbBean = intToRgb(rgb);
-    	System.out.println("r:"+rgbBean.getR()+",g:"+rgbBean.getG()+",b:"+rgbBean.getB());
-    	return RgbToHex(rgbBean.getR(), rgbBean.getG(), rgbBean.getB());
+    	Color color = intToColor(rgb);
+    	return RgbToHex(color.getRed(), color.getGreen(), color.getBlue());
     }
     
     private static String vali(String s){ 
@@ -110,12 +106,11 @@ public class ColorUtil {
 	 * @param value 十进制的图像颜色，FFFFFF颜色转成10进制便是这个传入值
 	 * @return {@link RGBBean}
 	 */
-	public static RGBBean intToRgb(int value){
-		RGBBean rgb = new RGBBean();		//searchRGB
-		rgb.setR((value & 0xff0000) >> 16);
-		rgb.setG((value & 0xff00) >> 8);
-		rgb.setB((value & 0xff));
-		return rgb;
+	public static Color intToColor(int value){
+		Color color = new Color(value);
+		return color;
 	}
+	
+	
 	
 }

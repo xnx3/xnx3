@@ -14,12 +14,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
+
 import com.xnx3.Lang;
 import com.xnx3.SystemUtil;
 import com.xnx3.UI;
+import com.xnx3.media.ColorUtil;
 import com.xnx3.robot.support.CoordBean;
-import com.xnx3.robot.support.RGBBean;
 import com.xnx3.robot.support.RgbImageComparerBean;
 
 /**
@@ -308,6 +310,34 @@ public class Robot{
 	}
 	
 	/**
+	 * 鼠标按住右键,一直按着，配合 {@link #mouseReleaseRight()}弹起释放右键一并使用
+	 */
+	public void mousePressRight(){
+		robot.mousePress(InputEvent.BUTTON3_MASK);
+	}
+	
+	/**
+	 * 鼠标释放右键，弹起右键
+	 */
+	public void mouseReleaseRight(){
+		robot.mousePress(InputEvent.BUTTON3_MASK);
+	}
+	
+	/**
+	 * 鼠标按住左键,一直按着，配合 {@link #mouseReleaseLeft()}弹起释放左键一并使用
+	 */
+	public void mousePressLeft(){
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+	}
+	
+	/**
+	 * 鼠标释放左键，弹起左键
+	 */
+	public void mouseReleaseLeft(){
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+	}
+	
+	/**
 	 * 鼠标滚轮
 	 * @param wheelAmt 滚轮次数（滚轮方式系统设置不同，以下仅供参考，可自行测试）
 	 * 			<ul>
@@ -326,18 +356,18 @@ public class Robot{
 	 * @param xEnd 当前屏幕要对比的区域的结束X坐标
 	 * @param yEnd 当前屏幕要对比的区域的结束Y坐标
 	 * @param image 指定寻找的目标图片
-	 * @param sim 模糊值，建议使用{@link Handle#SIM_ACCURATE} 、{@link Handle#SIM_BLUR}。传入值说明：
+	 * @param sim 模糊值，建议使用{@link Robot#SIM_ACCURATE} 、{@link Robot#SIM_BLUR}。传入值说明：
 	 * 				<ul> 
-	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 					<li>{@link Robot#SIM_ACCURATE_VERY} 精确无误，无任何误差，
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 					<li>{@link Robot#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 					<li>{@link Robot#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR_VERY} 非常模糊搜索，误差大，速度很慢(RGB误差100/255)：
+	 * 					<li>{@link Robot#SIM_BLUR_VERY} 非常模糊搜索，误差大，速度很慢(RGB误差100/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度最慢！搜索方式：全搜索
 	 * 				</ul>
@@ -481,16 +511,16 @@ public class Robot{
 	 * @param searchImageName 要搜索的目标图片文件名字，如果多个，则用英文输入法下的符号 | 隔开，如：a.png|b.png|c.png
 	 * @param sim 模糊值，值： 
 	 * 				<ul>
-	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 					<li>{@link Robot#SIM_ACCURATE_VERY} 精确无误，无任何误差，
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 					<li>{@link Robot#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 					<li>{@link Robot#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
+	 * 					<li>{@link Robot#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度最慢，搜索方式：全搜索
 	 * 				</ul>
@@ -499,10 +529,10 @@ public class Robot{
 	 * 					<i style="margin-left:30px;">
 	 * 						在2300*1100的图片中搜索50*50的图像所在，所耗时分别为:<br/>
 	 * 						<ul>
-	 * 							<li>{@link Handle#SIM_ACCURATE_VERY}	:	440ms
-	 * 							<li>{@link Handle#SIM_ACCURATE}		:	454ms
-	 * 							<li>{@link Handle#SIM_BLUR}			:	1267ms
-	 * 							<li>{@link Handle#SIM_BLUR_VERY}		:	37518ms
+	 * 							<li>{@link Robot#SIM_ACCURATE_VERY}	:	440ms
+	 * 							<li>{@link Robot#SIM_ACCURATE}		:	454ms
+	 * 							<li>{@link Robot#SIM_BLUR}			:	1267ms
+	 * 							<li>{@link Robot#SIM_BLUR_VERY}		:	37518ms
 	 * 						</ul>
 	 * 					</i>
 	 * @return {@link List} 将所有找到的图像位置的左上坐标返回，如果搜索不到，list.size()为0
@@ -525,16 +555,16 @@ public class Robot{
 	 * @param searchImage 要搜索的目标图片，使用 {@link #getResourceImage(String)}传入要搜索的目标资源文件
 	 * @param sim 模糊值，值： 
 	 * 				<ul>
-	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 					<li>{@link Robot#SIM_ACCURATE_VERY} 精确无误，无任何误差，
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 					<li>{@link Robot#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 					<li>{@link Robot#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
+	 * 					<li>{@link Robot#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度最慢，搜索方式：全搜索
 	 * 				</ul>
@@ -543,10 +573,10 @@ public class Robot{
 	 * 					<i style="margin-left:30px;">
 	 * 						在2300*1100的图片中搜索50*50的图像所在，所耗时分别为:<br/>
 	 * 						<ul>
-	 * 							<li>{@link Handle#SIM_ACCURATE_VERY}	:	440ms
-	 * 							<li>{@link Handle#SIM_ACCURATE}		:	454ms
-	 * 							<li>{@link Handle#SIM_BLUR}			:	1267ms
-	 * 							<li>{@link Handle#SIM_BLUR_VERY}		:	37518ms
+	 * 							<li>{@link Robot#SIM_ACCURATE_VERY}	:	440ms
+	 * 							<li>{@link Robot#SIM_ACCURATE}		:	454ms
+	 * 							<li>{@link Robot#SIM_BLUR}			:	1267ms
+	 * 							<li>{@link Robot#SIM_BLUR_VERY}		:	37518ms
 	 * 						</ul>
 	 * 					</i>
 	 * @return {@link List} 将所有找到的图像位置的左上坐标返回，如果搜索不到，list.size()为0
@@ -582,15 +612,15 @@ public class Robot{
 				//如果使用的精确搜索（SIM_ACCURATE、SIM_ACCURATE_VERY），则匹配图像的四个角的点跟中心点
 				if(sim < 32){
 					//首先比较图片四个角的四个点，如果四个点比较通过，则进行下一轮比较
-					if(pxCompare(px[x][y], pxS[0][0], sim)){
+					if(colorCompare(px[x][y], pxS[0][0], sim)){
 						//要搜索的图左上坐标在原图匹配成功
 						int pxX = x+pxSearch.getImgWidth()-1;	//原图要搜索的，定位搜索图右上坐标x下标
-						if(pxCompare(px[pxX][y], pxS[pxSXMax][0], sim)){
+						if(colorCompare(px[pxX][y], pxS[pxSXMax][0], sim)){
 							//要搜索的图右上坐标在原图匹配成功
 							int pxY = y+pxSearch.getImgHeight()-1;	//原图要搜索的，定位搜索图右上坐标x下标
-							if(pxCompare(px[x][pxY], pxS[0][pxSYMax], sim)){
+							if(colorCompare(px[x][pxY], pxS[0][pxSYMax], sim)){
 								//要搜索的图左下坐标在原图匹配成功
-								if(pxCompare(px[pxX][pxY], pxS[pxSXMax][pxSYMax], sim)){
+								if(colorCompare(px[pxX][pxY], pxS[pxSXMax][pxSYMax], sim)){
 									//要搜索的图右下坐标在原图匹配成功
 									
 									//进行要搜索的图片的中心点比较
@@ -601,7 +631,7 @@ public class Robot{
 									if(pxSYMax>2){
 										contentSearchY = (int) Math.ceil(pxSYMax/2);
 									}
-									if(pxCompare(px[x+contentSearchX][y+contentSearchY], pxS[contentSearchX][contentSearchY], sim)){
+									if(colorCompare(px[x+contentSearchX][y+contentSearchY], pxS[contentSearchX][contentSearchY], sim)){
 										//要搜索的图的中心点坐标在原图上匹配成功
 										contrast = true;
 									}
@@ -623,7 +653,7 @@ public class Robot{
 						//计算以搜索图纵向中心，X横向像素条
 						int ySour = y+contentSearchY;
 						for (int i = 0; i < pxSearch.getImgWidth(); i++) {
-							if(pxCompare(px[x+i][ySour], pxS[i][contentSearchY], sim)){
+							if(colorCompare(px[x+i][ySour], pxS[i][contentSearchY], sim)){
 								yes++;
 							}
 						}
@@ -641,7 +671,7 @@ public class Robot{
 						//计算以搜索图横向为中心，Y纵向像素条
 						int xSour = x+contentSearchX;
 						for (int i = 0; i < pxSearch.getImgHeight(); i++) {
-							if(pxCompare(px[xSour][y+i], pxS[contentSearchX][i], sim)){
+							if(colorCompare(px[xSour][y+i], pxS[contentSearchX][i], sim)){
 								yes++;
 							}
 						}
@@ -662,7 +692,7 @@ public class Robot{
 					int yes = 0;
 					for (int xS = 0; xS < pxSearch.getImgWidth(); xS++) {
 						for (int yS = 0; yS < pxSearch.getImgHeight(); yS++) {
-							if(pxCompare(px[x+xS][y+yS], pxS[xS][yS], sim)){
+							if(colorCompare(px[x+xS][y+yS], pxS[xS][yS], sim)){
 								yes++;
 							}
 						}
@@ -690,16 +720,16 @@ public class Robot{
 	 * @param searchImage 要搜索的目标图片，使用 {@link #getResourceImage(String)}传入要搜索的目标资源文件
 	 * @param sim 模糊值，值： 
 	 * 				<ul>
-	 * 					<li>{@link Handle#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 					<li>{@link Robot#SIM_ACCURATE_VERY} 精确无误，无任何误差，
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 					<li>{@link Robot#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 					<li>{@link Robot#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
-	 * 					<li>{@link Handle#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
+	 * 					<li>{@link Robot#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
 	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	 * 									速度最慢，搜索方式：全搜索
 	 * 				</ul>
@@ -708,10 +738,10 @@ public class Robot{
 	 * 					<i style="margin-left:30px;">
 	 * 						在2300*1100的图片中搜索50*50的图像所在，所耗时分别为:<br/>
 	 * 						<ul>
-	 * 							<li>{@link Handle#SIM_ACCURATE_VERY}	:	440ms
-	 * 							<li>{@link Handle#SIM_ACCURATE}		:	454ms
-	 * 							<li>{@link Handle#SIM_BLUR}			:	1267ms
-	 * 							<li>{@link Handle#SIM_BLUR_VERY}		:	37518ms
+	 * 							<li>{@link Robot#SIM_ACCURATE_VERY}	:	440ms
+	 * 							<li>{@link Robot#SIM_ACCURATE}		:	454ms
+	 * 							<li>{@link Robot#SIM_BLUR}			:	1267ms
+	 * 							<li>{@link Robot#SIM_BLUR_VERY}		:	37518ms
 	 * 						</ul>
 	 * 					</i>
 	 * @see #imageSearch(BufferedImage, BufferedImage, int)
@@ -731,30 +761,117 @@ public class Robot{
 		return l;
 	}
 
+
+	/**
+	 * 当前屏幕指定区域，与指定的图片比较其相似度
+	 * 	<ul>
+	 * 		<li>图片搜索顺序为 由上向下，由左向右
+	 * 		<li> 需先调用 {@link #setSourcePath(Class)} 方法设置资源文件路径。这个只执行一次便可。读取的资源文件都是在当前类文件下的res文件夹下
+	 * 	</ul>
+	 * @param imageName 资源文件的文件名，如： xnx3.png  
+	 * 			<ul>
+	 * 				<li>xnx3.png 这个文件是在{@link #setSourcePath(Class)}传入的类的当前目录，有res文件夹，xnx3.png在res文件夹内
+	 * 			</ul>
+	 * @param sim 模糊值，值： 
+	 * 				<ul>
+	 * 					<li>{@link Robot#SIM_ACCURATE_VERY} 精确无误，无任何误差，
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
+	 * 					<li>{@link Robot#SIM_ACCURATE} 精确，极小的误差(RGB误差30/255)
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度快，搜索方式：四角中心点－－纵横十字搜索－－全搜索
+	 * 					<li>{@link Robot#SIM_BLUR} 模糊，有误差(RGB误差60/255)：
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度慢，搜索方式：纵横十字搜索－－全搜索
+	 * 					<li>{@link Robot#SIM_BLUR_VERY} 非常模糊，很大误差(RGB误差81/255)：
+	 * 									<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 									速度最慢，搜索方式：全搜索
+	 * 				</ul>
+	 * 					<br/>
+	 * 					<hr/>
+	 * 					<i style="margin-left:30px;">
+	 * 						在2300*1100的图片中搜索50*50的图像所在，所耗时分别为:<br/>
+	 * 						<ul>
+	 * 							<li>{@link Robot#SIM_ACCURATE_VERY}	:	440ms
+	 * 							<li>{@link Robot#SIM_ACCURATE}		:	454ms
+	 * 							<li>{@link Robot#SIM_BLUR}			:	1267ms
+	 * 							<li>{@link Robot#SIM_BLUR_VERY}		:	37518ms
+	 * 						</ul>
+	 * 					</i>
+	 * @see #imageSearch(BufferedImage, BufferedImage, int)
+	 * @return {@link List} 若 list.size()>0 则搜索到了数值，若＝0则没有搜索到图片
+	 */
+	public List<CoordBean> imageSearch(String imageName,int sim){
+		BufferedImage cutImage = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,screenHeight)); 
+		List<CoordBean> list = imageSearch(cutImage, getResourceImage(imageName),SIM_ACCURATE);
+		
+		return list;
+	}
+
+	
+	/**
+	 * 两颜色值比较，是否匹配
+	 * @param color1 颜色1
+	 * @param color2 颜色2
+	 * @param sim 模糊值，如： 
+	 * 				<ul>
+	 * 					<li>非常精确，无误差：{@link Robot#SIM_ACCURATE_VERY}
+	 * 					<li>精确，极小的误差：{@link Robot#SIM_ACCURATE}
+	 * 					<li>模糊，有误差，模糊搜索：{@link Robot#SIM_BLUR}
+	 * 					<li>非常模糊，误差很大：{@link Robot#SIM_BLUR_VERY}
+	 * 				</ul>
+	 * @return true:成功
+	 */
+	public boolean colorCompare(Color color1,Color color2,int sim){
+		if(Math.abs(color1.getRed()-color2.getRed())<=sim && Math.abs(color1.getGreen()-color2.getGreen())<=sim && Math.abs(color1.getBlue()-color2.getBlue())<=sim){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	/**
 	 * 两像素点的颜色值比较，是否匹配
 	 * @param pxSource 像素1，原像素，十进制的颜色值
 	 * @param pxSearch 像素2，要搜索对比的像素，十进制的颜色值
 	 * @param sim 模糊值，如： 
 	 * 				<ul>
-	 * 					<li>非常精确，无误差：{@link Handle#SIM_ACCURATE_VERY}
-	 * 					<li>精确，极小的误差：{@link Handle#SIM_ACCURATE}
-	 * 					<li>模糊，有误差，模糊搜索：{@link Handle#SIM_BLUR}
-	 * 					<li>非常模糊，误差很大：{@link Handle#SIM_BLUR_VERY}
+	 * 					<li>非常精确，无误差：{@link Robot#SIM_ACCURATE_VERY}
+	 * 					<li>精确，极小的误差：{@link Robot#SIM_ACCURATE}
+	 * 					<li>模糊，有误差，模糊搜索：{@link Robot#SIM_BLUR}
+	 * 					<li>非常模糊，误差很大：{@link Robot#SIM_BLUR_VERY}
 	 * 				</ul>
+	 * @return true:成功
 	 */
-	public boolean pxCompare(int pxSource,int pxSearch,int sim){
+	public boolean colorCompare(int pxSource,int pxSearch,int sim){
 		if(sim == SIM_ACCURATE_VERY){
 			return pxSearch==pxSource;
 		}else{
-			RGBBean sourceRgb = intToRgb(pxSource);
-			RGBBean searchRgb = intToRgb(pxSearch);
-			if(Math.abs(sourceRgb.getR()-searchRgb.getR())<sim && Math.abs(sourceRgb.getG()-searchRgb.getG())<sim && Math.abs(sourceRgb.getB()-searchRgb.getB())<sim){
-				return true;
-			}else{
-				return false;
-			}
+			Color sourceRgb = ColorUtil.intToColor(pxSource);
+			Color searchRgb = ColorUtil.intToColor(pxSearch);
+			return colorCompare(sourceRgb, searchRgb, sim);
 		}
+	}
+	
+	/**
+	 * 判断某点的颜色是否跟制定的颜色相匹配
+	 * @param x 要判断的点的x坐标
+	 * @param y 要判断的点的y坐标
+	 * @param hex 要比对的制定的颜色，十六进制，传入如 "FFFFFF"
+	 * @param sim 模糊值，如： 
+	 * 				<ul>
+	 * 					<li>非常精确，无误差：{@link Robot#SIM_ACCURATE_VERY}
+	 * 					<li>精确，极小的误差：{@link Robot#SIM_ACCURATE}
+	 * 					<li>模糊，有误差，模糊搜索：{@link Robot#SIM_BLUR}
+	 * 					<li>非常模糊，误差很大：{@link Robot#SIM_BLUR_VERY}
+	 * 				</ul>
+	 * @return true:成功
+	 */
+	public boolean getColorCompare(int x, int y, String hex,int sim){
+		Color color = getPixelColor(x, y);
+		Color c2 = ColorUtil.hexToColor(hex);
+//		System.out.println(c2);
+		return colorCompare(color, c2, sim);
 	}
 	
 	/**
@@ -762,13 +879,13 @@ public class Robot{
 	 * @param value 十进制的图像颜色，FFFFFF颜色转成10进制便是这个传入值
 	 * @return {@link RGBBean}
 	 */
-	public RGBBean intToRgb(int value){
-		RGBBean rgb = new RGBBean();		//searchRGB
-		rgb.setR((value & 0xff0000) >> 16);
-		rgb.setG((value & 0xff00) >> 8);
-		rgb.setB((value & 0xff));
-		return rgb;
-	}
+//	public RGBBean intToRgb(int value){
+//		RGBBean rgb = new RGBBean();		//searchRGB
+//		rgb.setR((value & 0xff0000) >> 16);
+//		rgb.setG((value & 0xff00) >> 8);
+//		rgb.setB((value & 0xff));
+//		return rgb;
+//	}
 	
 	/**
 	 * 获取屏幕上某点颜色
@@ -779,6 +896,8 @@ public class Robot{
 	public Color getPixelColor(int x, int y){
 		return robot.getPixelColor(x, y);
 	}
+	
+	
 	
 	public static void main(String[] args) {
 		Robot robot = new Robot();

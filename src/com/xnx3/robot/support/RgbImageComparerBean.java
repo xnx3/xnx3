@@ -43,7 +43,7 @@ public class RgbImageComparerBean {
 		this.colorArray = colorArray;
 		this.imgWidth = this.colorArray.length;
 		this.imgHeight = this.colorArray[0].length;		
-//		this.pxCount = this.imgWidth*this.imgHeight;
+		this.pxCount = this.imgWidth*this.imgHeight;
 	}
 	
 	/**
