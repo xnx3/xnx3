@@ -9,6 +9,9 @@ public class RgbImageComparerBean {
 	/******颜色值数组，第一纬度为x坐标，第二纬度为y坐标******/
 	private int colorArray[][];
 	
+	/***是否忽略此点，若为true，则不纳入比较的像素行列。***/
+	private boolean ignorePx[][];
+	
 	/****图片的宽高****/
 	private int imgWidth;		
 	private int imgHeight;
@@ -23,6 +26,14 @@ public class RgbImageComparerBean {
 	public int[][] getColorArray() {
 		return colorArray;
 	}
+	
+	/**
+	 * 要对比的像素总数,会自动筛选掉不对比的颜色
+	 * @param pxCount
+	 */
+	public void setPxCount(int pxCount) {
+		this.pxCount = pxCount;
+	}
 
 	/**
 	 * 设置颜色二维数组
@@ -32,9 +43,25 @@ public class RgbImageComparerBean {
 		this.colorArray = colorArray;
 		this.imgWidth = this.colorArray.length;
 		this.imgHeight = this.colorArray[0].length;		
-		this.pxCount = this.imgWidth*this.imgHeight;
+//		this.pxCount = this.imgWidth*this.imgHeight;
 	}
 	
+	/**
+	 * 是否忽略此点，若为true，则不纳入像素比较行列。
+	 * @return 具体x，y坐标的那个像素点
+	 */
+	public boolean[][] getIgnorePx() {
+		return ignorePx;
+	}
+
+	/**
+	 * 是否忽略此点，若为true，则不纳入像素比较行列。
+	 * @param ignorePx 具体x，y坐标的那个像素点
+	 */
+	public void setIgnorePx(boolean[][] ignorePx) {
+		this.ignorePx = ignorePx;
+	}
+
 	/**
 	 * 获取图像的宽度
 	 * @return 图像宽度
