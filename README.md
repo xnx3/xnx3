@@ -1,4 +1,4 @@
-# xnx3-2.0.jar
+# xnx3-2.2.jar
 
 快速开发工具类，用最简洁的命令实现想要的功能。
 
@@ -63,13 +63,13 @@ new TTSUtil().speak("这是要读出的文字内容");
   简单使用请参考：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/127.html">http://www.xnx3.com/doc/j2se_util/20150209/127.html</a><br/>
 
-  高级使用之前台模拟操作：<br/>
+  高级使用之前台模拟操作(已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html))：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/128.html">http://www.xnx3.com/doc/j2se_util/20150210/128.html</a><br/>
   高级使用之新寻仙辅助编写：<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/129.html">http://www.xnx3.com/doc/j2se_util/20150211/129.html</a><br/>
 <br/>
 <h1>介绍及说明</h1><br/>
-xnx3-2.0.jar <br/>
+xnx3-2.2.jar <br/>
 ScreenCapture.jar：纯Java编写的图片处理小工具，配合 com.xnx3.robot.Robot 进行屏幕找图的纯Java按键精灵事件操作。 <br/>
 xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
 lib/  : 支持的jar包<br/>
