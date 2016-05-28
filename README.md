@@ -4,7 +4,8 @@
 
 <br/>
 [纯Java，跨平台，模拟按键、鼠标点击、找图、找色，实现简单按键精灵的功能 DEMO演示](http://pan.baidu.com/s/1bpHR6Y7)
-<br/>辅助开发配套工具：ScreenCapture.jar<br/>
+<br/>[辅助开发配套工具：ScreenCapture.jar:](https://raw.githubusercontent.com/xnx3/xnx3/master/ScreenCapture.jar)
+<br/>
 [![ScreenCapture]](http://www.xnx3.com/software/xnx3/ScreenCapture/index.html)  
 [ScreenCapture]:http://www.xnx3.com/software/xnx3/ScreenCapture/sc.png "ScreenCapture.jar"  
 <br/>
