@@ -1,6 +1,6 @@
 # xnx3-2.2.jar
 
-快速开发工具类，用最简洁的命令实现想要的功能。
+快速开发工具类，用最简洁的命令实现想要的功能。辅助模拟开发。
 
 <br/>
 [纯Java，跨平台，模拟按键、鼠标点击、找图、找色，实现简单按键精灵的功能 DEMO演示](http://pan.baidu.com/s/1bpHR6Y7)
@@ -45,7 +45,7 @@ new TTSUtil().speak("这是要读出的文字内容");
 * [高级使用之前台模拟操作](http://www.xnx3.com/doc/j2se_util/20150209/128.html)
 * [高级使用之新寻仙辅助编写](http://www.xnx3.com/doc/j2se_util/20150209/129.html)
 <br/>
-# 介绍及说明
+#介绍及说明
 xnx3-2.2.jar <br/>
 ScreenCapture.jar：纯Java编写的图片处理小工具，配合 com.xnx3.robot.Robot 进行屏幕找图的纯Java按键精灵事件操作。 <br/>
 xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
@@ -54,7 +54,7 @@ doc/  : xnx3-2.0.jar的doc文档<br/>
 src/  : xnx3-2.0.jar的源文件<br/>
 demo/ : 一些简单的demo示例<br/>
 <br/>
-# 联系
+#联系
 作者：管雷鸣<br/>
 交流QQ群：418768360  <br/>
 业务联系QQ：921153866<br/>
