@@ -40,35 +40,12 @@ new TTSUtil().speak("这是要读出的文字内容");
 ```
 <br/>  
 
-<h2>网游外挂制作(外挂、鼠标、键盘模拟、找图找色、Java版的按键精灵)</h2><br/>
-简单操作示例：<br/>
-```Java
-    //所有辅助的，模拟进行某种操作(键盘、鼠标、..)要先创建此类,在new Com()时，会自动检测运行环境是否符合、部署、注册Dll
-		Com com=new Com();
-		//返回创建Com()的结果，如果自检过程中发现异常，创建Com失败，则调用此会返回false
-		if(com.isCreateSuccess()){
-			/*
-			 * 这里是执行的主体了~~~~~写你想要做的事吧
-			 */
-			SystemUtil systemUtil=new SystemUtil(com.getActiveXComponent());
-			systemUtil.beep(2000, 1000);	//蜂鸣器发音
-			System.out.println("系统开机到现在运行的时间是："+systemUtil.getSystemRunTime()/1000+"秒");
-		}else{
-			System.out.println("创建Com对象失败");
-		}
-		//用完后一定要记得释放，释放内存
-		com.unbind();
-```
-	<br/>
-  简单使用请参考：<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/127.html">http://www.xnx3.com/doc/j2se_util/20150209/127.html</a><br/>
-
-  高级使用之前台模拟操作(已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html))：<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/128.html">http://www.xnx3.com/doc/j2se_util/20150210/128.html</a><br/>
-  高级使用之新寻仙辅助编写：<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xnx3.com/doc/j2se_util/20150209/129.html">http://www.xnx3.com/doc/j2se_util/20150211/129.html</a><br/>
+##Windows旧版本Com类，鼠标键盘模拟、找图找色。已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html)
+* [简单使用](http://www.xnx3.com/doc/j2se_util/20150209/127.html)
+* [高级使用之前台模拟操作](http://www.xnx3.com/doc/j2se_util/20150209/128.html)
+* [高级使用之新寻仙辅助编写](http://www.xnx3.com/doc/j2se_util/20150209/129.html)
 <br/>
-<h1>介绍及说明</h1><br/>
+# 介绍及说明
 xnx3-2.2.jar <br/>
 ScreenCapture.jar：纯Java编写的图片处理小工具，配合 com.xnx3.robot.Robot 进行屏幕找图的纯Java按键精灵事件操作。 <br/>
 xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
@@ -77,7 +54,7 @@ doc/  : xnx3-2.0.jar的doc文档<br/>
 src/  : xnx3-2.0.jar的源文件<br/>
 demo/ : 一些简单的demo示例<br/>
 <br/>
-<br/>
+# 联系
 作者：管雷鸣<br/>
 交流QQ群：418768360  <br/>
 业务联系QQ：921153866<br/>
