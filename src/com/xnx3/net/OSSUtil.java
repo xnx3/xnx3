@@ -66,7 +66,7 @@ public class OSSUtil {
 	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
 	 * @param fileName 上传的文件名，如“xnx3.jar”；主要拿里面的后缀名。也可以直接传入文件的后缀名如“.jar”
 	 * @param inputStream {@link InputStream}
-	 * @return {@link PutResult}
+	 * @return {@link PutResult} 若失败，返回null
 	 */
 	public static PutResult put(String filePath,String fileName,InputStream inputStream){
 		String fileSuffix=com.xnx3.Lang.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
@@ -77,10 +77,26 @@ public class OSSUtil {
 		return new PutResult(name, path);
 	}
 	
+	/**
+	 * 上传本地文件
+	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
+	 * @param localPath 本地要上传的文件的绝对路径，如 "/jar_file/iw.jar"
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public static PutResult put(String filePath, String localPath){
+		File file = new File(localPath);
+		InputStream input = null;
+		try {
+			input = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return put(filePath, localPath, input);
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException {
-		File file = new File("/jar_file/iw.jar");
-		InputStream input = new FileInputStream(file);
-		PutResult p = put("jar/file/", ".jar", input);
-		System.out.println(p);
+		//测试上传
+		PutResult pr = OSSUtil.put("jar/file/", "/jar_file/iw.jar");
+		System.out.println(pr);
 	}
 }
