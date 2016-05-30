@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.swing.JOptionPane;
 
@@ -554,5 +555,13 @@ public class Lang {
 		for (int i = 0; i <l2.size(); i++) {
 			System.out.println(l2.get(i));
 		}
+	}
+	
+	/**
+	 * 返回 UUID.randomUUID() ，替换掉其中的－
+	 * @return uuid
+	 */
+	public static String uuid(){
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 }
