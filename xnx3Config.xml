@@ -74,4 +74,16 @@
 		<debug>true</debug>
 	</pingxx>
 	
+	<!-- 阿里云 OSS -->
+	<aliyunOSS>
+		<!-- oss-cn-qingdao.aliyuncs.com -->
+		<endpoint>oss-cn-qingdao.aliyuncs.com</endpoint>
+		<!-- AccessKeyId -->
+		<accessKeyId>aaaaaaaaaa</accessKeyId>
+		<!-- AccessKeySecret -->
+		<accessKeySecret>aaaaaaaaaaaaaaaaaaa</accessKeySecret>
+		<!-- BucketName -->
+		<bucketName>aaaaa</bucketName>
+	</aliyunOSS>
+	
 </configuration>
