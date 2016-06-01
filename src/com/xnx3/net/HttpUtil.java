@@ -176,10 +176,11 @@ public class HttpUtil {
 		StringBuffer param = new StringBuffer(); 
         int i = 0; 
         for (String key : parameters.keySet()) { 
-            if (i == 0) 
-                param.append("?"); 
-            else 
-                param.append("&"); 
+            if (i == 0){
+            	param.append("?");
+            }else{
+            	param.append("&");
+            }
             param.append(key).append("=").append(parameters.get(key)); 
             i++; 
         } 
@@ -187,6 +188,29 @@ public class HttpUtil {
         return url;
 	}
 	
+	/**
+	 * 将Map参数转变为 URL后的字符组合形势 
+	 * @param parameters Map 
+	 * @return key=value&key=value
+	 */
+	public static String mapToQueryString(Map<String,String> parameters){
+    	String data = "";
+    	StringBuffer param = new StringBuffer(); 
+        if(parameters != null){
+        	int i = 0; 
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {  
+            	if (i > 0){
+                	param.append("&");
+                }
+                param.append(entry.getKey()).append("=").append(entry.getValue()); 
+                i++; 
+            }
+        }
+        if(param.length()>0){
+        	data = param.toString();
+        }
+        return data;
+	}
     
     /**
      * HTTP请求
@@ -255,7 +279,6 @@ public class HttpUtil {
             if (ecod == null) 
                 ecod = this.encode; 
             httpResponser.urlString = urlString; 
-            System.out.println();
             this.cookies=urlConnection.getHeaderField("Set-Cookie");
             httpResponser.cookie=this.cookies;
             httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
@@ -283,7 +306,6 @@ public class HttpUtil {
                 urlConnection.disconnect(); 
         } 
     } 
-   
     
     /**
      * gzip的网页用到
