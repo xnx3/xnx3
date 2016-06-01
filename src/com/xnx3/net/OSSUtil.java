@@ -27,6 +27,11 @@ public class OSSUtil {
     private static String accessKeyId = "";
     private static String accessKeySecret = "";
     private static String bucketName = "";
+    /**
+     * 处理过的OSS外网域名,如 http://xnx3.oss-cn-qingdao.aliyuncs.com/
+     * <br/>(文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名)
+     */
+    public static String url = ""; 
 	
     private static OSSClient ossClient;
     
@@ -35,6 +40,12 @@ public class OSSUtil {
 		accessKeyId = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.accessKeyId");
 		accessKeySecret = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.accessKeySecret");
 		bucketName = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.bucketName");
+		
+		url = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.url");
+		if(url == null || url.length() == 0){
+			url = bucketName+"."+endpoint;
+		}
+		url = "http://"+url+"/";
 	}
 	
 	/**
@@ -74,7 +85,7 @@ public class OSSUtil {
         String path = filePath+name;
 		getOSSClient().putObject(bucketName, path, inputStream);
 		
-		return new PutResult(name, path);
+		return new PutResult(name, path,url+path);
 	}
 	
 	/**
