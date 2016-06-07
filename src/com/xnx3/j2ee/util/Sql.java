@@ -72,11 +72,7 @@ public class Sql {
 						if(value.length()>0){
 							if(sqlColumn.getDateFormat()!=null){
 								//将value转换为10位的时间戳
-								try {
-									value = ""+new DateUtil().StringToInt(value, sqlColumn.getDateFormat());
-								} catch (ParseException e) {
-									e.printStackTrace();
-								}
+								value = ""+DateUtil.StringToInt(value, sqlColumn.getDateFormat());
 							}
 							
 							if(where.equals("")){

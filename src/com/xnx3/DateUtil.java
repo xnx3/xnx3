@@ -77,12 +77,16 @@ public class DateUtil {
 	 * 将String类型时间转换为Date对象
 	 * @param time 要转换的时间，如2016-02-18 00:00:11
 	 * @param format 要转换的String的时间格式，如：yyyy-MM-dd HH:mm:ss
-	 * @return Date对象
-	 * @throws ParseException 
+	 * @return Date对象 若失败，返回null
 	 */
-	public Date StringToDate(String time , String format) throws ParseException{
+	public static Date StringToDate(String time , String format){
 		SimpleDateFormat sFormat =  new SimpleDateFormat(format);  
-		Date date = sFormat.parse(time);
+		Date date = null;
+		try {
+			date = sFormat.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return date;  
 	}
 	
@@ -93,9 +97,13 @@ public class DateUtil {
 	 * @return 10位Linux时间戳
 	 * @throws ParseException 
 	 */
-	public int StringToInt(String time , String format) throws ParseException{
+	public static int StringToInt(String time , String format){
 		long d = StringToDate(time, format).getTime();
-		return (int)Math.ceil(d/1000);
+		if(d == 0){
+			return 0;
+		}else{
+			return (int)Math.ceil(d/1000);
+		}
 	}
 	
 	
