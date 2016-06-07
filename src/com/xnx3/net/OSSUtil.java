@@ -23,10 +23,10 @@ import com.xnx3.net.ossbean.PutResult;
  * @author 管雷鸣
  */
 public class OSSUtil {
-	private static String endpoint = "";
-    private static String accessKeyId = "";
-    private static String accessKeySecret = "";
-    private static String bucketName = "";
+	public static String endpoint = "";
+	public static String accessKeyId = "";
+	public static String accessKeySecret = "";
+	public static String bucketName = "";
     /**
      * 处理过的OSS外网域名,如 http://xnx3.oss-cn-qingdao.aliyuncs.com/
      * <br/>(文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名)
@@ -85,6 +85,26 @@ public class OSSUtil {
         String path = filePath+name;
 		getOSSClient().putObject(bucketName, path, inputStream);
 		
+		return new PutResult(name, path,url+path);
+	}
+	
+	/**
+	 * 删除文件
+	 * @param filePath 文件所在OSS的绝对路径，如 "jar/file/xnx3.jpg"
+	 */
+	public static void deleteObject(String filePath){
+		getOSSClient().deleteObject(bucketName, filePath);
+	}
+	
+	/**
+	 * 上传文件。上传后的文件名固定
+	 * @param path 上传到哪里，包含上传后的文件名，如"image/head/123.jpg"
+	 * @param inputStream 文件
+	 * @return {@link PutResult}
+	 */
+	public static PutResult put(String path,InputStream inputStream){
+		getOSSClient().putObject(bucketName, path, inputStream);
+		String name = Lang.subString(path, "/", null, 3);
 		return new PutResult(name, path,url+path);
 	}
 	
