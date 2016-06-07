@@ -393,8 +393,8 @@ public class Lang {
 			}
 			
 			if(start<0){
-				//没有找到，则定为－1，方法返回null
-				start=-1;
+				//没有找到，则定为0，从最开始处截取
+				start=0;
 			}else{
 				//不截取传入的字符，从其后开始截取
 				start=start+startString.length();
