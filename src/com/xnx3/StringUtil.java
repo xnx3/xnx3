@@ -1,5 +1,8 @@
 package com.xnx3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringUtil {
 
 	/**
@@ -229,5 +232,22 @@ public class StringUtil {
 	 */
 	public static String filterHtmlTag(String text){
 		return text.replaceAll("<[.[^<]]*>","");
+	}
+	
+	/**
+	 * split 根据指定的字符分割字符串为List输出
+	 * @param content 要分隔的目标字符串
+	 * @param regex 分隔符，split的传入值
+	 * @return
+	 */
+	public static List<String> split(String content,String regex){
+		String[] sa = content.split(regex);
+		List<String> list = new ArrayList<String>();
+		for (int i = 0; i < sa.length; i++) {
+			if(sa[i] != null && sa[i].length()>0){
+				list.add(sa[i]);
+			}
+		}
+		return list;
 	}
 }
