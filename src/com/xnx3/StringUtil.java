@@ -238,7 +238,7 @@ public class StringUtil {
 	 * split 根据指定的字符分割字符串为List输出
 	 * @param content 要分隔的目标字符串
 	 * @param regex 分隔符，split的传入值
-	 * @return
+	 * @return 分割好的List
 	 */
 	public static List<String> split(String content,String regex){
 		String[] sa = content.split(regex);

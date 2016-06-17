@@ -63,6 +63,7 @@ public class TTSUtil {
 	
 	/**
 	 * 输入文字，以女声读出
+	 * @param text 要发音的文字，建议一句话以内，不要太长
 	 * @see #speak(String, int)
 	 */
 	public void speak(String text){
@@ -71,6 +72,7 @@ public class TTSUtil {
 	
 	/**
 	 * 输入文字，以女声读出。此单独开启一个线程提供阅读，不阻碍当前线程执行。需注意可能同时多个发音重叠问题。
+	 * @param text 要发音的文字，建议一句话以内，不要太长
 	 * @see #speak(String, int)
 	 */
 	public static void speakByThread(final String text){

@@ -531,7 +531,7 @@ public class Lang {
 	 * 两个同样数据类型的List合并,要求两个list包含的数据类型要相同
 	 * @param list 合并后组合起来的结果list
 	 * @param appendList 要合并入的list的另一个集合
-	 * @return
+	 * @return 成功或失败
 	 */
 	public static boolean listAppend(List list,List appendList){
 		if(appendList == null){
