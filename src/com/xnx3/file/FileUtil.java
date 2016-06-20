@@ -349,6 +349,24 @@ public class FileUtil {
 		return result;
 	}
 	
+	/**
+	 * 将 {@link BufferedReader} 转换为 {@link String}
+	 * @param br {@link BufferedReader}
+	 * @return String 若失败，返回 ""
+	 */
+	public static String BufferedReaderToString(BufferedReader br) {
+		String inputLine;
+		String str = "";
+		try {
+			while ((inputLine = br.readLine()) != null) {
+				str += inputLine;
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return str;
+	}
 
     public static void main(String[] args) throws IOException {
 //		downFileaa("http://www.xnx3.com/down/java/j2se_util.zip", "/music/a.zip");
