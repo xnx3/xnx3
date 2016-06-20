@@ -40,12 +40,12 @@ new TTSUtil().speak("这是要读出的文字内容");
 ```
 <br/>  
 
-##Windows旧版本Com类，鼠标键盘模拟、找图找色。已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html)
+## Windows旧版本Com类，鼠标键盘模拟、找图找色。已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html)
 * [简单使用](http://www.xnx3.com/doc/j2se_util/20150209/127.html)
 * [高级使用之前台模拟操作](http://www.xnx3.com/doc/j2se_util/20150209/128.html)
 * [高级使用之新寻仙辅助编写](http://www.xnx3.com/doc/j2se_util/20150209/129.html)
 <br/>
-#介绍及说明
+# 介绍及说明
 xnx3-2.2.jar <br/>
 ScreenCapture.jar：纯Java编写的图片处理小工具，配合 com.xnx3.robot.Robot 进行屏幕找图的纯Java按键精灵事件操作。 <br/>
 xnx3Config.xml : 若使用短信、邮件、分布式存储等功能，需在src目录下放入此配置文件。<br/>
@@ -54,7 +54,7 @@ doc/  : xnx3-2.0.jar的doc文档<br/>
 src/  : xnx3-2.0.jar的源文件<br/>
 demo/ : 一些简单的demo示例<br/>
 <br/>
-#联系
+# 联系
 作者：管雷鸣<br/>
 交流QQ群：418768360  <br/>
 业务联系QQ：921153866<br/>
