@@ -26,14 +26,14 @@ public class PutResult {
 	
 	/**
 	 * 上传成功后的文件名，如 "xnx3.jar"
-	 * @return
+	 * @return 上传成功后的文件名，如 "xnx3.jar"
 	 */
 	public String getFileName() {
 		return fileName;
 	}
 	/**
 	 * 上传成功后的文件名，如 "xnx3.jar"
-	 * @param fileName
+	 * @param fileName 上传成功后的文件名，如 "xnx3.jar"
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
@@ -47,21 +47,21 @@ public class PutResult {
 	}
 	/**
 	 * 上传成功后的路径，如 "/jar/file/xnx3.jar"
-	 * @param path
+	 * @param path 上传成功后的路径，如 "/jar/file/xnx3.jar"
 	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
 	/**
-	 * 文件上传成功后，外网访问的url
-	 * @return url
+	 * 文件上传成功后，外网访问的url 
+	 * @return url 文件上传成功后，外网访问的url
 	 */
 	public String getUrl() {
 		return url;
 	}
 	/**
 	 * 文件上传成功后，外网访问的url
-	 * @param url
+	 * @param url 文件上传成功后，外网访问的url
 	 */
 	public void setUrl(String url) {
 		this.url = url;

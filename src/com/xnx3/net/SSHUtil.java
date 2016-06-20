@@ -38,7 +38,7 @@ public class SSHUtil {
     
     /**
      * 登陆
-     * @return
+     * @return boolean
      * @throws IOException
      */
     public boolean open(){ 
@@ -54,9 +54,9 @@ public class SSHUtil {
 	
     /**
      * 执行脚本
-     * <li>需提前执行login()
+     * <br/>需提前执行login()
      * @param cmds
-     * @return
+     * @return {@link ShellBean}
      * @throws Exception
      */
     public ShellBean exeCommand(String cmd) throws Exception { 

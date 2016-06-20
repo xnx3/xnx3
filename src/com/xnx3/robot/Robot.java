@@ -86,7 +86,7 @@ public class Robot{
 	
 	/**
 	 * 设置资源文件路径，加载的资源文件都是在这个资源文件。
-	 * <br/><b> 注意，像是{@link #getBufferImage(String)}这些获取资源文件的方法使用前必须先执行此方法进行设置资源文件所在路径 </b>
+	 * <br/><b> 注意，像是{@link #getResourceImage(String)}这些获取资源文件的方法使用前必须先执行此方法进行设置资源文件所在路径 </b>
 	 * @param c 传入使用此Robot类的类，用来确定资源文件所在。资源文件都放置于传入的类当前文件夹下的res文件夹中
 	 */
 	public void setSourcePath(Class c){
@@ -206,7 +206,7 @@ public class Robot{
 	
 	/**
 	 * 获取 {@link java.awt.Robot}对象
-	 * @return
+	 * @return {@link java.awt.Robot}
 	 */
 	public java.awt.Robot getRobot(){
 		return robot;

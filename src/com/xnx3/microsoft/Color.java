@@ -77,7 +77,8 @@ public class Color {
 	 * @param yEnd 结束点y坐标，区域的右下Y坐标
 	 * @param color 颜色 格式为"RRGGBB-DRDGDB",比如"123456-000000|aabbcc-202020"
 	 * @param sim 相似度,取值范围0.1-1.0
-	 * @param dir 查找方向 
+	 * @param dir 查找方向
+	 * 	   <ul> 
 	 * 		 <li>0: 从左到右,从上到下 
      *       <li>1: 从左到右,从下到上 
      *       <li>2: 从右到左,从上到下 
@@ -87,8 +88,12 @@ public class Color {
      *       <li>6: 从上到下,从右到左
      *       <li>7: 从下到上,从左到右
      *       <li>8: 从下到上,从右到左
-	 * @return array <li>若是成功返回坐在坐标int[0]：X坐标，int[1]：Y坐标
-	 * 				 <li>若是失败，则都是-1
+     *    </ul>
+	 * @return array 找到的图片坐标数组 
+	 * 			<ul>	
+	 * 				<li>若是成功返回坐在坐标int[0]：X坐标，int[1]：Y坐标
+	 * 				<li>若是失败，则都是-1
+	 * 			</ul>
 	 */
 	public int[] findColor(int xStart,int yStart,int xEnd,int yEnd,String color,double sim,int dir){
 		int[] xnx3_result=new int[2];

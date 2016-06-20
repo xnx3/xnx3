@@ -98,56 +98,56 @@ public class SmallCharge {
     
     /**
      * 支付使用的第三方支付渠道,如 {@link SmallCharge#CHANNEL_ALIPAY}
-     * @return
+     * @return channel
      */
 	public String getChannel() {
 		return channel;
 	}
 	/**
 	 * 支付使用的第三方支付渠道,如 {@link SmallCharge#CHANNEL_ALIPAY}
-	 * @param channel
+	 * @param channel 如{@link SmallCharge#CHANNEL_ALIPAY}
 	 */
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
 	/**
 	 * 商户订单号，适配每个渠道对此参数的要求，必须在商户系统内唯一。(alipay: 1-64 位， wx: 2-32 位，bfb: 1-20 位，upacp: 8-40 位，yeepay_wap:1-50 位，jdpay_wap:1-30 位，cnp_u:8-20 位，cnp_f:8-20 位，推荐使用 8-20 位，要求数字或字母，不允许特殊字符)。
-	 * @return
+	 * @return 订单号
 	 */
 	public String getOrderNo() {
 		return orderNo;
 	}
 	/**
 	 * 商户订单号，适配每个渠道对此参数的要求，必须在商户系统内唯一。(alipay: 1-64 位， wx: 2-32 位，bfb: 1-20 位，upacp: 8-40 位，yeepay_wap:1-50 位，jdpay_wap:1-30 位，cnp_u:8-20 位，cnp_f:8-20 位，推荐使用 8-20 位，要求数字或字母，不允许特殊字符)。
-	 * @param orderNo
+	 * @param orderNo 订单号
 	 */
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
 	}
 	/**
 	 * 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1。
-	 * @return
+	 * @return  IP 地址
 	 */
 	public String getClientIp() {
 		return clientIp;
 	}
 	/**
 	 * 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1。
-	 * @param clientIp
+	 * @param clientIp 客户端的 IP 地址
 	 */
 	public void setClientIp(String clientIp) {
 		this.clientIp = clientIp;
 	}
 	/**
 	 * 订单总金额, 单位为对应币种的最小货币单位，例如：人民币为分（如订单总金额为 1 元，此处请填 100）。
-	 * @return
+	 * @return 订单总金额
 	 */
 	public Integer getAmount() {
 		return amount;
 	}
 	/**
 	 * 订单总金额, 单位为对应币种的最小货币单位，例如：人民币为分（如订单总金额为 1 元，此处请填 100）。
-	 * @param amount
+	 * @param amount 订单总金额
 	 */
 	public void setAmount(Integer amount) {
 		this.amount = amount;

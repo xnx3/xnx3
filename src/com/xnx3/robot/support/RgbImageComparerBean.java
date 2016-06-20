@@ -29,7 +29,7 @@ public class RgbImageComparerBean {
 	
 	/**
 	 * 要对比的像素总数,会自动筛选掉不对比的颜色
-	 * @param pxCount
+	 * @param pxCount pxCount
 	 */
 	public void setPxCount(int pxCount) {
 		this.pxCount = pxCount;
@@ -80,7 +80,7 @@ public class RgbImageComparerBean {
 	
 	/**
 	 * 获取图像里像素的总数
-	 * @return
+	 * @return 图像里像素的总数
 	 */
 	public int getPxCount() {
 		return pxCount;

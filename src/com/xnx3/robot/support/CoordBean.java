@@ -23,7 +23,7 @@ public class CoordBean {
 	
 	/**
 	 * 获取y坐标
-	 * @return
+	 * @return y坐标
 	 */
 	public int getY() {
 		return y;

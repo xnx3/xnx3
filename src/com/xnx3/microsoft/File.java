@@ -5,6 +5,7 @@ import com.jacob.com.Variant;
 import com.xnx3.Log;
 import com.xnx3.bean.ActiveBean;
 import com.xnx3.file.FileUtil;
+import com.xnx3.media.MP3Play;
 
 /**
  * 文件操作，包含文件基本操作、截图等
@@ -51,9 +52,13 @@ public class File extends FileUtil{
 	
 	/**
 	 * 播放某个MP3/WAV文件
+	 * <br/>建议使用 {@link MP3Play}
 	 * @param playFile MP3/WAV文件的所在路径,如 "C:\\test\\a.mp3"
-	 * @return 播放的结果<li>0:播放失败
+	 * @return 播放的结果
+	 * 				<ul>
+	 * 					<li>0:播放失败
 	 * 					<li>不为0:播放成功，返回当前播放的id标识
+	 * 				</ul>
 	 */
 	public int play(String playFile){
 		int xnx3_result=0;

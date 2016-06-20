@@ -58,7 +58,7 @@ public class ConfigManagerUtil {
     /**
      * 获取某个值
      * @param path xml配置文件的节点路径，如sms.uid
-     * @return
+     * @return 值
      */
     public String getValue(String path) {
         return this.config.getString(path);

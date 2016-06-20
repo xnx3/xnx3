@@ -324,24 +324,36 @@ public class Com {
 	 * 窗口绑定， 绑定后可任意操作该窗口，每个程序都不一样，如果鼠标、键盘、截图、取色等不好使，需要多试试几种组合，以便找到其最佳组合
 	 * @param hwnd 要绑定的窗口句柄  获取方式位于： {@link Window#findWindow(int, String, String)} {@link Window#getMousePointWindowHwnd()}
 	 * @param display 屏幕颜色获取方式 取值有以下几种
+	 * 		<ul>
 	 * 			<li>{@link Com#NORMAL} 正常模式,平常我们用的前台截屏模式 
 	 * 			<li>{@link Com#GDI} gdi模式,用于窗口采用GDI方式刷新时. 此模式占用CPU较大.
 	 * 			<li>{@link Com#GDI2} gdi2模式,此模式兼容性较强,但是速度比gdi模式要慢许多,如果gdi模式发现后台不刷新时,可以考虑用gdi2模式
 	 * 			<li>{@link Com#DX} dx图像模式 dx.graphic.2d|dx.graphic.3d .<b>注意此模式需要管理员权限</b>
+	 * 		</ul>
 	 * @param mouse 鼠标仿真模式 取值有以下几种 
+	 * 		<ul>
 	 * 			<li>{@link Com#NORMAL} 正常模式,平常我们用的前台鼠标模式
 	 * 			<li>{@link Com#WINDOWS} Windows模式,采取模拟windows消息方式 同按键自带后台插件
 	 * 			<li>{@link Com#WINDOWS3} Windows3模式，采取模拟windows消息方式,可以支持有多个子窗口的窗口后台
 	 * 			<li>{@link Com#DX} dx模式,采用模拟dx后台鼠标模式,这种方式会锁定鼠标输入.有些窗口在此模式下绑定时，需要先激活窗口再绑定(或者绑定以后激活)，否则可能会出现绑定后鼠标无效的情况.<b>注意此模式需要管理员权限</b>
-	 * @param key 键盘仿真模式 取值有以下几种 
+	 * 		</ul>
+	 * @param key 键盘仿真模式 取值有以下几种
+	 * 		<ul> 
 	 * 			<li>{@link Com#NORMAL} 正常模式,平常我们用的前台键盘模式 
 	 * 			<li>{@link Com#WINDOWS} Windows模式,采取模拟windows消息方式 同按键精灵的后台插件
 	 * 			<li>{@link Com#DX} dx模式,采用模拟dx后台键盘模式。有些窗口在此模式下绑定时，需要先激活窗口再绑定(或者绑定以后激活)，否则可能会出现绑定后键盘无效的情况.<b>注意此模式需要管理员权限</b>
-	 * @param mode 窗口绑定的模式 <li>0 : 推荐模式此模式比较通用，而且后台效果是最好的.
+	 * 		</ul>
+	 * @param mode 窗口绑定的模式 
+	 * 				<ul>
+	 * 					<li>0 : 推荐模式此模式比较通用，而且后台效果是最好的.
 	 *					<li>2 : 同模式0,此模式为老的模式0,尽量不要用此模式，除非有兼容性问题
 	 *					<li>4 : 同模式0,如果模式0有崩溃问题，可以尝试此模式.
-	 * @return boolean <li>true:绑定成功
+	 *				</ul>
+	 * @return boolean 窗口绑定结果 
+	 * 				<ul>
+	 * 					<li>true:绑定成功
 	 * 					<li>false:绑定失败
+	 * 				</ul>
 	 */
 	public boolean bind(int hwnd,String display,String mouse,String key,int mode){
 		this.display=display;

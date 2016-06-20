@@ -109,5 +109,19 @@ public class HttpResponse {
 	public String getUserInfo() {
 		return userInfo;
 	}
- 
+
+	@Override
+	public String toString() {
+		return "HttpResponse [urlString=" + urlString + ", defaultPort="
+				+ defaultPort + ", file=" + file + ", host=" + host + ", path="
+				+ path + ", port=" + port + ", protocol=" + protocol
+				+ ", query=" + query + ", ref=" + ref + ", userInfo="
+				+ userInfo + ", contentEncoding=" + contentEncoding
+				+ ", content=" + content + ", contentType=" + contentType
+				+ ", code=" + code + ", message=" + message + ", method="
+				+ method + ", connectTimeout=" + connectTimeout
+				+ ", readTimeout=" + readTimeout + ", cookie=" + cookie
+				+ ", contentCollection=" + contentCollection + "]";
+	}
+	
 }

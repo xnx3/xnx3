@@ -16,7 +16,7 @@ public class FileBean {
 	
 	/**
 	 * 属性
-	 * @return
+	 * @return {@link SftpATTRS}
 	 */
 	public SftpATTRS getAttrs() {
 		return attrs;
@@ -28,7 +28,7 @@ public class FileBean {
 
 	/**
 	 * 文件所在路径，如: /root
-	 * @return
+	 * @return 文件路径
 	 */
 	public String getFilePath() {
 		return filePath;

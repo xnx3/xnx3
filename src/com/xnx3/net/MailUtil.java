@@ -14,16 +14,16 @@ import com.xnx3.ConfigManagerUtil;
  * 邮件发送
  * <br/>使用示例
  * <pre>
- * 		////加入配置文件 src/xnx3Config.xml  ，配置其mail节点的参数。
+ * 		//加入配置文件 src/xnx3Config.xml  ，配置其mail节点的参数。
  * 		MailUtil.sendMail("123456@qq.com", "这是标题", "这是内容");
  * </pre>
  * <br><b>需导入</b> 
- * <br/><i>mail.jar</i>
- * <br/><i>commons-configuration-1.7.jar</i>
- * <br/><i>commons-collections-3.2.1.jar</i>
- * <br/><i>commons-io-1.3.2.jar</i>
- * <br/><i>commons-lang-2.5.jar</i>
- * <br/><i>commons-logging-1.2.jar</i>
+ * <br/>mail.jar
+ * <br/>commons-configuration-1.7.jar
+ * <br/>commons-collections-3.2.1.jar
+ * <br/>commons-io-1.3.2.jar
+ * <br/>commons-lang-2.5.jar
+ * <br/>commons-logging-1.2.jar
  * @author 管雷鸣
  */
 public class MailUtil {  

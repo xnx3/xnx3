@@ -1,8 +1,11 @@
 package com.xnx3.bean;
+
+import com.xnx3.net.FastDFSUtil;
+
 /**
  * FastDFS文件上传的返回对象
  * @author 管雷鸣
- * @see FastDFSClient#upload(String)
+ * @see FastDFSUtil#upload(String)
  */
 public class UploadBean extends org.csource_.fastdfs.FileInfo {
 	private boolean isSuccess;	//成功：true
@@ -45,8 +48,11 @@ public class UploadBean extends org.csource_.fastdfs.FileInfo {
 	
 	/**
 	 * 执行结果是否成功
-	 * @return <li>true:成功
+	 * @return 
+	 * 		<ul>
+	 * 			<li>true:成功
 	 * 			<li>false:失败
+	 * 		</ul>
 	 * @see UploadBean#getErrorInfo()
 	 */
 	public boolean isSuccess() {

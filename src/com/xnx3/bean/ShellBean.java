@@ -27,7 +27,7 @@ public class ShellBean {
 
 	/**
 	 * 返回 －1 ，则是失败，若是返回>-1，则是成功
-	 * @return
+	 * @return 返回 －1 ，则是失败，若是返回>-1，则是成功
 	 */
 	public int getExitStatus() {
 		return exitStatus;

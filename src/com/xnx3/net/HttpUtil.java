@@ -2,7 +2,6 @@ package com.xnx3.net;
 
 import java.io.BufferedReader; 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException; 
 import java.io.InputStream; 
 import java.io.InputStreamReader; 
@@ -24,10 +23,17 @@ public class HttpUtil {
 	
     private String encode; 	//默认编码格式
     private String cookies="";	//每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
+    
+    public static void main(String[] args) {
+		HttpUtil h = new HttpUtil();
+		System.out.println(h.get("https://m.baidu.com").getContent());
+	}
    
     /**
      * 设置好编码类型，若不设置，默认是Java虚拟机当前的文件编码
-     * <li>使用时首先会自动获取请求地址的编码，获取编码失败时才会使用此处的编码
+     * <ul>
+     * 		<li>使用时首先会自动获取请求地址的编码，获取编码失败时才会使用此处的编码</li>
+     * </ul>
      * @see HttpUtil#HttpUtil(String)
      */
     public HttpUtil() { 
@@ -36,7 +42,6 @@ public class HttpUtil {
     
     /**
      * 设置好编码类型，若不设置则默认是Java虚拟机当前的文件编码
-     * <li>
      * @param encode 使用时首先会自动获取请求地址的编码，获取编码失败时才会使用此处的编码<br/> {@link HttpUtil#UTF8} {@link HttpUtil#GBK}
      */
     public HttpUtil(String encode) { 
@@ -45,6 +50,7 @@ public class HttpUtil {
    
     /**
      * 设置默认的响应字符集，若不设置默认是UTF-8编码
+     * @param encode 字符编码 ，默认使用UTF-8，传入参数如{@link HttpUtil#GBK}
      */ 
     public void setEncode(String encode) { 
         this.encode = encode; 
@@ -52,7 +58,7 @@ public class HttpUtil {
     
     /**
      * 获取上次请求完成后获得的Cookies
-     * @return
+     * @return cookies
      */
     public String getCookies() {
 		return cookies;
@@ -60,7 +66,7 @@ public class HttpUtil {
     
     /**
      * 设置请求时会附带传递的cookies
-     * @param cookies
+     * @param cookies {@link #getCookies()}获取到的值
      */
 	public void setCookies(String cookies) {
 		this.cookies = cookies;
@@ -338,27 +344,25 @@ public class HttpUtil {
     	String result=null;
     	
     	URL url = null;
-    	FileOutputStream fos = null;
     	InputStream is;
     	try {
-    	for (int i = 0; i < 1; i++) {
-    	url = new URL(requestUrl);
-    	byte bytes[] = new byte[1024 * 10000];
-    	int index = 0;
-    	is = url.openStream();
-    	int count = is.read(bytes, index,1024 * 100);
-    	while (count != -1) {
-    	index += count;
-    	count = is.read(bytes, index,1);
-    	}
-    	ByteArrayInputStream biArrayInputStream=new ByteArrayInputStream(bytes);
-    	 
-    	result=uncompress(biArrayInputStream,this.encode);
-    	}
+    		for (int i = 0; i < 1; i++) {
+    			url = new URL(requestUrl);
+    			byte bytes[] = new byte[1024 * 10000];
+    			int index = 0;
+    			is = url.openStream();
+    			int count = is.read(bytes, index,1024 * 100);
+    			while (count != -1) {
+    				index += count;
+    				count = is.read(bytes, index,1);
+    			}
+    			ByteArrayInputStream biArrayInputStream=new ByteArrayInputStream(bytes);
+    			result=uncompress(biArrayInputStream,this.encode);
+    		}
     	} catch (MalformedURLException e) {
-    	e.printStackTrace();
+    		e.printStackTrace();
     	} catch (IOException e) {
-    	e.printStackTrace();
+    		e.printStackTrace();
     	}
     	
     	return result;

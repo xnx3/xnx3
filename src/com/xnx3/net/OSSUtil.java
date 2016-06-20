@@ -13,13 +13,13 @@ import com.xnx3.net.ossbean.PutResult;
 /**
  * aliyun OSS
  * <br><b>需导入</b> 
- * <br/><i>aliyun-sdk-oss-2.2.3.jar</i>
- * <br/><i>commons-codec-1.9.jar</i>
- * <br/><i>commons-logging-1.2.jar</i>
- * <br/><i>hamcrest-core-1.1.jar</i>
- * <br/><i>httpclient-4.4.1.jar</i>
- * <br/><i>httpcore-4.4.1.jar</i>
- * <br/><i>jdom-1.1.jar</i>
+ * <br/>aliyun-sdk-oss-2.2.3.jar
+ * <br/>commons-codec-1.9.jar
+ * <br/>commons-logging-1.2.jar
+ * <br/>hamcrest-core-1.1.jar
+ * <br/>httpclient-4.4.1.jar
+ * <br/>httpcore-4.4.1.jar
+ * <br/>jdom-1.1.jar
  * @author 管雷鸣
  */
 public class OSSUtil {

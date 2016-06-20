@@ -29,7 +29,7 @@ import com.xnx3.bean.UploadBean;
 		boolean result=client.download("M00/07/65/CgAA-lVRp9-AYn-mAAPCLZlIvsE337.txt", "/Users/apple/Desktop/t/1.jar");
 		client.close();
  * </pre>
- * <br/><b/>需</b>
+ * <br/><b>需</b>
  * <br/><i>fastdfs.jar</i>
  * <br/><i>commons-configuration-1.7.jar</i>
  * <br/><i>commons-collections-3.2.1.jar</i>
@@ -175,9 +175,13 @@ public class FastDFSUtil{
 	/**
 	 * 文件上传
 	 * @param local_filename 要上传的本地文件绝对路径
-	 * <li>使用之前需先开启，调用 {@link #open()}
+	 * <ul>
+	 * 	<li>使用之前需先开启，调用 {@link #open()}
+	 * </ul>
 	 * @return {@link UploadBean}
+	 * 		<ul>
 	 * 			<li>{@link UploadBean#isSuccess()}:判断是否上传成功
+	 * 		</ul>
 	 */
 	public UploadBean upload(String local_filename) {
 		String[] results=null;
@@ -197,11 +201,15 @@ public class FastDFSUtil{
 
 	/**
 	 * 文件上传
-	 * <li>使用之前需先开启，调用 {@link #open()}
+	 * 	<ul>
+	 * 		<li>使用之前需先开启，调用 {@link #open()}
+	 * 	</ul>
 	 * @param file_buff byte[]
 	 * @param fix_ext_name 文件后缀名,不包含"."
 	 * @return {@link UploadBean}
-	 * 			<li>{@link UploadBean#isSuccess()}:判断是否上传成功
+	 * 			<ul>
+	 * 				<li>{@link UploadBean#isSuccess()}:判断是否上传成功
+	 * 			</ul>
 	 * @see StorageClient#upload_file(byte[], String, NameValuePair[])
 	 */
 	public UploadBean upload(byte[] file_buff,String file_ext_name) {

@@ -169,7 +169,7 @@ public class SFTPUtil {
     /**
      * 
      * @param dir 服务器远程路径
-     * @return <li>成功，返回List
+     * @return 若成功，返回List，失败，返回null
      */
     public List<FileBean> list(String dir) {  
         try {  
