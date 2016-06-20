@@ -4,12 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Vector;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -17,51 +18,63 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-
+/**
+ * 模拟HTTPS请求工具类
+ * @author 管雷鸣
+ */
 public class HttpsUtil {
+	private String encode; 	//默认编码格式
+    private String cookies="";	//每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
 	
-	public static void main(String[] args) {
-		String url = "https://120.52.121.75:8443/QuerySummary";
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-Type", "application/x-www-form-urlencoded");
-		headers.put("Host", "120.52.121.75:8443");
-		headers.put("Accept", "*/*");
-		headers.put("Accept-Language", "zh-Hans-CN;q=1");
-		headers.put("Cookie", "44EDF024-CD2E-45B0-86EC-6BD8328027DB");
-		headers.put("Connection", "keep-alive");
-		headers.put("User-Agent", "Mozilla/5.0 (Ios;9.3.2;iPhone;iPhone);Version/1.3.7;ISN_GSXT");
+    public HttpsUtil() {
+    	this.encode = Charset.defaultCharset().name(); 
+	}
 
-		Map<String, String> param  = new HashMap<String, String>();
-		param.put("AreaCode", 10000+"");
-		param.put("Limit", "50");
-		param.put("Page", "1");
-		param.put("Q", "青岛国大期货经纪有限公司");
-		
+    /**
+     * 设置好编码类型，若不设置则默认是Java虚拟机当前的文件编码
+     * @param encode 使用时首先会自动获取请求地址的编码，获取编码失败时才会使用此处的编码<br/> {@link HttpUtil#UTF8} {@link HttpUtil#GBK}
+     */
+    public HttpsUtil(String encode) { 
+        this.encode = encode; 
+    } 
+   
+    /**
+     * 设置默认的响应字符集，若不设置默认是UTF-8编码
+     * @param encode 字符编码 ，默认使用UTF-8，传入参数如{@link HttpUtil#GBK}
+     */ 
+    public void setEncode(String encode) { 
+        this.encode = encode; 
+    } 
+    
+    /**
+     * 获取上次请求完成后获得的Cookies
+     * @return cookies
+     */
+    public String getCookies() {
+		return cookies;
+	}
+    
+    /**
+     * 设置请求时会附带传递的cookies
+     * @param cookies {@link #getCookies()}获取到的值
+     */
+	public void setCookies(String cookies) {
+		this.cookies = cookies;
+	}
+
+	public static void main(String[] args) {
+		HttpsUtil h = new HttpsUtil();
+		System.out.println(h.get("https://www.baidu.com"));
 	}
 	
-	
-	private static class TrustAnyTrustManager implements X509TrustManager {
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[]{};
-        }
-    }
-    private static class TrustAnyHostnameVerifier implements HostnameVerifier {
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    }
 	
     /**
      * GET方式打开网址，返回源代码
      * @param url 请求url
      * @param headers header头
-     * @return 网页源代码。若出错，返回null
+     * @return {@link HttpResponse}
      */
-    public static String get(String url,Map<String, String> headers){
+    public HttpResponse get(String url,Map<String, String> headers){
     	try {
 			return send(url, null, headers);
 		} catch (Exception e) {
@@ -74,9 +87,9 @@ public class HttpsUtil {
     /**
      * GET方式获取网页源代码
      * @param url 请求url
-     * @return 网页源代码。若出错，返回null
+     * @return {@link HttpResponse}
      */
-    public static String get(String url){
+    public HttpResponse get(String url){
     	try {
 			return send(url, null, null);
 		} catch (Exception e) {
@@ -90,9 +103,9 @@ public class HttpsUtil {
      * @param url 请求url
      * @param parameters 传递参数集合，会解析为 key=value&key=value
      * @param headers header头
-     * @return 网页源代码。若出错，返回null
+     * @return {@link HttpResponse}
      */
-    public String post(String url,Map<String, String> parameters,Map<String, String> headers){
+    public HttpResponse post(String url,Map<String, String> parameters,Map<String, String> headers){
     	try {
 			return send(url, HttpUtil.mapToQueryString(parameters), headers);
 		} catch (Exception e) {
@@ -106,9 +119,9 @@ public class HttpsUtil {
      * POST获取网页源代码
      * @param url 请求url
      * @param parameters 传递参数集合，会解析为 key=value&key=value
-     * @return 网页源代码。若出错，返回null
+     * @return {@link HttpResponse}
      */
-    public String post(String url,Map<String, String> parameters){
+    public HttpResponse post(String url,Map<String, String> parameters){
     	try {
 			return send(url, HttpUtil.mapToQueryString(parameters), null);
 		} catch (Exception e) {
@@ -122,12 +135,12 @@ public class HttpsUtil {
     /**
      * 获取网页源代码
      * @param url 请求的url
-     * @param post POST要提交的数据。可为null，为不提交数据
+     * @param post POST要提交的数据。可为null，为不提交数据。若有POST数据，格式可为： a=1&b=2
      * @param headers header头
-     * @return 网页源代码
+     * @return {@link HttpResponse}
      * @throws Exception
      */
-    public static String send(String url,String post,Map<String, String> headers) throws Exception {
+    public HttpResponse send(String url,String post,Map<String, String> headers) throws Exception {
         SSLContext sc = SSLContext.getInstance("SSL");
         sc.init(null, new TrustManager[]{new TrustAnyTrustManager()}, new java.security.SecureRandom());
         URL console = new URL(url);
@@ -135,6 +148,8 @@ public class HttpsUtil {
         conn.setSSLSocketFactory(sc.getSocketFactory());
         conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Cookie", this.cookies);
+        
         if(post != null && post.length()>0){
         	headers.put("Content-Length", post.length()+"");
         }
@@ -173,6 +188,67 @@ public class HttpsUtil {
 				}
 			}
 		}
-		return sb.toString();
+		this.cookies=conn.getHeaderField("Set-Cookie");
+		
+		return makeContent(url, conn,sb.toString());
+    }
+    
+
+    /**
+     * 得到响应对象
+     * @param urlConnection
+     * @param content 网页内容
+     * @return 响应对象
+     * @throws IOException
+     */ 
+    private HttpResponse makeContent(String urlString, HttpURLConnection urlConnection, String content) throws IOException { 
+        HttpResponse httpResponser = new HttpResponse(); 
+        try { 
+            httpResponser.contentCollection = new Vector<String>(); 
+            String ecod = urlConnection.getContentEncoding(); 
+            if (ecod == null) 
+                ecod = this.encode; 
+            httpResponser.urlString = urlString; 
+            this.cookies=urlConnection.getHeaderField("Set-Cookie");
+            httpResponser.cookie=this.cookies;
+            httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
+            httpResponser.file = urlConnection.getURL().getFile(); 
+            httpResponser.host = urlConnection.getURL().getHost(); 
+            httpResponser.path = urlConnection.getURL().getPath(); 
+            httpResponser.port = urlConnection.getURL().getPort(); 
+            httpResponser.protocol = urlConnection.getURL().getProtocol(); 
+            httpResponser.query = urlConnection.getURL().getQuery(); 
+            httpResponser.ref = urlConnection.getURL().getRef(); 
+            httpResponser.userInfo = urlConnection.getURL().getUserInfo(); 
+            httpResponser.content = content;
+            httpResponser.contentEncoding = ecod; 
+            httpResponser.code = urlConnection.getResponseCode(); 
+            httpResponser.message = urlConnection.getResponseMessage(); 
+            httpResponser.contentType = urlConnection.getContentType(); 
+            httpResponser.method = urlConnection.getRequestMethod(); 
+            httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
+            httpResponser.readTimeout = urlConnection.getReadTimeout(); 
+            return httpResponser; 
+        } catch (IOException e) { 
+            throw e; 
+        } finally { 
+            if (urlConnection != null) 
+                urlConnection.disconnect(); 
+        } 
+    } 
+    
+    private static class TrustAnyTrustManager implements X509TrustManager {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[]{};
+        }
+    }
+    private static class TrustAnyHostnameVerifier implements HostnameVerifier {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
     }
 }
