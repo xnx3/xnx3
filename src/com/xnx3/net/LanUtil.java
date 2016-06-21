@@ -12,8 +12,11 @@ public class LanUtil {
 	/**
 	 * 判断这个局域网IP是否是可以访问的
 	 * @param ip (192.168.0.101)
-	 * @return boolean <li>true:可以访问
-	 * 				   <li>false:访问不通
+	 * @return boolean 
+	 * 				<ul>
+	 * 					<li>true:可以访问
+	 * 				    <li>false:访问不通
+	 * 				</ul>
 	 */
 	public boolean isUsedIPAddress(String ip) {                            
 		synchronized (this) {                                   

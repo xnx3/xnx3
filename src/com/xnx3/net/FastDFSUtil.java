@@ -29,13 +29,13 @@ import com.xnx3.bean.UploadBean;
 		boolean result=client.download("M00/07/65/CgAA-lVRp9-AYn-mAAPCLZlIvsE337.txt", "/Users/apple/Desktop/t/1.jar");
 		client.close();
  * </pre>
- * <br/><b>需</b>
- * <br/><i>fastdfs.jar</i>
- * <br/><i>commons-configuration-1.7.jar</i>
- * <br/><i>commons-collections-3.2.1.jar</i>
- * <br/><i>commons-io-1.3.2.jar</i>
- * <br/><i>commons-lang-2.5.jar</i>
- * <br/><i>commons-logging-1.2.jar</i>
+ * <br/>需
+ * <br/>fastdfs.jar
+ * <br/>commons-configuration-1.7.jar
+ * <br/>commons-collections-3.2.1.jar
+ * <br/>commons-io-1.3.2.jar
+ * <br/>commons-lang-2.5.jar
+ * <br/>commons-logging-1.2.jar
  * @author 管雷鸣
  */
 public class FastDFSUtil{
@@ -205,7 +205,7 @@ public class FastDFSUtil{
 	 * 		<li>使用之前需先开启，调用 {@link #open()}
 	 * 	</ul>
 	 * @param file_buff byte[]
-	 * @param fix_ext_name 文件后缀名,不包含"."
+	 * @param file_ext_name 文件后缀名,不包含"."
 	 * @return {@link UploadBean}
 	 * 			<ul>
 	 * 				<li>{@link UploadBean#isSuccess()}:判断是否上传成功

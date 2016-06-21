@@ -101,7 +101,7 @@ public class HttpsUtil {
     /**
      * POST方式获取网页源代码
      * @param url 请求url
-     * @param parameters 传递参数集合，会解析为 key=value&key=value
+     * @param parameters 传递参数集合，会解析为 "key=value&key=value"
      * @param headers header头
      * @return {@link HttpResponse}
      */
@@ -118,7 +118,7 @@ public class HttpsUtil {
     /**
      * POST获取网页源代码
      * @param url 请求url
-     * @param parameters 传递参数集合，会解析为 key=value&key=value
+     * @param parameters 传递参数集合，会解析为 "key=value&key=value"
      * @return {@link HttpResponse}
      */
     public HttpResponse post(String url,Map<String, String> parameters){
@@ -135,7 +135,7 @@ public class HttpsUtil {
     /**
      * 获取网页源代码
      * @param url 请求的url
-     * @param post POST要提交的数据。可为null，为不提交数据。若有POST数据，格式可为： a=1&b=2
+     * @param post POST要提交的数据。可为null，为不提交数据。若有POST数据，格式可为 "a=1&b=2"
      * @param headers header头
      * @return {@link HttpResponse}
      * @throws Exception
