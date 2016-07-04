@@ -5,7 +5,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Date;
+
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.http.ProtocolType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
+import com.aliyuncs.sts.model.v20150401.AssumeRoleRequest;
+import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse;
+import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse.Credentials;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 import com.xnx3.net.ossbean.PutResult;
@@ -32,6 +46,15 @@ public class OSSUtil {
      * <br/>(文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名)
      */
     public static String url = ""; 
+    /**
+     * STS使用
+     * <br/>目前只有"cn-hangzhou"这个region可用, 不要使用填写其他region的值
+     */
+    public static String region_cn_hangzhou = "cn-hangzhou";
+    /**
+     * 当前 STS API 版本
+     */
+    public static final String sta_api_version = "2015-04-01";
 	
     private static OSSClient ossClient;
     
@@ -125,9 +148,131 @@ public class OSSUtil {
 		return put(filePath, localPath, input);
 	}
 	
+	/**
+	 * 
+	 * @param roleArn 需要在 RAM 控制台上获取，如："acs:ram::1080155601000000:role/aliyunosstokengeneratorrole
+	 * @param roleSessionName 临时Token的会话名称，自己指定用于标识你的用户，主要用于审计，或者用于区分Token颁发给谁
+	 * 							<br/>但是注意RoleSessionName的长度和规则，不要有空格，只能有'-' '_' 字母和数字等字符
+	 * 							<br/>具体规则请参考API文档中的格式要求
+	 * 							<br/>如：alice-001
+	 * @param policy RAM和STS授权策略，详细参考 https://help.aliyun.com/document_detail/31867.html
+	 * @return 成功，返回 {@link Credentials} ，失败返回null
+	 */
+	public static Credentials createSTS(String roleArn,String roleSessionName,String policy){
+		String accessKeyId = OSSUtil.accessKeyId;
+	    String accessKeySecret = OSSUtil.accessKeySecret;
+	    // AssumeRole API 请求参数: RoleArn, RoleSessionName, Policy, and DurationSeconds
+	    // RoleArn 需要在 RAM 控制台上获取
+//	    String roleArn = "acs:ram::1080155601964967:role/aliyunosstokengeneratorrole";
+	    // RoleSessionName 是临时Token的会话名称，自己指定用于标识你的用户，主要用于审计，或者用于区分Token颁发给谁
+	    // 但是注意RoleSessionName的长度和规则，不要有空格，只能有'-' '_' 字母和数字等字符
+	    // 具体规则请参考API文档中的格式要求
+//		String roleSessionName = "alice-001";
+	    // 如何定制你的policy?
+//		    String policy = "{\n" +
+//		            "    \"Version\": \"1\", \n" +
+//		            "    \"Statement\": [\n" +
+//		            "        {\n" +
+//		            "            \"Action\": [\n" +
+//		            "                \"oss:GetBucket\", \n" +
+//		            "                \"oss:GetObject\" \n" +
+//		            "            ], \n" +
+//		            "            \"Resource\": [\n" +
+//		            "                \"acs:oss:*:*:*\"\n" +
+//		            "            ], \n" +
+//		            "            \"Effect\": \"Allow\"\n" +
+//		            "        }\n" +
+//		            "    ]\n" +
+//		            "}";
+	    // 此处必须为 HTTPS
+	    ProtocolType protocolType = ProtocolType.HTTPS;
+	    try {
+	    	final AssumeRoleResponse response = assumeRole(accessKeyId, accessKeySecret,roleArn, roleSessionName, policy, protocolType);
+	    	Credentials credentials = response.getCredentials();
+	    	System.out.println(credentials.toString());
+	    	System.out.println("Expiration: " + response.getCredentials().getExpiration());
+	    	System.out.println("Access Key Id: " + response.getCredentials().getAccessKeyId());
+	    	System.out.println("Access Key Secret: " + response.getCredentials().getAccessKeySecret());
+	    	System.out.println("Security Token: " + response.getCredentials().getSecurityToken());
+	    	return credentials;
+	    } catch (ClientException e) {
+	    	e.printStackTrace();
+	    	System.out.println("Failed to get a token.");
+	    	System.out.println("Error code: " + e.getErrCode());
+	    	System.out.println("Error message: " + e.getErrMsg());
+	    }
+	    return null;
+	}
+	static AssumeRoleResponse assumeRole(String accessKeyId, String accessKeySecret,String roleArn, String roleSessionName, String policy,ProtocolType protocolType) throws ClientException {
+		try {
+			// 创建一个 Aliyun Acs Client, 用于发起 OpenAPI 请求
+			IClientProfile profile = DefaultProfile.getProfile(region_cn_hangzhou, accessKeyId, accessKeySecret);
+			DefaultAcsClient client = new DefaultAcsClient(profile);
+			// 创建一个 AssumeRoleRequest 并设置请求参数
+			final AssumeRoleRequest request = new AssumeRoleRequest();
+			request.setVersion(sta_api_version);
+			request.setMethod(MethodType.POST);
+			request.setProtocol(protocolType);
+			request.setRoleArn(roleArn);
+			request.setRoleSessionName(roleSessionName);
+			request.setPolicy(policy);
+			// 发起请求，并得到response
+			final AssumeRoleResponse response = client.getAcsResponse(request);
+			return response;
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
+	
+	/**         QQ：798255396 
+     * 生成上传文件的URL 
+     * @param key  文件的object key，自己定义 
+     * @return URL 
+     */ 
+    public static URL getPutUrl(String key){ 
+
+           //初始化OSSClient 
+        OSSClient  clientOut = new OSSClient(endpoint, accessKeyId,  accessKeySecret); 
+        clientOut .createBucket(bucketName); 
+         //设置有效期 
+        Date expiration = new Date(new Date().getTime() + 3600 * 9000); 
+        // 创建请求 
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key); 
+        generatePresignedUrlRequest.setBucketName(bucketName); 
+        // HttpMethod为PUT 
+        generatePresignedUrlRequest.setMethod(HttpMethod.PUT); 
+        generatePresignedUrlRequest.setExpiration(expiration); 
+            //必须有 
+        generatePresignedUrlRequest.setContentType("image/jpeg"); 
+        // 生成签名的URL 
+        URL url = clientOut.generatePresignedUrl(generatePresignedUrlRequest);
+        return url; 
+    } 
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		//测试上传
-		PutResult pr = OSSUtil.put("jar/file/", "/jar_file/iw.jar");
-		System.out.println(pr);
+//		PutResult pr = OSSUtil.put("jar/file/", "/jar_file/iw.jar");
+//		System.out.println(pr);
+		
+//	    String policy = "{\n" +
+//        "    \"Version\": \"1\", \n" +
+//        "    \"Statement\": [\n" +
+//        "        {\n" +
+//        "            \"Action\": [\n" +
+//        "                \"oss:GetBucket\", \n" +
+//        "                \"oss:GetObject\" \n" +
+//        "            ], \n" +
+//        "            \"Resource\": [\n" +
+//        "                \"acs:oss:*:*:*\"\n" +
+//        "            ], \n" +
+//        "            \"Effect\": \"Allow\"\n" +
+//        "        }\n" +
+//        "    ]\n" +
+//        "}";
+////		createSTS("acs:ram::1080155601964967:role/aliyunosstokengeneratorrole", "alice-001", policy);
+//	    String a = "CAESqwMIARKAAbL+6C3YnZnsuw8hDOXQRSSVn863QhTTpEDd/RaiVlXIZ/iM24NQsB9RLEeKovXak2wElhZKGbmQwgSYSxZJApc93P8VrVO+UbbH03UrLVCjPXULFbeg//nInzL5BqRXhMV/DxYyrxbbVf19OrZat41bJggx77scWJn6RGvOOIsDGh1TVFMuQ3RZcEhtaFlqQXZCQzNZU0JnWDlWOHdxaCISMzU0NTU4NTY0NTg3NTkyOTk4KglhbGljZS0wMDEwk9nci9gqOgZSc2FNRDVCcQoBMRpsCgVBbGxvdxI2CgxBY3Rpb25FcXVhbHMSBkFjdGlvbhoeCg1vc3M6R2V0QnVja2V0Cg1vc3M6R2V0T2JqZWN0EisKDlJlc291cmNlRXF1YWxzEghSZXNvdXJjZRoPCg1hY3M6b3NzOio6KjoqShAxMDgwMTU1NjAxOTY0OTY3UgUyNjg0MloPQXNzdW1lZFJvbGVVc2VyYABqEjM1NDU1ODU2NDU4NzU5Mjk5OHIbYWxpeXVub3NzdG9rZW5nZW5lcmF0b3Jyb2xleKef1JfVzPUB";
+//	    System.out.println(a.length());
+		
+		System.out.println(getPutUrl("123"));
 	}
 }
