@@ -5,8 +5,10 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.IOUtils;
+
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ import java.util.List;
  */
 public class ConfigManagerUtil {
     private static HashMap hashMap = new HashMap();
-    private FileConfiguration config;
+     FileConfiguration config;
 
     private ConfigManagerUtil(String configFileName) {
         try {
@@ -37,14 +39,22 @@ public class ConfigManagerUtil {
         	e.printStackTrace();
         }
     }
-
+    
+    /**
+     * @param configFileName xml文件的文件名，如： xnx3Config.xml ，此文件在class的根目录
+     * @return
+     */
     public static ConfigManagerUtil getSingleton(String configFileName) {
         if (hashMap.get(configFileName) == null) {
             hashMap.put(configFileName, new ConfigManagerUtil(configFileName));
         }
         return (ConfigManagerUtil) hashMap.get(configFileName);
     }
-
+    
+    public FileConfiguration getFileConfiguration(){
+    	return this.config;
+    }
+    
     /**
      * 获取某个值 
      * @param path
@@ -98,12 +108,9 @@ public class ConfigManagerUtil {
     }
 
     public static void main(String[] args) {
-    	System.out.println(ConfigManagerUtil.getSingleton("systemConfig.xml").getList("useMessage"));
-    	
-//    	List<String> list = ConfigManager.getSingleton("systemConfig.xml").getList("logTypeList.type");
-//    	for (int i = 0; i < list.size(); i++) {
-//			System.out.println(list.get(i).toString());
-//		}
-    	
+    	Iterator it = ConfigManagerUtil.getSingleton("language.xml").getFileConfiguration().getKeys("chinese");
+    	while (it.hasNext()) {
+			System.out.println(it.next().toString());
+		}
     }
 }
