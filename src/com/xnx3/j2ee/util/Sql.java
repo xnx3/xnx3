@@ -1,9 +1,6 @@
 package com.xnx3.j2ee.util;
-import java.text.ParseException;
 import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 
@@ -17,8 +14,9 @@ public class Sql {
 	
 	/**
 	 * 查询字段支持的运算符
+	 * <pre><>:这个符号表示在……之间</pre>
 	 */
-	final static String[] COLUMN_GROUP = {">=","<=","=",">","<"};
+	final static String[] COLUMN_GROUP = {">=","<=","=",">","<","<>"};
 	
 	/**
 	 * 防止SQL注入的关键字
@@ -31,7 +29,7 @@ public class Sql {
 	private Page page;
 	private HttpServletRequest request;
 	private String groupBy = "";	//GROUP BY
-	
+
 	public Sql(HttpServletRequest request) {
 		this.request = request;
 		String ob = request.getParameter("orderBy");
@@ -50,12 +48,15 @@ public class Sql {
 	 * @param column 列名数组。只要在数组中的都会自动从request取出来加入where。
 	 * 						<b>数据表的字段名需要跟get/post传入的名字相同</b>
 	 * 						如列名为createTime，可为：createTime>  。如果只传入createTime，则会使用默认的LIKE模糊搜索
-	 * 						<li>支持的运算符：>=、<=、＝、>、<
-	 * 						<li>如果以下只是参数名字，则默认使用LIKE模糊搜索，如"username"，组合出来的SQL为：username LIKE '%value%'
-	 * 						<li>如果以下使用 "id="  组合出来的SQL为：id = 1234
-	 * 						<li>支持将时间（2016-02-18 00:00:00）自动转化为10位时间戳，列前需要加转换标示,如列为regtime，让其自动转换为10位时间戳参与SQL查询，则为regtime(date:yyyy-MM-dd hh:mm:ss)，后面的yyyy-MM-dd hh:mm:ss为get/post值传入的格式
-	 * 							<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如传入list.do?regtime=2016-02-18 00:00:00 ，则组合出的SQL为： regtime > 1455724800
-	 * 						<li>若为null，则直接忽略request跟column这两个参数
+	 * 						<ul>
+	 * 							<li>支持的运算符：>=、<=、＝、>、<、<>
+	 * 							<li>如果以下只是参数名字，则默认使用LIKE模糊搜索，如"username"，组合出来的SQL为：username LIKE '%value%'
+	 * 							<li>如果以下使用 "id="  组合出来的SQL为：id = 1234
+	 * 							<li>支持将时间（2016-02-18 00:00:00）自动转化为10位时间戳，列前需要加转换标示,如列为regtime，让其自动转换为10位时间戳参与SQL查询，则为regtime(date:yyyy-MM-dd hh:mm:ss)，后面的yyyy-MM-dd hh:mm:ss为get/post值传入的格式
+	 * 								<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如传入list.do?regtime=2016-02-18 00:00:00 ，则组合出的SQL为： regtime > 1455724800
+	 * 							<li>若为null，则直接忽略request跟column这两个参数
+	 * 							<li>支持查询某列两个值中间的数据，如查询id大于等于3且小于等于300之间的数，则setColumn("id<>")、 get传入两个参数：id_start=3 、id_end=300
+	 * 						</ul>
 	 * 						<br/><br/>如：<i>String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};</i>
 	 * @return 返回组合好的 where语句，如 WHERE a = '1' AND b = '2'，若没有，则返回 "" 空字符串。
 	 */
@@ -226,7 +227,20 @@ class SqlColumn{
 		for (int i = 0; i < Sql.COLUMN_GROUP.length; i++) {
 			if(groupColumn.indexOf(Sql.COLUMN_GROUP[i])>0){
 				this.operators = Sql.COLUMN_GROUP[i];
-				this.columnName = groupColumn.replace(this.operators, "");
+				if(this.operators.equals("<>")){
+					if(groupColumn.indexOf("_start")>-1){
+						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_start", "");
+						this.operators = ">=";
+					}else if (groupColumn.indexOf("_end")>-1) {
+						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_end", "");
+						this.operators = "<=";
+					}else{
+						System.out.println("传入的数据列检索数据有错："+groupColumn);
+					}
+				}else{
+					this.columnName = groupColumn.replace(this.operators, "");
+				}
+				
 				break;
 			}
 		}
