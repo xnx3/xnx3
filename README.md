@@ -11,27 +11,40 @@
 <br/>
 将指定文字发音读出：<br/>
 ```Java
-    new TTSUtil().speak("这是要读出的文字内容");
+    TTSUtil.speakByThread("这是要读出的文字内容");
 ```
 
 发送一条短信<br/>
 ```Java
-    SendPhoneMsgUtil.send("13011658091", "这是短信内容");
+    SMSUtil.send("17076012262", "这是短信内容");
 ```
   
 发送给123456@qq.com一封邮件<br/>
 ```Java
     MailUtil.sendMail("123456@qq.com", "这是邮件标题", "这是内容");
 ```
-<br/>  
 
 微信通过openid获取用户昵称<br/>
 ```Java
     WeiXinUtil.getUserInfo("openid").getNickname()
 ```
-<br/>  
 
-当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标<br/>
+播放本地的某个mp3文件<br/>
+```Java
+    new MP3Play("/music/asd.mp3").play();
+```
+
+通过https的超链接，获取其网页源代码<br/>
+```Java
+    new HttpsUtil().get("https://www.baidu.com").getContent();
+```
+
+友盟APP推送,根据用户的device_token,推送给某个用户<br/>
+```Java
+    UMPushUtil.unicast("device_token...........", "通知栏提示文字", "标题", "内容");
+```
+
+当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标[Demo下载](http://pan.baidu.com/s/1bpHR6Y7)<br/>
 ```Java
     Robot robot = new Robot();
     robot.setSourcePath(ImageDemo.class);
