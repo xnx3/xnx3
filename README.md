@@ -9,6 +9,14 @@
 [![ScreenCapture]](http://www.xnx3.com/software/xnx3/ScreenCapture/index.html)  
 [ScreenCapture]:http://www.xnx3.com/software/xnx3/ScreenCapture/sc.png "ScreenCapture.jar"  
 <br/>
+当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标[Demo下载](http://pan.baidu.com/s/1bpHR6Y7)<br/>
+```Java
+    Robot robot = new Robot();
+    robot.setSourcePath(ImageDemo.class);
+    List<CoordBean> list = robot.imageSearch("search.png", Robot.SIM_ACCURATE);
+    System.out.println("搜索到了"+list.size()+"个图片");
+```
+
 将指定文字发音读出：<br/>
 ```Java
     TTSUtil.speakByThread("这是要读出的文字内容");
@@ -44,14 +52,6 @@
     UMPushUtil.unicast("device_token...........", "通知栏提示文字", "标题", "内容");
 ```
 
-当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标[Demo下载](http://pan.baidu.com/s/1bpHR6Y7)<br/>
-```Java
-    Robot robot = new Robot();
-    robot.setSourcePath(ImageDemo.class);
-    List<CoordBean> list1 = robot.imageSearch("search.png", Robot.SIM_ACCURATE);
-    System.out.println("搜索到了"+list.size()+"个图片");
-```
-<br/>  
 
 ## Windows旧版本Com类，鼠标键盘模拟、找图找色。已不建议使用，推荐使用[Robot类](http://www.xnx3.com/software/xnx3/doc/com/xnx3/robot/Robot.html)
 * [简单使用](http://www.xnx3.com/doc/j2se_util/20150209/127.html)
