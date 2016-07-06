@@ -26,6 +26,9 @@ import com.xnx3.net.ossbean.PutResult;
 
 /**
  * aliyun OSS
+ * <pre>
+ * 		//加入配置文件 src/xnx3Config.xml  ，配置其aliyunOSS节点的参数。
+ * </pre>
  * <br><b>需导入</b> 
  * <br/>aliyun-sdk-oss-2.2.3.jar
  * <br/>commons-codec-1.9.jar

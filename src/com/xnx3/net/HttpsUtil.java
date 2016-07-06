@@ -65,6 +65,7 @@ public class HttpsUtil {
 	public static void main(String[] args) {
 		HttpsUtil h = new HttpsUtil();
 		System.out.println(h.get("https://www.baidu.com"));
+		new HttpsUtil().get("https://www.baidu.com").getContent();
 	}
 	
 	

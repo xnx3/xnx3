@@ -10,6 +10,9 @@ import push.ios.IOSUnicast;
 /**
  * 友盟推送
  * <br/>文档：http://dev.umeng.com/push/android/api-doc
+ * <pre>
+ * 		//加入配置文件 src/xnx3Config.xml  ，配置其umengPush节点的参数。
+ * </pre>
  * <br/><b/>需</b>
  * <br/>commons-configuration-1.7.jar
  * <br/>commons-collections-3.2.1.jar
@@ -17,7 +20,6 @@ import push.ios.IOSUnicast;
  * <br/>commons-lang-2.5.jar
  * <br/>commons-logging-1.2.jar
  * <br/>umpush.jar
- * <br/>短信平台QQ:921153866
  * @author 管雷鸣
  */
 public class UMPushUtil {
@@ -47,7 +49,7 @@ public class UMPushUtil {
 //			e.printStackTrace();
 //		}
 		
-		unicast("test1111111111111111111111111111111111111111", "测试啊", "aaaa", "dsasdasd");
+		UMPushUtil.unicast("device_token...........", "通知栏提示文字", "标题", "内容");
 	}
 	
 	/**

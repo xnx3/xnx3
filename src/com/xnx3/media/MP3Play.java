@@ -38,7 +38,6 @@ public class MP3Play {
     }
  
     public static void main(String[] args) throws FileNotFoundException, JavaLayerException{
-        MP3Play mp3 = new MP3Play("/music/asd.mp3");
-		mp3.play();
+        new MP3Play("/music/asd.mp3").play();
     }
 }
