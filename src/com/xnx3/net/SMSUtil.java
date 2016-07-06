@@ -1,33 +1,33 @@
-package com.xnx3;
+package com.xnx3.net;
 
 import java.io.UnsupportedEncodingException;
 
+import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
-import com.xnx3.net.SMSUtil;
+import com.xnx3.MD5Util;
 
 /**
- * 发送短信类
+ * 发送手机短信
  * <br/><b>需配置src下的systemConfig.xml文件的sms节点</b>
  * <br/>使用：
  * <pre>
- * 		SendPhoneMsgUtil.send("13011658091", "这里是发送信息的内容")
+ * 		SMSUtil.send("17076012262", "这里是发送信息的内容")
  * </pre>
  * 发送短信若失败，会继续执行发送。连续发送三次，若都失败，返回失败原因。
  * <br/><b/>需</b>
- * <br/>commons-configuration-1.7.jar
- * <br/>commons-collections-3.2.1.jar
- * <br/>commons-io-1.3.2.jar
- * <br/>commons-lang-2.5.jar
- * <br/>commons-logging-1.2.jar
- * <br/>短信平台QQ:921153866
+ * <br/><i>commons-configuration-1.7.jar</i>
+ * <br/><i>commons-collections-3.2.1.jar</i>
+ * <br/><i>commons-io-1.3.2.jar</i>
+ * <br/><i>commons-lang-2.5.jar</i>
+ * <br/><i>commons-logging-1.2.jar</i>
+ * <br/>短信平台开通联系QQ:921153866
  * @author 管雷鸣
- * @deprecated 建议使用 {@link SMSUtil}
  *
  */
-public class SendPhoneMsgUtil {
-	private static String uid="80...";	//用户ID
+public class SMSUtil {
+	private static String uid="80...";				//用户ID
 	private static String requestIp = "210.5.158.31";	//api请求的ip地址
-	private static String passwordMd5;					//MD5加密后的代码＋密码
+	private static String passwordMd5;			//MD5加密后的代码＋密码
 	
 	static{
 		uid = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("sms.uid");
@@ -38,7 +38,7 @@ public class SendPhoneMsgUtil {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(SendPhoneMsgUtil.send("13011658091", "testa"));
+		System.out.println(SMSUtil.send("17076012262", "testa"));
 	}
 	
 	/**
@@ -52,8 +52,8 @@ public class SendPhoneMsgUtil {
 		String result=null;
 		
 		if(passwordMd5 == null){
-			System.out.println("请先执行  SendPhoneMsgUtil.setUserPassword(); 设置账号密码");
-			return "请先执行  SendPhoneMsgUtil.setUserPassword(); 设置账号密码";
+			System.out.println("请先执行  SMSUtil.setUserPassword(); 设置账号密码");
+			return "请先执行  SMSUtil.setUserPassword(); 设置账号密码";
 		}
 		
 		try {
