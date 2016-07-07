@@ -101,6 +101,10 @@
 			httpclient-***.jar
 			httpcore-***.jar
 			jdom-***.jar
+			
+			若使用STS三方授权，还需加入
+			aliyun-java-sdk-sts-***.jar
+			aliyun-java-sdk-core-***.jar
 	-->
 	<aliyunOSS>
 		<!-- oss-cn-qingdao.aliyuncs.com -->
@@ -111,8 +115,10 @@
 		<accessKeySecret>aaaaaaaa</accessKeySecret>
 		<!-- BucketName -->
 		<bucketName>aaaaa</bucketName>
-		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名。可为空 -->
+		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 ，可为空，若为空则会根据以上配置自动拼接生成url -->
 		<url></url>
+		<!-- STS 授权三方控制，临时访问凭证 在阿里云控制台－访问控制－角色管理获取，详情参考 http://www.xnx3.com/software/iw/20160707/957.html -->
+		<roleArn>acs:ram::1080155601964922:role/ceshiossarmrole</roleArn>
 	</aliyunOSS>
 	
 	<!-- 

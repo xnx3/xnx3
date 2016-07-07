@@ -5,12 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Date;
-
-import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
@@ -44,6 +39,8 @@ public class OSSUtil {
 	public static String accessKeyId = "";
 	public static String accessKeySecret = "";
 	public static String bucketName = "";
+	public static String roleArn = "";
+	
     /**
      * 处理过的OSS外网域名,如 http://xnx3.oss-cn-qingdao.aliyuncs.com/
      * <br/>(文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名)
@@ -66,6 +63,7 @@ public class OSSUtil {
 		accessKeyId = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.accessKeyId");
 		accessKeySecret = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.accessKeySecret");
 		bucketName = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.bucketName");
+		roleArn = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.roleArn");
 		
 		url = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.url");
 		if(url == null || url.length() == 0){
@@ -152,16 +150,37 @@ public class OSSUtil {
 	}
 	
 	/**
-	 * 
-	 * @param roleArn 需要在 RAM 控制台上获取，如："acs:ram::1080155601000000:role/aliyunosstokengeneratorrole
+	 * STS 授权给第三方上传，获得临时访问凭证
 	 * @param roleSessionName 临时Token的会话名称，自己指定用于标识你的用户，主要用于审计，或者用于区分Token颁发给谁
-	 * 							<br/>但是注意RoleSessionName的长度和规则，不要有空格，只能有'-' '_' 字母和数字等字符
+	 * 							<br/>注意RoleSessionName的长度和规则，不要有空格，只能有'-' '_' 字母和数字等字符
 	 * 							<br/>具体规则请参考API文档中的格式要求
 	 * 							<br/>如：alice-001
-	 * @param policy RAM和STS授权策略，详细参考 https://help.aliyun.com/document_detail/31867.html
+	 * @param policy RAM和STS授权策略，详细参考 <a href="https://help.aliyun.com/document_detail/31867.html">https://help.aliyun.com/document_detail/31867.html</a>
+	 * 			<pre>
+	 * 				{
+	 * 					"Version": "1",
+	 * 					"Statement": [
+	 * 						{
+	 * 							"Action": [
+	 * 								"oss:PutObject", 
+	 * 								"oss:GetObject"
+	 * 							], 
+	 * 							"Resource": [
+	 * 								"acs:oss:*:*:*"
+	 * 							], 
+	 * 							"Effect": "Allow",
+	 * 							"Condition": {
+	 * 								"IpAddress": {
+	 * 									"acs:SourceIp": "192.168.0.*"	//指定ip网段,支持*通配
+	 * 								}
+	 * 							}
+	 * 						}
+	 * 					]
+	 * 				}
+	 * 			</pre>
 	 * @return 成功，返回 {@link Credentials} ，失败返回null
 	 */
-	public static Credentials createSTS(String roleArn,String roleSessionName,String policy){
+	public static Credentials createSTS(String roleSessionName,String policy){
 		String accessKeyId = OSSUtil.accessKeyId;
 	    String accessKeySecret = OSSUtil.accessKeySecret;
 	    // AssumeRole API 请求参数: RoleArn, RoleSessionName, Policy, and DurationSeconds
@@ -190,13 +209,8 @@ public class OSSUtil {
 	    // 此处必须为 HTTPS
 	    ProtocolType protocolType = ProtocolType.HTTPS;
 	    try {
-	    	final AssumeRoleResponse response = assumeRole(accessKeyId, accessKeySecret,roleArn, roleSessionName, policy, protocolType);
+	    	AssumeRoleResponse response = assumeRole(accessKeyId, accessKeySecret,roleArn, roleSessionName, policy, protocolType);
 	    	Credentials credentials = response.getCredentials();
-	    	System.out.println(credentials.toString());
-	    	System.out.println("Expiration: " + response.getCredentials().getExpiration());
-	    	System.out.println("Access Key Id: " + response.getCredentials().getAccessKeyId());
-	    	System.out.println("Access Key Secret: " + response.getCredentials().getAccessKeySecret());
-	    	System.out.println("Security Token: " + response.getCredentials().getSecurityToken());
 	    	return credentials;
 	    } catch (ClientException e) {
 	    	e.printStackTrace();
@@ -227,55 +241,36 @@ public class OSSUtil {
 		}
 	}
 	
-	/**         QQ：798255396 
-     * 生成上传文件的URL 
-     * @param key  文件的object key，自己定义 
-     * @return URL 
-     */ 
-    public static URL getPutUrl(String key){ 
-
-           //初始化OSSClient 
-        OSSClient  clientOut = new OSSClient(endpoint, accessKeyId,  accessKeySecret); 
-        clientOut .createBucket(bucketName); 
-         //设置有效期 
-        Date expiration = new Date(new Date().getTime() + 3600 * 9000); 
-        // 创建请求 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key); 
-        generatePresignedUrlRequest.setBucketName(bucketName); 
-        // HttpMethod为PUT 
-        generatePresignedUrlRequest.setMethod(HttpMethod.PUT); 
-        generatePresignedUrlRequest.setExpiration(expiration); 
-            //必须有 
-        generatePresignedUrlRequest.setContentType("image/jpeg"); 
-        // 生成签名的URL 
-        URL url = clientOut.generatePresignedUrl(generatePresignedUrlRequest);
-        return url; 
-    } 
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		//测试上传
 //		PutResult pr = OSSUtil.put("jar/file/", "/jar_file/iw.jar");
 //		System.out.println(pr);
 		
-//	    String policy = "{\n" +
-//        "    \"Version\": \"1\", \n" +
-//        "    \"Statement\": [\n" +
-//        "        {\n" +
-//        "            \"Action\": [\n" +
-//        "                \"oss:GetBucket\", \n" +
-//        "                \"oss:GetObject\" \n" +
-//        "            ], \n" +
-//        "            \"Resource\": [\n" +
-//        "                \"acs:oss:*:*:*\"\n" +
-//        "            ], \n" +
-//        "            \"Effect\": \"Allow\"\n" +
-//        "        }\n" +
-//        "    ]\n" +
-//        "}";
-////		createSTS("acs:ram::1080155601964967:role/aliyunosstokengeneratorrole", "alice-001", policy);
-//	    String a = "CAESqwMIARKAAbL+6C3YnZnsuw8hDOXQRSSVn863QhTTpEDd/RaiVlXIZ/iM24NQsB9RLEeKovXak2wElhZKGbmQwgSYSxZJApc93P8VrVO+UbbH03UrLVCjPXULFbeg//nInzL5BqRXhMV/DxYyrxbbVf19OrZat41bJggx77scWJn6RGvOOIsDGh1TVFMuQ3RZcEhtaFlqQXZCQzNZU0JnWDlWOHdxaCISMzU0NTU4NTY0NTg3NTkyOTk4KglhbGljZS0wMDEwk9nci9gqOgZSc2FNRDVCcQoBMRpsCgVBbGxvdxI2CgxBY3Rpb25FcXVhbHMSBkFjdGlvbhoeCg1vc3M6R2V0QnVja2V0Cg1vc3M6R2V0T2JqZWN0EisKDlJlc291cmNlRXF1YWxzEghSZXNvdXJjZRoPCg1hY3M6b3NzOio6KjoqShAxMDgwMTU1NjAxOTY0OTY3UgUyNjg0MloPQXNzdW1lZFJvbGVVc2VyYABqEjM1NDU1ODU2NDU4NzU5Mjk5OHIbYWxpeXVub3NzdG9rZW5nZW5lcmF0b3Jyb2xleKef1JfVzPUB";
-//	    System.out.println(a.length());
+		//测试 STS 授权三方上传
+		String policy = "{\n" +
+		"    \"Version\": \"1\", \n" +
+		"    \"Statement\": [\n" +
+		"        {\n" +
+		"            \"Action\": [\n" +
+		"                \"oss:GetBucket\", \n" +
+		"                \"oss:GetObject\" \n" +
+		"            ], \n" +
+		"            \"Resource\": [\n" +
+		"                \"acs:oss:*:*:*\"\n" +
+		"            ], \n" +
+		"            \"Effect\": \"Allow\"\n" +
+		"        }\n" +
+		"    ]\n" +
+		"}";
+		Credentials credentials = OSSUtil.createSTS("userid123", policy);
+		System.out.println(credentials != null ? "成功":"失败");
+		if(credentials != null){
+			System.out.println("Expiration: " + credentials.getExpiration());
+			System.out.println("Access Key Id: " + credentials.getAccessKeyId());
+			System.out.println("Access Key Secret: " + credentials.getAccessKeySecret());
+			System.out.println("Security Token: " + credentials.getSecurityToken());
+		}
 		
-		System.out.println(getPutUrl("123"));
 	}
 }
