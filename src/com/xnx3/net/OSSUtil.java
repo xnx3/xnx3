@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import com.aliyun.oss.OSSClient;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
@@ -69,7 +71,12 @@ public class OSSUtil {
 		if(url == null || url.length() == 0){
 			url = bucketName+"."+endpoint;
 		}
-		url = "http://"+url+"/";
+		//判断url前面是否加了http://
+		if(url.indexOf("://") == -1){
+			url = "http://"+url;
+		}
+		//末尾加/
+		url = url+"/";
 	}
 	
 	/**
@@ -241,6 +248,32 @@ public class OSSUtil {
 		}
 	}
 	
+	/**
+	 * 以字符串创建文件
+	 * @param path 上传后的文件所在OSS的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文件内容
+	 * @param encode 文件编码，如：UTF-8 
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public static PutResult putStringFile(String path, String text, String encode){
+		try {
+			return put(path, new ByteArrayInputStream(text.getBytes(encode)));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * 以字符串创建文件，创建的文件编码为UTF-8
+	 * @param path 上传后的文件所在OSS的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文件内容
+	 * @param encode 文件编码，如：UTF-8 
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public static PutResult putStringFile(String path, String text){
+		return putStringFile(path, text, "UTF-8");
+	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		//测试上传
