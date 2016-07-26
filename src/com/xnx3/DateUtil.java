@@ -38,7 +38,7 @@ public class DateUtil {
 	 * @return 转换后的日期。如 2016-01-18 11:11:11
 	 * @throws NotReturnValueException
 	 */
-	public String dateFormat(long linuxTime,String format) throws NotReturnValueException{
+	public static String dateFormat(long linuxTime,String format) throws NotReturnValueException{
 		int linuxTimeLength=(linuxTime+"").length();
 		if(linuxTime==0||!(linuxTimeLength==10||linuxTimeLength==13)){
 			throw new NotReturnValueException("传入的linux时间戳长度错误！当前传入的时间戳："+linuxTime+",请传入10或者13位的时间戳");
@@ -63,6 +63,19 @@ public class DateUtil {
 	 */
 	public String dateFormat(long linuxTime) throws NotReturnValueException{
 		return dateFormat(linuxTime, FORMAT_DEFAULT);
+	}
+	
+	/**
+	 * 获取当前时间
+	 * @param format 生成的格式化时间，如 yyyy-MM-dd HH:mm:ss
+	 * @return 当前的格式化好的时间
+	 */
+	public static String currentDate(String format){
+		if(format==null||format.length()==0){
+			format=FORMAT_DEFAULT;
+		}
+		
+		return new SimpleDateFormat(format).format(new Date());
 	}
 	
 	/**
