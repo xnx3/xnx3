@@ -304,13 +304,13 @@ public class HttpUtil {
             httpResponser.method = urlConnection.getRequestMethod(); 
             httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
             httpResponser.readTimeout = urlConnection.getReadTimeout(); 
-            return httpResponser; 
         } catch (IOException e) { 
-            throw e; 
+        	httpResponser.code = 404;
         } finally { 
             if (urlConnection != null) 
                 urlConnection.disconnect(); 
         } 
+        return httpResponser; 
     } 
     
     /**
