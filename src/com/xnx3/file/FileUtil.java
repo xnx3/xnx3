@@ -49,7 +49,7 @@ public class FileUtil {
 			BufferedReader xnx3_reader=new BufferedReader(new InputStreamReader(new FileInputStream(file),encode));
 			String date=null;
 			while((date=xnx3_reader.readLine())!=null){
-				xnx3_content.append(date);
+				xnx3_content.append(date+"\n");
 			}
 			xnx3_reader.close();
 		}catch (Exception e) {
