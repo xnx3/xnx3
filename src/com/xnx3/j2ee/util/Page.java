@@ -36,6 +36,8 @@ public class Page{
 	private boolean haveUpPage;		//是否还有上一页
 	private boolean currentLastPage;	//当前是否是最后一页
 	private boolean currentFirstPage;	//当前是否是首页，第一页
+	private int upPageNumber;	//上一页的编号
+	private int nextPageNumber;	//上一页的编号
 	private List<TagA> upList;	//向上的list分页标签
 	private List<TagA> nextList;	//向下的分页list标签
 	
@@ -102,6 +104,26 @@ public class Page{
 	}
 	
 	/**
+	 * 创建Page对象，如果不是B/S，可以使用此创建
+	 * @param allRecordNumber 共多少条
+	 * @param everyNumber 每页多少条
+	 * @return
+	 */
+	public Page(int allRecordNumber , int everyNumber){
+		upList = new ArrayList<TagA>();
+		nextList = new ArrayList<TagA>();
+		this.allRecordNumber = allRecordNumber;
+		this.everyNumber = everyNumber;
+		
+		//计算一共有多少页，最后一页是第几页
+		if(allRecordNumber == 0){
+			this.lastPageNumber = 1;
+		}else{
+			this.lastPageNumber = (int) Math.ceil((float)allRecordNumber/everyNumber);
+		}
+	}
+	
+	/**
 	 * 获取最后一页的链接URL
 	 * @return
 	 */
@@ -163,6 +185,9 @@ public class Page{
 	 * @param url
 	 */
 	private void setUrl(HttpServletRequest request) {
+		if(request == null){
+			this.url = "";
+		}
 		String url = "http://" + request.getServerName(); //服务器地址  
 		int port = request.getServerPort();	//端口号
 		if(port != 80){
@@ -175,6 +200,15 @@ public class Page{
 			url +="?"+params;
 		}
 		
+		setUrlByStringUrl(url);
+	}
+	
+	/**
+	 * 传入当前页面的完整url（会自动过滤掉当前第几页的参数，以方便生成上一页、下一页等等链接）
+	 * <br/>若是bs应用，可直接使用 {@link #setUrl(HttpServletRequest)} 传入request，会全自动生成
+	 * @param url 生成的首页、上一页等链接地址的URL前缀，如 http://aaa.xnx3.com/index.php?id=3&pageCurrent=5&status=4
+	 */
+	public void setUrlByStringUrl(String url) {
 		String ur = null;
 		if(url!=null&&url.indexOf(CURRENTPAGENAME)>0){
 			//传入的参数有当前页，需要吧currentPage这个参数给过滤掉
@@ -193,6 +227,7 @@ public class Page{
 		}
 		this.url = url;
 	}
+	
 	
 	/**
 	 * 获取limit查询开始的数字
@@ -215,6 +250,43 @@ public class Page{
 	 */
 	public int getCurrentPageNumber() {
 		return currentPageNumber;
+	}
+	/**
+	 * 设置当前第几页
+	 * 此必须是设置了 {@link #setUrlByStringUrl(String)}之后才可以调用此方法
+	 * @return
+	 */
+	public void setCurrentPageNumber(int currentPageNumber) {
+		this.currentPageNumber = currentPageNumber;
+		
+		this.limitStart = (this.currentPageNumber-1)*this.everyNumber;	//开始的limit
+		
+		this.lastPage=generateUrl(lastPageNumber);	//生成尾页url
+		this.firstPage=generateUrl(1);	//生成首页，第一页URL
+		
+		//上一页的链接URL
+		if(currentPageNumber>1){
+			this.upPage = generateUrl(currentPageNumber-1);
+			this.upPageNumber = currentPageNumber-1;
+		}else{
+			this.upPage = this.firstPage;
+			this.upPageNumber = 1;
+		}
+		
+		//生成下一页的URL
+		if(currentPageNumber<lastPageNumber){
+			this.nextPage=generateUrl(currentPageNumber+1);
+			this.nextPageNumber = currentPageNumber+1;
+		}else{
+			this.nextPage=this.lastPage;
+			this.nextPageNumber = this.lastPageNumber;
+		}
+		
+		this.haveNextPage = currentPageNumber<lastPageNumber;	//是否还有下一页
+		this.haveUpPage = currentPageNumber>1;		//是否还有上一页
+		
+		this.currentFirstPage = currentPageNumber == 1;		//当前页是否是第一页
+		this.currentLastPage = currentPageNumber == this.lastPageNumber;		//当前页是否是最后一页
 	}
 	
 	/**
@@ -285,6 +357,49 @@ public class Page{
 		}
 		
 		return upList;
+	}
+	
+	/**
+	 * 获取上一页的页面编号
+	 * @return
+	 */
+	public int getUpPageNumber() {
+		return upPageNumber;
+	}
+
+	/**
+	 * 获取下一页的页面编号
+	 * @return
+	 */
+	public int getNextPageNumber() {
+		return nextPageNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "Page [getLastPage()=" + getLastPage() + ", getFirstPage()="
+				+ getFirstPage() + ", getNextPage()=" + getNextPage()
+				+ ", isHaveNextPage()=" + isHaveNextPage()
+				+ ", isHaveUpPage()=" + isHaveUpPage() + ", getUpPage()="
+				+ getUpPage() + ", getLimitStart()=" + getLimitStart()
+				+ ", getAllRecordNumber()=" + getAllRecordNumber()
+				+ ", getCurrentPageNumber()=" + getCurrentPageNumber()
+				+ ", getEveryNumber()=" + getEveryNumber()
+				+ ", getLastPageNumber()=" + getLastPageNumber()
+				+ ", isCurrentLastPage()=" + isCurrentLastPage()
+				+ ", isCurrentFirstPage()=" + isCurrentFirstPage()
+				+ ", getNextList()=" + getNextList() + ", getUpList()="
+				+ getUpList() + "]";
+	}
+
+	
+	
+	public static void main(String[] args) {
+		Page page = new Page(100, 10);
+		page.setUrlByStringUrl("http://www.baidu.com");
+		page.setCurrentPageNumber(2);
+		
+		System.out.println(page.toString());
 	}
 	
 }
