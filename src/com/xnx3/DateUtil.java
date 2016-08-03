@@ -31,6 +31,23 @@ public class DateUtil {
 		return time;
 	}
 	
+
+	/**
+	 * 将Linux时间戳变为文字描述的时间
+	 * @param linuxTime Linux时间戳，10位
+	 * @param format 转换格式 ,若不填，默认为yyyy-MM-dd hh:mm:ss {@link #FORMAT_DEFAULT}
+	 * @return 转换后的日期。如 2016-01-18 11:11:11
+	 */
+	public static String intToString(int linuxTime,String format){
+		try {
+			return dateFormat(linuxTime, format);
+		} catch (NotReturnValueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return linuxTime+"";
+		}
+	}
+	
 	/**
 	 * 将Linux时间戳变为文字描述的时间
 	 * @param linuxTime Linux时间戳，10位或者13位
