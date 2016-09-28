@@ -84,16 +84,20 @@ public class Page{
 		
 		//上一页的链接URL
 		if(currentPage>1){
-			this.upPage = generateUrl(currentPage-1);
+			this.upPageNumber = currentPage-1;
+			this.upPage = generateUrl(this.upPageNumber);
 		}else{
+			this.upPageNumber = 1;
 			this.upPage = this.firstPage;
 		}
 		
 		//生成下一页的URL
 		if(currentPage<lastPageNumber){
-			this.nextPage=generateUrl(currentPage+1);
+			this.nextPageNumber = currentPage+1;
+			this.nextPage=generateUrl(this.nextPageNumber);
 		}else{
 			this.nextPage=this.lastPage;
+			this.nextPageNumber = this.lastPageNumber;
 		}
 		
 		this.haveNextPage = currentPage<lastPageNumber;	//是否还有下一页
@@ -258,6 +262,9 @@ public class Page{
 	 */
 	public void setCurrentPageNumber(int currentPageNumber) {
 		this.currentPageNumber = currentPageNumber;
+		if(this.currentPageNumber == 0){
+			this.currentPageNumber = 1;
+		}
 		
 		this.limitStart = (this.currentPageNumber-1)*this.everyNumber;	//开始的limit
 		
@@ -265,18 +272,18 @@ public class Page{
 		this.firstPage=generateUrl(1);	//生成首页，第一页URL
 		
 		//上一页的链接URL
-		if(currentPageNumber>1){
-			this.upPage = generateUrl(currentPageNumber-1);
-			this.upPageNumber = currentPageNumber-1;
+		if(this.currentPageNumber>1){
+			this.upPageNumber = this.currentPageNumber-1;
+			this.upPage = generateUrl(this.upPageNumber);
 		}else{
 			this.upPage = this.firstPage;
 			this.upPageNumber = 1;
 		}
 		
 		//生成下一页的URL
-		if(currentPageNumber<lastPageNumber){
-			this.nextPage=generateUrl(currentPageNumber+1);
-			this.nextPageNumber = currentPageNumber+1;
+		if(this.currentPageNumber<lastPageNumber){
+			this.nextPageNumber = this.currentPageNumber+1;
+			this.nextPage=generateUrl(this.nextPageNumber);
 		}else{
 			this.nextPage=this.lastPage;
 			this.nextPageNumber = this.lastPageNumber;
@@ -329,6 +336,7 @@ public class Page{
 				TagA a = new TagA();
 				a.setHref(generateUrl(pageNum));
 				a.setTitle(pageNum+"");
+				a.setPageNumber(pageNum);
 				nextList.add(a);
 			}else{
 				break;
@@ -350,6 +358,7 @@ public class Page{
 				TagA a = new TagA();
 				a.setHref(generateUrl(pageNum));
 				a.setTitle(pageNum+"");
+				a.setPageNumber(pageNum);
 				upList.add(0,a);
 			}else{
 				break;
@@ -375,9 +384,21 @@ public class Page{
 		return nextPageNumber;
 	}
 
+
 	@Override
 	public String toString() {
-		return "Page [getLastPage()=" + getLastPage() + ", getFirstPage()="
+		return "Page [limitStart=" + limitStart + ", url=" + url
+				+ ", allRecordNumber=" + allRecordNumber
+				+ ", currentPageNumber=" + currentPageNumber + ", everyNumber="
+				+ everyNumber + ", lastPageNumber=" + lastPageNumber
+				+ ", nextPage=" + nextPage + ", upPage=" + upPage
+				+ ", lastPage=" + lastPage + ", firstPage=" + firstPage
+				+ ", haveNextPage=" + haveNextPage + ", haveUpPage="
+				+ haveUpPage + ", currentLastPage=" + currentLastPage
+				+ ", currentFirstPage=" + currentFirstPage + ", upPageNumber="
+				+ upPageNumber + ", nextPageNumber=" + nextPageNumber
+				+ ", upList=" + upList + ", nextList=" + nextList
+				+ ", getLastPage()=" + getLastPage() + ", getFirstPage()="
 				+ getFirstPage() + ", getNextPage()=" + getNextPage()
 				+ ", isHaveNextPage()=" + isHaveNextPage()
 				+ ", isHaveUpPage()=" + isHaveUpPage() + ", getUpPage()="
@@ -389,15 +410,14 @@ public class Page{
 				+ ", isCurrentLastPage()=" + isCurrentLastPage()
 				+ ", isCurrentFirstPage()=" + isCurrentFirstPage()
 				+ ", getNextList()=" + getNextList() + ", getUpList()="
-				+ getUpList() + "]";
+				+ getUpList() + ", getUpPageNumber()=" + getUpPageNumber()
+				+ ", getNextPageNumber()=" + getNextPageNumber() + "]";
 	}
 
-	
-	
 	public static void main(String[] args) {
-		Page page = new Page(100, 10);
-		page.setUrlByStringUrl("http://www.baidu.com");
-		page.setCurrentPageNumber(2);
+		Page page = new Page(11, 10);
+		page.setUrlByStringUrl("");
+		page.setCurrentPageNumber(1);
 		
 		System.out.println(page.toString());
 	}

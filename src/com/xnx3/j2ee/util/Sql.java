@@ -1,5 +1,7 @@
 package com.xnx3.j2ee.util;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
@@ -16,7 +18,7 @@ public class Sql {
 	 * 查询字段支持的运算符
 	 * <pre><>:这个符号表示在……之间</pre>
 	 */
-	final static String[] COLUMN_GROUP = {">=","<=","=",">","<","<>"};
+	final static String[] COLUMN_GROUP = {">=","<=","=","<>",">","<"};
 	
 	/**
 	 * 防止SQL注入的关键字
@@ -61,39 +63,171 @@ public class Sql {
 	 * @return 返回组合好的 where语句，如 WHERE a = '1' AND b = '2'，若没有，则返回 "" 空字符串。
 	 */
 	public String setSearchColumn(String[] column){
-		if(column!=null){
+		if(column != null){
+			//先将自定义设置的，搜索哪些列，判断出来，放入list，以供使用
+//			List<SqlColumn> columnList = new ArrayList<SqlColumn>();
+			Map<String, SqlColumn> columnMap = new HashMap<String, SqlColumn>();		//sql数据表的列名  －>  SqlColumn
+			String columns = ",";
+			for (int i = 0; i < column.length; i++) {
+				SqlColumn sqlColumn = new SqlColumn(column[i]);
+				columnMap.put(sqlColumn.getColumnName(), sqlColumn);
+				columns = columns +sqlColumn.getColumnName() + ",";
+			}
+			
+			//找出传入的参数，哪些参数是有效的，将有效的加入where组合
 			Enumeration<String> p = request.getParameterNames();
 			while(p.hasMoreElements()){
 				String name = p.nextElement();
-				for (int i = 0; i < column.length; i++) {
-					SqlColumn sqlColumn = new SqlColumn(column[i]);
+				String sqltable_column_name = name.replace("_start", "").replace("_end", "");	//使获取到的，跟数据表的列名一样，以便判断
+				
+				//判断此传入的参数名，是否是配置里面指定有效的参数名
+				if(columns.indexOf(","+sqltable_column_name+",") > -1){
+					SqlColumn sc = columnMap.get(sqltable_column_name);
 					
-					if(sqlColumn.getColumnName().equals(name)){
-						String value = inject(request.getParameter(name));
-						if(value.length()>0){
-							if(sqlColumn.getDateFormat()!=null){
-								//将value转换为10位的时间戳
-								value = ""+DateUtil.StringToInt(value, sqlColumn.getDateFormat());
+					//如果是大于等于 <> ，区间运算符，查询两者之间，单独判断
+					if(sc.getOperators() != null && sc.getOperators().equals("<>")){
+						if(name.indexOf("_start") > -1){
+							String start = request.getParameter(name);
+							if(start != null && start.length() > 0){
+								start = inject(start);
+								if(start.length() > 0){
+									if(sc.getDateFormat()!=null){
+										//将value转换为10位的时间戳
+										start = ""+DateUtil.StringToInt(start, sc.getDateFormat());
+									}
+									
+									if(where.equals("")){
+										where=" WHERE ";
+									}else{
+										where = where + " AND ";
+									}
+									
+									where = where +getSearchColumnTableName()+sc.getColumnName()+" >= "+start.replaceAll(" ", "");
+								}
 							}
-							
-							if(where.equals("")){
-								where=" WHERE ";
-							}else{
-								where = where + " AND ";
-							}
-							
-							if(sqlColumn.getOperators() == null){
-								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" LIKE '%"+value+"%'";
-							}else{
-								where = where + getSearchColumnTableName()+sqlColumn.getColumnName()+" "+sqlColumn.getOperators()+" '"+value+"' ";
+						}else if(name.indexOf("_end") > -1){
+							String end = request.getParameter(name);
+							if(end != null && end.length() > 0){
+								end = inject(end);
+								if(end.length() > 0){
+									if(sc.getDateFormat()!=null){
+										//将value转换为10位的时间戳
+										end = ""+DateUtil.StringToInt(end, sc.getDateFormat());
+									}
+									
+									if(where.equals("")){
+										where=" WHERE ";
+									}else{
+										where = where + " AND ";
+									}
+									
+									where = where +getSearchColumnTableName()+sc.getColumnName()+" <= "+end.replaceAll(" ", "");
+								}
 							}
 						}
-					}
+					}else if(sc.getColumnName().equals(name)){
+							//正常运算符，如 <、 >、 =、 <=、 >=
+							String value = inject(request.getParameter(name));
+							if(value.length()>0){
+								if(sc.getDateFormat()!=null){
+									//将value转换为10位的时间戳
+									value = ""+DateUtil.StringToInt(value, sc.getDateFormat());
+								}
+								
+								if(where.equals("")){
+									where=" WHERE ";
+								}else{
+									where = where + " AND ";
+								}
+								
+								if(sc.getOperators() == null ){
+									where = where +getSearchColumnTableName()+sc.getColumnName()+" LIKE '%"+value+"%'";
+								}else{
+									where = where + getSearchColumnTableName()+sc.getColumnName()+" "+sc.getOperators()+" '"+value+"' ";
+								}
+							}
+						}
 				}
 			}
 		}
+		
+		
+//		if(column!=null){
+//			Enumeration<String> p = request.getParameterNames();
+//			while(p.hasMoreElements()){
+//				String name = p.nextElement();
+//				for (int i = 0; i < column.length; i++) {
+//					SqlColumn sqlColumn = new SqlColumn(column[i]);
+//					
+//					//如果是大于等于 <> ，区间运算符，查询两者之间，单独判断
+//					if(sqlColumn.getOperators() != null && sqlColumn.getOperators().equals("<>")){
+//						String start = request.getParameter(name+"_start");
+//						String end = request.getParameter(name+"_end");
+//						if(start != null && start.length() > 0){
+//							start = inject(start);
+//							if(start.length() > 0){
+//								if(sqlColumn.getDateFormat()!=null){
+//									//将value转换为10位的时间戳
+//									start = ""+DateUtil.StringToInt(start, sqlColumn.getDateFormat());
+//								}
+//								
+//								if(where.equals("")){
+//									where=" WHERE ";
+//								}else{
+//									where = where + " AND ";
+//								}
+//								
+//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" >= "+start.replaceAll(" ", "");
+//							}
+//						}
+//						if(end != null && end.length() > 0){
+//							end = inject(end);
+//							if(end.length() > 0){
+//								if(sqlColumn.getDateFormat()!=null){
+//									//将value转换为10位的时间戳
+//									end = ""+DateUtil.StringToInt(end, sqlColumn.getDateFormat());
+//								}
+//								
+//								if(where.equals("")){
+//									where=" WHERE ";
+//								}else{
+//									where = where + " AND ";
+//								}
+//								
+//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" <= "+end.replaceAll(" ", "");
+//							}
+//						}
+//						
+//					}
+//					
+//					//正常运算符，如 <、 >、 =、 <=、 >=
+//					if(sqlColumn.getColumnName().equals(name)){
+//						String value = inject(request.getParameter(name));
+//						if(value.length()>0){
+//							if(sqlColumn.getDateFormat()!=null){
+//								//将value转换为10位的时间戳
+//								value = ""+DateUtil.StringToInt(value, sqlColumn.getDateFormat());
+//							}
+//							
+//							if(where.equals("")){
+//								where=" WHERE ";
+//							}else{
+//								where = where + " AND ";
+//							}
+//							
+//							if(sqlColumn.getOperators() == null ){
+//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" LIKE '%"+value+"%'";
+//							}else{
+//								where = where + getSearchColumnTableName()+sqlColumn.getColumnName()+" "+sqlColumn.getOperators()+" '"+value+"' ";
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		return where;
 	}
+	
 	
 	private String getSearchColumnTableName(){
 		if(this.tableName.length()>0){
@@ -207,6 +341,10 @@ public class Sql {
 	public void setGroupBy(String groupBy){
 		this.groupBy = " GROUP BY " + groupBy;
 	}
+
+	public static void main(String[] args) {
+		SqlColumn s = new SqlColumn("money<>");
+	}
 }
 
 /**
@@ -221,25 +359,25 @@ class SqlColumn{
 	
 	/**
 	 * 传入组合的列名，如 >create_date  或 =id
-	 * @param groupColumn
+	 * @param groupColumn 
 	 */
 	public SqlColumn(String groupColumn){
 		for (int i = 0; i < Sql.COLUMN_GROUP.length; i++) {
 			if(groupColumn.indexOf(Sql.COLUMN_GROUP[i])>0){
 				this.operators = Sql.COLUMN_GROUP[i];
-				if(this.operators.equals("<>")){
-					if(groupColumn.indexOf("_start")>-1){
-						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_start", "");
-						this.operators = ">=";
-					}else if (groupColumn.indexOf("_end")>-1) {
-						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_end", "");
-						this.operators = "<=";
-					}else{
-						System.out.println("传入的数据列检索数据有错："+groupColumn);
-					}
-				}else{
+//				if(this.operators.equals("<>")){
+//					if(groupColumn.indexOf("_start")>-1){
+//						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_start", "");
+//						this.operators = ">=";
+//					}else if (groupColumn.indexOf("_end")>-1) {
+//						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_end", "");
+//						this.operators = "<=";
+//					}else{
+//						System.out.println("传入的数据列检索数据有错："+groupColumn);
+//					}
+//				}else{
 					this.columnName = groupColumn.replace(this.operators, "");
-				}
+//				}
 				
 				break;
 			}
@@ -281,5 +419,15 @@ class SqlColumn{
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
 	}
+
+	@Override
+	public String toString() {
+		return "SqlColumn [operators=" + operators + ", columnName="
+				+ columnName + ", dateFormat=" + dateFormat
+				+ ", getOperators()=" + getOperators() + ", getColumnName()="
+				+ getColumnName() + ", getDateFormat()=" + getDateFormat()
+				+ "]";
+	}
+	
 	
 }
