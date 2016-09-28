@@ -1,6 +1,9 @@
 package com.xnx3.net;
 
+import java.util.Map;
+
 import com.xnx3.ConfigManagerUtil;
+
 import push.AndroidNotification;
 import push.PushClient;
 import push.UmengNotification;
@@ -49,7 +52,6 @@ public class UMPushUtil {
 //			e.printStackTrace();
 //		}
 		
-		UMPushUtil.unicast("device_token...........", "通知栏提示文字", "标题", "内容");
 	}
 	
 	/**
@@ -67,7 +69,7 @@ public class UMPushUtil {
 	 * @throws Exception
 	 */
 	public static IOSUnicast createIOSUnicast() throws Exception{
-		return new IOSUnicast(appKey_android, appMasterSecret_android);
+		return new IOSUnicast(appKey_ios, appMasterSecret_ios);
 	}
 	
 	/**
@@ -76,8 +78,9 @@ public class UMPushUtil {
 	 * @param ticker Android有效，通知栏提示文字
 	 * @param title Android有效，通知标题
 	 * @param text Android、IOS共用，通知内容
+	 * @param map 用户自定义key-value。只对"通知"。若不使用可传入null
 	 */
-	public static boolean unicast(String deviceToken,String ticker,String title,String text){
+	public static boolean unicast(String deviceToken,String ticker,String title,String text,Map<String, String> map){
 		if(deviceToken.length() == 44){
 			//Android
 			try {
@@ -93,6 +96,14 @@ public class UMPushUtil {
 				unicast.setProductionMode();
 				// Set customized fields
 //				unicast.setExtraField("test", "helloworld");
+//				unicast.setCustomField("");
+				//添加自定义key-value
+				if(map != null){
+					for (Map.Entry<String, String> entry : map.entrySet()) {
+						unicast.setExtraField(entry.getKey(), entry.getValue());
+					}
+				}
+				
 				return send(unicast);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -110,7 +121,12 @@ public class UMPushUtil {
 				// TODO set 'production_mode' to 'true' if your app is under production mode
 				unicast.setTestMode();
 				// Set customized fields
-				unicast.setCustomizedField("test", "helloworld");
+				//添加自定义key-value
+				if(map != null){
+					for (Map.Entry<String, String> entry : map.entrySet()) {
+						unicast.setCustomizedField(entry.getKey(), entry.getValue());
+					}
+				}
 				return send(unicast);
 			} catch (Exception e) {
 				e.printStackTrace();
