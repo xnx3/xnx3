@@ -1,13 +1,19 @@
 package com.xnx3.net;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
@@ -19,6 +25,7 @@ import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse;
 import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse.Credentials;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
+import com.xnx3.media.ImageUtil;
 import com.xnx3.net.ossbean.PutResult;
 
 /**
@@ -85,6 +92,7 @@ public class OSSUtil {
 	 */
 	public static OSSClient getOSSClient(){
 		if(ossClient == null){
+			System.out.println("create OSSCLient");
 			ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 		}
 		return ossClient;
@@ -154,6 +162,26 @@ public class OSSUtil {
 			e.printStackTrace();
 		}
 		return put(filePath, localPath, input);
+	}
+	
+	/**
+	 * 上传图片，将网上的图片复制到OSS里 如果获取不到后缀，默认用 jpg
+	 * @param filePath 上传图片的OSS地址，如 image/124  后面会自动拼接上图片的后缀名，上传成功后为image/124.png
+	 * @param imageUrl 网上图片的地址
+	 * @return {@link PutResult}
+	 */
+	public static PutResult putImageByUrl(String filePath, String imageUrl){
+		if(imageUrl == null){
+			return null;
+		}
+		String suffix = Lang.findFileSuffix(imageUrl);	//取图片后缀名
+		BufferedImage bufferedImage = ImageUtil.getBufferedImageByUrl(imageUrl);
+		System.out.println(bufferedImage);
+		if(suffix == null){
+			suffix = "jpg";
+		}
+		
+    	return OSSUtil.put(filePath+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
 	}
 	
 	/**
@@ -275,35 +303,67 @@ public class OSSUtil {
 		return putStringFile(path, text, "UTF-8");
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
-		//测试上传
-//		PutResult pr = OSSUtil.put("jar/file/", "/jar_file/iw.jar");
-//		System.out.println(pr);
+	/**
+	 * 查看某个路径下的文件所占用的资源的大小
+	 * @param filePath 要查看文件的路径，如 file/image/
+	 * @return 单位：B
+	 */
+	public static long getFolderSize(String filePath){
+		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+		listObjectsRequest.setPrefix(filePath); 
+		listObjectsRequest.setMaxKeys(1000);
 		
-		//测试 STS 授权三方上传
-		String policy = "{\n" +
-		"    \"Version\": \"1\", \n" +
-		"    \"Statement\": [\n" +
-		"        {\n" +
-		"            \"Action\": [\n" +
-		"                \"oss:GetBucket\", \n" +
-		"                \"oss:GetObject\" \n" +
-		"            ], \n" +
-		"            \"Resource\": [\n" +
-		"                \"acs:oss:*:*:*\"\n" +
-		"            ], \n" +
-		"            \"Effect\": \"Allow\"\n" +
-		"        }\n" +
-		"    ]\n" +
-		"}";
-		Credentials credentials = OSSUtil.createSTS("userid123", policy);
-		System.out.println(credentials != null ? "成功":"失败");
-		if(credentials != null){
-			System.out.println("Expiration: " + credentials.getExpiration());
-			System.out.println("Access Key Id: " + credentials.getAccessKeyId());
-			System.out.println("Access Key Secret: " + credentials.getAccessKeySecret());
-			System.out.println("Security Token: " + credentials.getSecurityToken());
+		boolean have = true;		//是否有下一页
+		String nextMarker = null;
+		int size = 0;		//总字节大小，单位：B
+		while(have){
+			if(nextMarker != null){
+				listObjectsRequest.setMarker(nextMarker);
+			}
+			ObjectListing listO = OSSUtil.getOSSClient().listObjects(listObjectsRequest);
+			
+		    for (OSSObjectSummary objectSummary : listO.getObjectSummaries()) {
+		        size += objectSummary.getSize();  
+		    }
+		    
+		    have = listO.isTruncated();
+		    nextMarker = listO.getNextMarker();
 		}
+		return size;
+	}
+	
+	/**
+	 * 获取 指定目录下的所有文件对象
+	 * @param filePath 要查看文件的路径，如 file/image/
+	 * @return {@link List}
+	 */
+	public static List<OSSObjectSummary> getFolderObjectList(String filePath){
+		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+		listObjectsRequest.setPrefix(filePath); 
+		listObjectsRequest.setMaxKeys(1000);
+		List<OSSObjectSummary> list = new ArrayList<OSSObjectSummary>();
 		
+		boolean have = true;		//是否有下一页
+		String nextMarker = null;
+		while(have){
+			if(nextMarker != null){
+				listObjectsRequest.setMarker(nextMarker);
+			}
+			ObjectListing listO = OSSUtil.getOSSClient().listObjects(listObjectsRequest);
+			
+		    for (OSSObjectSummary objectSummary : listO.getObjectSummaries()) {
+		    	list.add(objectSummary);
+		    }
+		    
+		    have = listO.isTruncated();
+		    nextMarker = listO.getNextMarker();
+		}
+		return list;
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException {
+//		System.out.println(putImageByUrl("12345", "http://wx.qlogo.cn/mmopen/C7j5KUYq36odIGXYibAK1tq6rXUqxPYHNsNibia0pDRhbbam9Cf61vSvvFCKvUN0lTiaxFsTrYaEvN2Hwxf9vF6rPjtFjVcpI13X/0"));
+//		System.out.println(putImageByUrl("12345", "http://static.oschina.net/uploads/space/2016/0809/154028_p7xT_2491310.jpg"));
+		System.out.println(getFolderObjectList("").size());
 	}
 }
