@@ -152,4 +152,10 @@ public class SmallCharge {
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
+	@Override
+	public String toString() {
+		return "SmallCharge [channel=" + channel + ", orderNo=" + orderNo
+				+ ", clientIp=" + clientIp + ", amount=" + amount + "]";
+	}
+	
 }
