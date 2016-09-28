@@ -231,6 +231,9 @@ public class StringUtil {
 	 * @return 过滤掉HTML标签的内容
 	 */
 	public static String filterHtmlTag(String text){
+		if(text == null){
+			return null;
+		}
 		return text.replaceAll("<[.[^<]]*>","");
 	}
 	
