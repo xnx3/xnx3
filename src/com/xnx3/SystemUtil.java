@@ -6,6 +6,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -120,4 +121,15 @@ public class SystemUtil {
 		}
 	}
 	
+	/**
+	 * 打开本地的文件夹
+	 * @param filePath 路径，如 /Users/apple/Desktop/119/
+	 */
+	public static void openLocalFolder(String filePath){
+		try {
+			java.awt.Desktop.getDesktop().open(new File(filePath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
