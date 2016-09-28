@@ -29,6 +29,7 @@ import com.xnx3.ConfigManagerUtil;
 public class MailUtil {  
 	private static Properties properties;  
 	private static boolean debug=true;	//调试日志
+	public static final String BR = "\n";	//内容里的换行符
 	
 	private static String host;	//mail.smtp.host
 	private static String username;	//登录用户名
