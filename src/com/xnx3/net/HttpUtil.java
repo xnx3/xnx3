@@ -9,10 +9,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL; 
 import java.nio.charset.Charset; 
+import java.util.List;
 import java.util.Map; 
 import java.util.zip.GZIPInputStream;
 import java.util.Vector; 
-   
+
 /**
  * HTTP访问类
  * @author 管雷鸣
@@ -26,7 +27,7 @@ public class HttpUtil {
     
     public static void main(String[] args) {
 		HttpUtil h = new HttpUtil();
-		System.out.println(h.get("https://m.baidu.com").getContent());
+		h.get("http://localhost:8082/selfSite/userLoginForClient.do?username=cc&password=cc").toString();
 	}
    
     /**
@@ -260,7 +261,46 @@ public class HttpUtil {
         } 
         return this.makeContent(urlString, urlConnection); 
     } 
-   
+    
+//    /**
+//     * 通过网址获取其 {@link InputStream}  有漏掉的字节
+//     * @param url 网址
+//     * @return {@link InputStream}
+//     */
+//    public static InputStream getInputStreamByUrl(String url){  
+//    	InputStream is = null;  
+//    	HttpURLConnection httpUrl = null;  
+//    	URL u = null;  
+//    	ByteArrayOutputStream baos = null;
+//    	try {
+//    		u = new URL(url);  
+//    		httpUrl = (HttpURLConnection) u.openConnection();  
+//    		httpUrl.connect();  
+//    		is = httpUrl.getInputStream();  
+//    		baos = new ByteArrayOutputStream();  
+//    		byte[] buffer = new byte[1024];  
+//    		int len;  
+//    		while ((len = is.read(buffer)) > -1 ) {  
+//    		    baos.write(buffer, 0, len);  
+//    		}  
+//    		baos.flush();                
+//    	} catch (IOException e) {
+//    		e.printStackTrace();
+//    	} finally {
+//    		try {
+//    			is.close();
+//    		} catch (IOException e) {
+//    			e.printStackTrace();
+//    		}
+//        	httpUrl.disconnect();
+//    	}
+//    	
+//    	if(baos != null){
+//    		return new ByteArrayInputStream(baos.toByteArray());
+//    	}
+//    	return null;
+//    }
+    
     /**
      * 得到响应对象
      * @param urlConnection
@@ -285,8 +325,20 @@ public class HttpUtil {
             if (ecod == null) 
                 ecod = this.encode; 
             httpResponser.urlString = urlString; 
-            this.cookies=urlConnection.getHeaderField("Set-Cookie");
-            httpResponser.cookie=this.cookies;
+            //urlConnection.getHeaderField("Set-Cookie");获取到的COOKIES不全，会将JSESSIONID漏掉，故而采用此中方式
+            if(this.cookies.equals("")){
+            	List<String> listS = urlConnection.getHeaderFields().get("Set-Cookie");
+            	String cookie = "";
+            	if(listS != null){
+                    for (int i = 0; i < listS.size(); i++) {
+        				cookie = cookie + (cookie.equals("")? "":", ") + listS.get(i);
+        			}
+            	}else{
+            		cookie = urlConnection.getHeaderField("Set-Cookie");
+            	}
+            	this.cookies=cookie;
+            	httpResponser.cookie=this.cookies;
+            }
             httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
             httpResponser.file = urlConnection.getURL().getFile(); 
             httpResponser.host = urlConnection.getURL().getHost(); 
