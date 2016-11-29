@@ -159,7 +159,7 @@ public class HttpUtil {
      * POST请求
      * @param urlString URL地址
      * @param params 参数集合
-     * @param propertys 请求属性
+     * @param propertys 请求属性,headers
      * @return 响应对象
      * @throws IOException
      */ 
@@ -224,7 +224,7 @@ public class HttpUtil {
      * @param urlString 地址
      * @param method  GET/POST
      * @param parameters  添加由键值对指定的请求参数
-     * @param propertys  添加由键值对指定的一般请求属性
+     * @param propertys  添加由键值对指定的一般请求属性,headers
      * @return 响应对象
      * @throws IOException
      */ 
@@ -326,18 +326,20 @@ public class HttpUtil {
                 ecod = this.encode; 
             httpResponser.urlString = urlString; 
             //urlConnection.getHeaderField("Set-Cookie");获取到的COOKIES不全，会将JSESSIONID漏掉，故而采用此中方式
-            if(this.cookies.equals("")){
-            	List<String> listS = urlConnection.getHeaderFields().get("Set-Cookie");
-            	String cookie = "";
-            	if(listS != null){
-                    for (int i = 0; i < listS.size(); i++) {
-        				cookie = cookie + (cookie.equals("")? "":", ") + listS.get(i);
-        			}
-            	}else{
-            		cookie = urlConnection.getHeaderField("Set-Cookie");
+            if(this.cookies == null || this.cookies.equals("")){
+            	if(urlConnection.getHeaderFields().get("Set-Cookie") != null){
+            		List<String> listS = urlConnection.getHeaderFields().get("Set-Cookie");
+            		String cookie = "";
+                	if(listS != null){
+                        for (int i = 0; i < listS.size(); i++) {
+            				cookie = cookie + (cookie.equals("")? "":", ") + listS.get(i);
+            			}
+                	}else{
+                		cookie = urlConnection.getHeaderField("Set-Cookie");
+                	}
+                	this.cookies=cookie;
+                	httpResponser.cookie=this.cookies;
             	}
-            	this.cookies=cookie;
-            	httpResponser.cookie=this.cookies;
             }
             httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
             httpResponser.file = urlConnection.getURL().getFile(); 
