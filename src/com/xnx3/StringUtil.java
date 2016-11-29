@@ -253,4 +253,25 @@ public class StringUtil {
 		}
 		return list;
 	}
+	
+	/**
+	 * 再字符串的某个位置，插入一个新的字符串
+	 * <br/>比如原始字符串为 abcd ，在位置1插入，插入一个@符，则会变为 a@bcd
+	 * @param sourceString 原始字符串，要将插入的字符串插入到这里
+	 * @param insertString 要插入的字符串。若为null或者空字符穿""，则不做任何改动sourceString原样返回
+	 * @param place 要插入的字符串，要插入到原始字符串sourceString的位置，其之前有多少个字符，使用indexOf所获得
+	 * 				<ul>
+	 * 					<li>若传入 -1 ，则不做任何改动sourceString原样返回</li>
+	 * 				</ul>
+	 */
+	public static String insert(String sourceString, String insertString, int place){
+		if(insertString == null || insertString.length() == 0 || place == -1){
+			return sourceString;
+		}
+		String start = sourceString.substring(0, place);
+		String end = sourceString.substring(place, sourceString.length());
+		
+		String newString = start+insertString+end;
+		return newString;
+	}
 }
