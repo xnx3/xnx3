@@ -13,7 +13,7 @@ import com.aliyun.mns.model.QueueMeta;
 
 /**
  * 阿里云 消息服务
- * <br/>需要Jar包:
+ * <br/>需要Jar包: aliyun-sdk-mns-1.1.8.jar
  * @author 管雷鸣
  */
 public class MNSUtil {
