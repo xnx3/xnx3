@@ -42,7 +42,6 @@ public class DateUtil {
 		try {
 			return dateFormat(linuxTime, format);
 		} catch (NotReturnValueException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return linuxTime+"";
 		}
@@ -197,4 +196,21 @@ public class DateUtil {
 		return Lang.stringToInt((time+"").substring(0, 10), 0);
 	}
 	
+	/**
+	 * 获取当前是星期几,返回值从星期日开始
+	 * @return 当前是星期几：
+	 * 				<ul>
+	 * 					<li>1：星期日</li>
+	 * 					<li>2：星期一</li>
+	 * 					<li>3：星期二</li>
+	 * 					<li>4：星期三</li>
+	 * 					<li>5：星期四</li>
+	 * 					<li>6：星期五</li>
+	 * 					<li>7：星期六</li>
+	 * 				</ul>
+	 */
+	public static int currentWeek(){
+		Calendar cal=Calendar.getInstance();
+		return cal.get(Calendar.DAY_OF_WEEK);
+	}
 }
