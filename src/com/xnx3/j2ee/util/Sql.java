@@ -2,7 +2,9 @@ package com.xnx3.j2ee.util;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 
@@ -51,13 +53,14 @@ public class Sql {
 	 * 						<b>数据表的字段名需要跟get/post传入的名字相同</b>
 	 * 						如列名为createTime，可为：createTime>  。如果只传入createTime，则会使用默认的LIKE模糊搜索
 	 * 						<ul>
-	 * 							<li>支持的运算符：>=、<=、＝、>、<、<>
-	 * 							<li>如果以下只是参数名字，则默认使用LIKE模糊搜索，如"username"，组合出来的SQL为：username LIKE '%value%'
-	 * 							<li>如果以下使用 "id="  组合出来的SQL为：id = 1234
-	 * 							<li>支持将时间（2016-02-18 00:00:00）自动转化为10位时间戳，列前需要加转换标示,如列为regtime，让其自动转换为10位时间戳参与SQL查询，则为regtime(date:yyyy-MM-dd hh:mm:ss)，后面的yyyy-MM-dd hh:mm:ss为get/post值传入的格式
+	 * 							<li>1.支持的运算符：>=、<=、＝、>、<、<>
+	 * 							<li>2.如果以下只是参数名字，则默认使用LIKE模糊搜索，如"username"，组合出来的SQL为：username LIKE '%value%'
+	 * 							<li>3.如果以下使用 "id="  组合出来的SQL为：id = 1234
+	 * 							<li>4.支持将时间（2016-02-18 00:00:00）自动转化为10位时间戳，列前需要加转换标示,如列为regtime，让其自动转换为10位时间戳参与SQL查询，则为regtime(date:yyyy-MM-dd hh:mm:ss)，后面的yyyy-MM-dd hh:mm:ss为get/post值传入的格式
 	 * 								<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如传入list.do?regtime=2016-02-18 00:00:00 ，则组合出的SQL为： regtime > 1455724800
-	 * 							<li>若为null，则直接忽略request跟column这两个参数
-	 * 							<li>支持查询某列两个值中间的数据，如查询id大于等于3且小于等于300之间的数，则setColumn("id<>")、 get传入两个参数：id_start=3 、id_end=300
+	 * 							<li>5.若为null，则直接忽略request跟column这两个参数
+	 * 							<li>6.支持查询某列两个值中间的数据，如查询id大于等于3且小于等于300之间的数，则setColumn("id<>")、 get传入两个参数：id_start=3 、id_end=300
+	 * 							<li>7.支持值为多个，仅支持1里面的基本运算符，带有时间转换的不支持。多个值以,分割，在组合WHERE时会自动加上OR，如GET加入参数 name=a,b,c 则会组合出 name = 'a'  OR name = 'b'  OR name = 'c'  
 	 * 						</ul>
 	 * 						<br/><br/>如：<i>String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};</i>
 	 * @return 返回组合好的 where语句，如 WHERE a = '1' AND b = '2'，若没有，则返回 "" 空字符串。
@@ -140,11 +143,35 @@ public class Sql {
 									where = where + " AND ";
 								}
 								
-								if(sc.getOperators() == null ){
-									where = where +getSearchColumnTableName()+sc.getColumnName()+" LIKE '%"+value+"%'";
+								//判断其值是由一个还是由多个
+								String valueArray[] = {""};
+								if(value.indexOf(",") > -1){
+									valueArray = value.split(",");
 								}else{
-									where = where + getSearchColumnTableName()+sc.getColumnName()+" "+sc.getOperators()+" '"+value+"' ";
+									valueArray[0] = value;
 								}
+								
+								int va = 0;
+								StringBuffer appendWhere = new StringBuffer();	//通过这个参数组合成的要追加的where条件，where条件的值可能只有一个，也可能由多个，多个值之间用,分割，会自动组合加上OR
+								while (valueArray.length > va) {
+									String val = valueArray[va];
+									if(val == null || val.length() == 0){
+										va++;
+										continue;
+									}
+									
+									appendWhere.append((va == 0 ? "":" OR ") + getSearchColumnTableName()+sc.getColumnName());
+									if(sc.getOperators() == null ){
+										appendWhere.append(" LIKE '%"+val+"%'");
+									}else{
+										appendWhere.append(" "+sc.getOperators()+" '"+val+"' ");
+									}
+									
+									va++;
+								}
+								
+								String appendW = valueArray.length > 1 ? "( "+appendWhere.toString()+" )":appendWhere.toString();
+								where = where + appendW;
 							}
 						}
 				}
