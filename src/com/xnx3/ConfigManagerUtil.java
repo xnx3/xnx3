@@ -5,10 +5,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.IOUtils;
-
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ import java.util.List;
  */
 public class ConfigManagerUtil {
     private static HashMap hashMap = new HashMap();
-     FileConfiguration config;
+    FileConfiguration config;
 
     private ConfigManagerUtil(String configFileName) {
         try {
@@ -108,9 +106,6 @@ public class ConfigManagerUtil {
     }
 
     public static void main(String[] args) {
-    	Iterator it = ConfigManagerUtil.getSingleton("language.xml").getFileConfiguration().getKeys("chinese");
-    	while (it.hasNext()) {
-			System.out.println(it.next().toString());
-		}
+    	ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.host");
     }
 }
