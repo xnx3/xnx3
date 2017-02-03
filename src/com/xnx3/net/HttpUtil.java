@@ -358,6 +358,7 @@ public class HttpUtil {
             httpResponser.method = urlConnection.getRequestMethod(); 
             httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
             httpResponser.readTimeout = urlConnection.getReadTimeout(); 
+            httpResponser.headerFields = urlConnection.getHeaderFields();
         } catch (IOException e) { 
         	httpResponser.code = 404;
         } finally { 
@@ -373,7 +374,7 @@ public class HttpUtil {
      * @param charset 编码格式 {@link HttpUtil#UTF8} {@link HttpUtil#GBK}
      * @return 网页源代码
      */
-    private String uncompress(ByteArrayInputStream in,String charset) {
+    public String uncompress(ByteArrayInputStream in,String charset) {
         try {
            GZIPInputStream gInputStream = new GZIPInputStream(in);
            byte[] by = new byte[1024];

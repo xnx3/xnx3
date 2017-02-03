@@ -229,6 +229,7 @@ public class HttpsUtil {
             httpResponser.method = urlConnection.getRequestMethod(); 
             httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
             httpResponser.readTimeout = urlConnection.getReadTimeout(); 
+            httpResponser.headerFields = urlConnection.getHeaderFields();
             return httpResponser; 
         } catch (IOException e) { 
             throw e; 

@@ -1,5 +1,7 @@
 package com.xnx3.net;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -27,6 +29,7 @@ public class HttpResponse {
 	int connectTimeout;
 	int readTimeout;
 	String cookie;
+	Map<String, List<String>> headerFields;
  
 	Vector<String> contentCollection;
  
@@ -110,6 +113,10 @@ public class HttpResponse {
 		return userInfo;
 	}
 
+	public Map<String, List<String>> getHeaderFields() {
+		return headerFields;
+	}
+
 	@Override
 	public String toString() {
 		return "HttpResponse [urlString=" + urlString + ", defaultPort="
@@ -121,7 +128,8 @@ public class HttpResponse {
 				+ ", code=" + code + ", message=" + message + ", method="
 				+ method + ", connectTimeout=" + connectTimeout
 				+ ", readTimeout=" + readTimeout + ", cookie=" + cookie
-				+ ", contentCollection=" + contentCollection + "]";
+				+ ", headerFields=" + headerFields + ", contentCollection="
+				+ contentCollection + "]";
 	}
 	
 }
