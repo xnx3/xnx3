@@ -14,6 +14,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
+import com.aliyun.oss.model.PutObjectResult;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
@@ -122,8 +123,7 @@ public class OSSUtil {
 		String fileSuffix=com.xnx3.Lang.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
         String name=Lang.uuid()+"."+fileSuffix;
         String path = filePath+name;
-		getOSSClient().putObject(bucketName, path, inputStream);
-		
+        PutObjectResult pr = getOSSClient().putObject(bucketName, path, inputStream);
 		return new PutResult(name, path,url+path);
 	}
 	
@@ -142,7 +142,7 @@ public class OSSUtil {
 	 * @return {@link PutResult}
 	 */
 	public static PutResult put(String path,InputStream inputStream){
-		getOSSClient().putObject(bucketName, path, inputStream);
+		PutObjectResult pr = getOSSClient().putObject(bucketName, path, inputStream);
 		String name = Lang.subString(path, "/", null, 3);
 		return new PutResult(name, path,url+path);
 	}
@@ -176,7 +176,6 @@ public class OSSUtil {
 		}
 		String suffix = Lang.findFileSuffix(imageUrl);	//取图片后缀名
 		BufferedImage bufferedImage = ImageUtil.getBufferedImageByUrl(imageUrl);
-		System.out.println(bufferedImage);
 		if(suffix == null){
 			suffix = "jpg";
 		}
@@ -362,8 +361,6 @@ public class OSSUtil {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-//		System.out.println(putImageByUrl("12345", "http://wx.qlogo.cn/mmopen/C7j5KUYq36odIGXYibAK1tq6rXUqxPYHNsNibia0pDRhbbam9Cf61vSvvFCKvUN0lTiaxFsTrYaEvN2Hwxf9vF6rPjtFjVcpI13X/0"));
-//		System.out.println(putImageByUrl("12345", "http://static.oschina.net/uploads/space/2016/0809/154028_p7xT_2491310.jpg"));
-		System.out.println(getFolderObjectList("").size());
+		putStringFile("test.txt", "test");
 	}
 }
