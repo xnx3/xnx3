@@ -32,6 +32,7 @@ public class MNSUtil {
     String accessKeySecret; 
     String endpoint;
     private MNSClient mnsClient = null;
+    public CloudAccount account;
 	
     /**
      * 创建消息服务对象，由此创建的会从用户根目录读取相关的 .aliyun-mns.properties 配置文件
@@ -60,10 +61,7 @@ public class MNSUtil {
      */
     public MNSClient getMNSClient(){
     	if(mnsClient == null){
-    		CloudAccount account = new CloudAccount(
-                    ServiceSettings.getMNSAccessKeyId(),
-                    ServiceSettings.getMNSAccessKeySecret(),
-                    ServiceSettings.getMNSAccountEndpoint());
+    		account = new CloudAccount(this.accessKeyId, this.accessKeySecret, this.endpoint);
     		mnsClient = account.getMNSClient(); //this client need only initialize once
     	}
     	return mnsClient;
@@ -280,10 +278,11 @@ public class MNSUtil {
     	//方式二，创建MNSUtil时，直接传入
 //    	MNSUtil mns = new MNSUtil(accessKeyId, accessKeySecret, endpoint);
     	
+    	
     	//队列名字
     	String queueName = "testaaaaa";
     	//创建队列
-		mns.createQueue(queueName);
+    	CloudQueue cq = mns.createQueue(queueName);
 		
 		//向队列中加入消息
 		mns.putMessage(queueName, "哈哈1");
@@ -297,6 +296,7 @@ public class MNSUtil {
 			System.out.println(message.getMessageId()+":"+message.getMessageBody());
 			mns.deleteMessage(queueName, message);	//用完消息后删除掉
 		}
+		
 		
 		//删除队列
 //		mns.deleteQueue(queueName);
