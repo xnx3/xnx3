@@ -9,8 +9,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -124,7 +126,7 @@ public class HttpsUtil {
      */
     public HttpResponse post(String url,Map<String, String> parameters){
     	try {
-			return send(url, HttpUtil.mapToQueryString(parameters), null);
+			return send(url, HttpUtil.mapToQueryString(parameters), new HashMap<String, String>());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
