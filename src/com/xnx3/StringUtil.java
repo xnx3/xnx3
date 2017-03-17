@@ -2,6 +2,7 @@ package com.xnx3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class StringUtil {
 
@@ -274,4 +275,57 @@ public class StringUtil {
 		String newString = start+insertString+end;
 		return newString;
 	}
+	
+
+	/**
+	 * 对一个原始字符串内，指定两个字符串中间的区域文字进行替换操作，将中间的这段文字替换为另一段
+	 * <br/>如:要将字符串1234567890内的3456789替换为abc，最终得到字符串12abc0,则这样写
+	 * <pre>subStringReplace("1234567890","34","789","abc");</pre>
+	 * @param text 原始字符串
+	 * @param startString 要替换的这段区域的文字的开始字符串，替换后会包含这段一块被替换
+	 * @param endString 要替换的这段区域的文字的结束，替换后会包含这段一块被替换
+	 * @param replaceNewString 这是要替换成新的字符串
+	 * @return 返回替换好的。若是替换时，找不到替换的
+	 */
+	public static String subStringReplace(String text, String startString, String endString, String replaceNewString){
+		int start = text.indexOf(startString);
+		if(start == -1){
+			return text;
+		}
+		int end = text.substring(start, text.length()).indexOf(endString);
+		if(end == -1){
+			return text;
+		}
+		end = end+start;
+		
+		//如果开始、结束两个字符串都找到了，才进行替换操作
+		String stringStart = text.substring(0, start);
+		String stringEnd = text.substring(end+endString.length(), text.length());
+		return stringStart+replaceNewString+stringEnd;
+	}
+	
+    /**
+     * 生成随机长度的英文（a－z，26个英文字母）
+     * @param length 生成字符串的长度
+     * @return 字符串
+     */
+    public static String getRandomAZ(int length){
+    	//字符长度
+    	final int  maxNum = 26;
+    	int i;  //生成的随机数
+    	int count = 0; //生成的密码的长度
+    	final char[] str = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+    	StringBuffer pwd = new StringBuffer("");
+    	Random r = new Random();
+    	while(count < length){
+    		//生成随机数，取绝对值，防止生成负数，
+    		i = Math.abs(r.nextInt(maxNum));  //生成的数最大为36-1
+    		if (i >= 0 && i < str.length) {
+    			pwd.append(str[i]);
+    			count ++;
+    		}
+    	}
+    	return pwd.toString();
+    }
 }
