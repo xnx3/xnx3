@@ -51,7 +51,8 @@ public class UMPushUtil {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
+//		
+		unicast("2b56c5f7d28d357777a7de655628cef614591a8c9952f015b2584777d7d7f0eb", "aa", "title", "woshitext", null);
 	}
 	
 	/**
@@ -73,14 +74,28 @@ public class UMPushUtil {
 	}
 	
 	/**
+	 * 通过device_token 进行单个设备的通知推送。默认productionMode为true，为正式环境
+	 * @param deviceToken 根据此长度决定是发送Android/IOS推送
+	 * @param ticker Android有效，通知栏提示文字
+	 * @param title Android有效，通知标题
+	 * @param text Android、IOS共用，通知内容
+	 * @param map 用户自定义key-value。只对"通知"。若不使用可传入null
+	 * @see #unicast(String, String, String, String, Map, boolean)
+	 */
+	public static boolean unicast(String deviceToken,String ticker,String title,String text,Map<String, String> map){
+		return unicast(deviceToken, ticker, title, text, map, true);
+	}
+	
+	/**
 	 * 通过device_token 进行单个设备的通知推送
 	 * @param deviceToken 根据此长度决定是发送Android/IOS推送
 	 * @param ticker Android有效，通知栏提示文字
 	 * @param title Android有效，通知标题
 	 * @param text Android、IOS共用，通知内容
 	 * @param map 用户自定义key-value。只对"通知"。若不使用可传入null
+	 * @param productionMode 是否是正式环境，若唯true，则是正式环境，false为测试环境
 	 */
-	public static boolean unicast(String deviceToken,String ticker,String title,String text,Map<String, String> map){
+	public static boolean unicast(String deviceToken,String ticker,String title,String text,Map<String, String> map, boolean productionMode){
 		if(deviceToken.length() == 44){
 			//Android
 			try {
@@ -93,7 +108,11 @@ public class UMPushUtil {
 				unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
 				// TODO Set 'production_mode' to 'false' if it's a test device. 
 				// For how to register a test device, please see the developer doc.
-				unicast.setProductionMode();
+				if(productionMode){
+					unicast.setProductionMode();
+				}else{
+					unicast.setTestMode();
+				}
 				// Set customized fields
 //				unicast.setExtraField("test", "helloworld");
 //				unicast.setCustomField("");
@@ -118,8 +137,16 @@ public class UMPushUtil {
 				unicast.setAlert(text);
 				unicast.setBadge( 0);
 				unicast.setSound("default");
+//				unicast.
 				// TODO set 'production_mode' to 'true' if your app is under production mode
-				unicast.setTestMode();
+				if(productionMode){
+					//正式环境
+					unicast.setProductionMode();
+				}else{
+					//测试环境
+					unicast.setTestMode();
+				}
+//				unicast.setTestMode();	
 				// Set customized fields
 				//添加自定义key-value
 				if(map != null){
