@@ -320,6 +320,15 @@ public class Sql {
 	}
 	
 	/**
+	 * 过滤字符串的值，防止被sql注入
+	 * @param value 要过滤的字符串
+	 * @return 将有危险的字符去掉
+	 */
+	public static String filter(String value){
+		return value.trim().replaceAll("\\s", "");
+	}
+	
+	/**
 	 * 附加WHERE查询条件，如 "status=2"。（此无防注入拦截）
 	 * @return WHERE a = '1' AND b = '2'，若没有，则返回 "" 空字符串
 	 */
