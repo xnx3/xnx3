@@ -15,6 +15,15 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+
+import com.xnx3.net.HttpsUtil.TrustAnyHostnameVerifier;
+import com.xnx3.net.HttpsUtil.TrustAnyTrustManager;
 
 /**
  * 文件操作
@@ -282,7 +291,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 从互联网下载文件
+	 * 从互联网下载文件。适用于http、https协议
 	 * <li>下载过程会阻塞当前线程
 	 * <li>若文件存在，会先删除存在的文件，再下载
 	 * @param downUrl 下载的目标文件网址 如 "http://www.xnx3.com/down/java/j2se_util.zip"
@@ -292,37 +301,73 @@ public class FileUtil {
 	 * 			<li>若返回具体字符串，则出现了异常，被try捕获到了，返回e.getMessage()异常信息
 	 * @throws IOException 
 	 */
-	public void downFiles(String downUrl,String savePath) throws IOException{
+	public static void downFiles(String downUrl,String savePath) throws IOException{
 		//判断文件是否已存在，若存在，则先删除
 		if(exists(savePath)){
 			FileUtil.deleteFile(savePath);
 		}
-
+		
 		int nStartPos = 0;
 		int nRead = 0;
-		URL url = new URL(downUrl);
-		// 打开连接
-		HttpURLConnection httpConnection = (HttpURLConnection) url
-				.openConnection();
-		// 获得文件长度
-		long nEndPos = getFileSize(downUrl);
 		
-		RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
-		httpConnection
-				.setRequestProperty("User-Agent", "Internet Explorer");
-		String sProperty = "bytes=" + nStartPos + "-";
-		// 告诉服务器book.rar这个文件从nStartPos字节开始传
-		httpConnection.setRequestProperty("RANGE", sProperty);
-		InputStream input = httpConnection.getInputStream();
-		byte[] b = new byte[1024];
-		// 读取网络文件,写入指定的文件中
-		while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
-			oSavedFile.write(b, 0, nRead);
-			nStartPos += nRead;
-		}
+		URL url = new URL(downUrl);
+		if(downUrl.indexOf("http://") > -1){
+			// 打开连接
+			HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+			// 获得文件长度
+			long nEndPos = getFileSize(downUrl);
 			
-		httpConnection.disconnect();
-		oSavedFile.close();
+			RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
+			httpConnection.setRequestProperty("User-Agent", "Internet Explorer");
+			String sProperty = "bytes=" + nStartPos + "-";
+			// 告诉服务器book.rar这个文件从nStartPos字节开始传
+			httpConnection.setRequestProperty("RANGE", sProperty);
+			InputStream input = httpConnection.getInputStream();
+			byte[] b = new byte[1024];
+			// 读取网络文件,写入指定的文件中
+			while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
+				oSavedFile.write(b, 0, nRead);
+				nStartPos += nRead;
+			}
+			
+			httpConnection.disconnect();
+			oSavedFile.close();
+		}else if(downUrl.indexOf("https://") > -1){
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			SSLContext sc = null;
+			try {
+				sc = SSLContext.getInstance("SSL");
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+	        try {
+				sc.init(null, new TrustManager[]{new TrustAnyTrustManager()}, new java.security.SecureRandom());
+			} catch (KeyManagementException e) {
+				e.printStackTrace();
+			}
+	        conn.setSSLSocketFactory(sc.getSocketFactory());
+	        conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
+	        
+	        //文件的长度
+	        int nEndPos = Integer.parseInt( conn.getHeaderField("Content-Length"));
+
+	        RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
+//	        conn.setRequestProperty("User-Agent", "Internet Explorer");
+			String sProperty = "bytes=" + nStartPos + "-";
+			// 告诉服务器book.rar这个文件从nStartPos字节开始传
+//			conn.setRequestProperty("RANGE", sProperty);
+			InputStream input = conn.getInputStream();
+			byte[] b = new byte[1024];
+			// 读取网络文件,写入指定的文件中
+			while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
+				oSavedFile.write(b, 0, nRead);
+				nStartPos += nRead;
+			}
+			
+			conn.disconnect();
+			oSavedFile.close();
+		}
+		
 	}
 	
 	/**
@@ -370,6 +415,6 @@ public class FileUtil {
 
     public static void main(String[] args) throws IOException {
 //		downFileaa("http://www.xnx3.com/down/java/j2se_util.zip", "/music/a.zip");
-    	downFile("http://www.xnx3.com/down/java/j2se_util.zip", "/music/a.zip");
+    	downFiles("https://mmbiz.qlogo.cn/mmbiz/cZV2hRpuAPjFyMrRy9J00JLdWSKC8mLZpsTtU31XOojhYhohT7tlBuXAfqRWpjAZYzdj6MsFJHSE8JbvWicuhaw/0", "/Users/apple/Desktop/template/a.jpg");
 	}
 }
