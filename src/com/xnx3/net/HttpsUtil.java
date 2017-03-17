@@ -241,7 +241,7 @@ public class HttpsUtil {
         } 
     } 
     
-    private static class TrustAnyTrustManager implements X509TrustManager {
+    public static class TrustAnyTrustManager implements X509TrustManager {
         public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         }
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -250,7 +250,7 @@ public class HttpsUtil {
             return new X509Certificate[]{};
         }
     }
-    private static class TrustAnyHostnameVerifier implements HostnameVerifier {
+    public static class TrustAnyHostnameVerifier implements HostnameVerifier {
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
