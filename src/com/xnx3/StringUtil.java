@@ -3,6 +3,8 @@ package com.xnx3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtil {
 
@@ -328,4 +330,26 @@ public class StringUtil {
     	}
     	return pwd.toString();
     }
+
+	/**
+	 * 过滤XSS攻击有关的字符。将其转化为无效标签。过滤script、frame
+	 * @param text 要过滤的原始字符
+	 * @return 生成的无XSS的安全字符
+	 */
+	public static String filterXss(String text){
+		//过滤，忽略大小写
+		String[] filterTagArray = {"script","frame "};
+		for (int i = 0; i < filterTagArray.length; i++) {
+			Pattern p = Pattern.compile(filterTagArray[i], Pattern.CASE_INSENSITIVE);  
+	        Matcher m = p.matcher(text);  
+	        text = m.replaceAll("xss_"+filterTagArray[i]);  
+		}
+        
+		return text;
+	}
+	
+	public static void main(String[] args) {
+		String a = "<script>addhkjhkj<iframe src=";
+		System.out.println(filterXss(a));
+	}
 }
