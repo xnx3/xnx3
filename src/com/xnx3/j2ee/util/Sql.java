@@ -325,6 +325,9 @@ public class Sql {
 	 * @return 将有危险的字符去掉
 	 */
 	public static String filter(String value){
+		if(value == null){
+			return null;
+		}
 		return value.trim().replaceAll("\\s", "");
 	}
 	
