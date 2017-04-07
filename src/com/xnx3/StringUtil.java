@@ -1,10 +1,16 @@
 package com.xnx3;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
 
 public class StringUtil {
 
@@ -346,6 +352,34 @@ public class StringUtil {
 		}
         
 		return text;
+	}
+	
+	/**
+	 * 将输入流 {@link InputStream} 转化为 {@link String}
+	 * @param in 要转化的 输入流 {@link InputStream}
+	 * @param encode 编码，如 UTF-8
+	 * @return 转换好的String字符串
+	 * @throws IOException
+	 */
+	public static String inputStreamToString(InputStream in, String encode) throws IOException{
+		if(in == null){
+			return null;
+		}
+		return IOUtils.toString(in, encode);
+	}
+	
+	/**
+	 * 将 {@link String} 字符串转化为 {@link InputStream}输入流
+	 * @param text 要转换的字符串
+	 * @param encode 编码，如UTF-8
+	 * @return 转换好的输入流
+	 * @throws UnsupportedEncodingException
+	 */
+	public static InputStream stringToInputStream(String text, String encode) throws UnsupportedEncodingException{
+		if(text == null){
+			return null;
+		}
+		return new ByteArrayInputStream(text.getBytes(encode));  
 	}
 	
 	public static void main(String[] args) {
