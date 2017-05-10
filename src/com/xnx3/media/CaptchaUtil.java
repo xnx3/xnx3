@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 import com.xnx3.media.ImageUtil;
 
-
 /**
  * 验证码相关，为数字、英文，其中不含0、O、1、I等容易混淆的字符
  * @author 管雷鸣

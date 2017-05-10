@@ -43,7 +43,6 @@ public class MailUtil {
 		if(d != null){
 			debug = d.equals("true");
 		}
-		System.out.println(debug);
 		properties = new Properties();  
 		//设置邮件服务器  
 		properties.put("mail.smtp.host", host);  

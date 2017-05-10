@@ -77,4 +77,25 @@ public class BaseVO {
 		this.info = info;
 	}
 	
+	/**
+	 * 返回成功得 {@link BaseVO}
+	 * @param info 成功得info信息
+	 * @return 成功得{@link BaseVO}
+	 */
+	public static BaseVO success(String info){
+		BaseVO vo = new BaseVO();
+		vo.setBaseVO(BaseVO.SUCCESS, info);
+		return vo;
+	}
+	
+	/**
+	 * 返回失败得 {@link BaseVO}
+	 * @param info 失败得info信息，失败原因
+	 * @return 失败得{@link BaseVO}
+	 */
+	public static BaseVO failure(String info){
+		BaseVO vo = new BaseVO();
+		vo.setBaseVO(BaseVO.FAILURE, info);
+		return vo;
+	}
 }
