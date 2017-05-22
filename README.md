@@ -4,17 +4,17 @@
 
 <br/>
 [纯Java，跨平台，模拟按键、鼠标点击、找图、找色，实现简单按键精灵的功能 DEMO演示](http://pan.baidu.com/s/1bpHR6Y7)
-<br/>[辅助开发配套工具：ScreenCapture.jar:](https://raw.githubusercontent.com/xnx3/xnx3/master/ScreenCapture.jar)
+<br/>[辅助开发配套找图找色坐标工具 ScreenCapture.jar 下载](https://raw.githubusercontent.com/xnx3/xnx3/master/ScreenCapture.jar)
 <br/>
-[![ScreenCapture]](http://www.xnx3.com/software/xnx3/ScreenCapture/index.html)    [ScreenCapture]:https://raw.githubusercontent.com/xnx3/xnx3/master/demo/res/ScreenCapture.png "ScreenCapture.jar"  
+![](https://raw.githubusercontent.com/xnx3/xnx3/master/demo/res/ScreenCapture.png)<br/>
 <br/>
 当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标[Demo下载](http://pan.baidu.com/s/1bpHR6Y7)<br/>
-```Java
+````Java
     Robot robot = new Robot();
     robot.setSourcePath(ImageDemo.class);
     List<CoordBean> list = robot.imageSearch("search.png", Robot.SIM_ACCURATE);
     System.out.println("搜索到了"+list.size()+"个图片");
-```
+````
 
 将指定文字发音读出：<br/>
 ```Java
