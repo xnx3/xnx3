@@ -4,8 +4,9 @@
 
 
 [纯Java，跨平台，模拟按键、鼠标点击、找图、找色，实现简单按键精灵的功能 DEMO演示](http://pan.baidu.com/s/1bpHR6Y7)
-[辅助开发配套找图找色坐标工具 ScreenCapture.jar 下载](https://raw.githubusercontent.com/xnx3/xnx3/master/ScreenCapture.jar)
+
 ![](https://raw.githubusercontent.com/xnx3/xnx3/master/demo/res/ScreenCapture.png)
+[辅助开发配套找图找色坐标工具 ScreenCapture.jar 下载](https://raw.githubusercontent.com/xnx3/xnx3/master/ScreenCapture.jar)
 
 当前屏幕上搜索某个图像是否存在，并拿到搜索到的图片坐标[Demo下载](http://pan.baidu.com/s/1bpHR6Y7)
 
