@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<!-- 
-		只要使用了此配置文件，需导入jar包：
+	<!-- 使用此配置，需导入：
 		commons-configuration-1.7.jar
 		commons-collections-3.2.1.jar
 		commons-io-1.3.2.jar
@@ -12,34 +11,27 @@
 	<!-- 短信发送配置,若使用了短信发送功能，需配置此项 -->
 	<sms>
 		<!-- 用户ID -->
-		<uid>80000</uid>
+		<uid>80...</uid>
 		<!-- 企业代码 -->
-		<companyCode>aaaaa</companyCode>
+		<companyCode>....</companyCode>
 		<!-- 登录密码 -->
-		<password>aaaaa</password>
+		<password>......</password>
 		<!-- 发信服务器IP，固定即可 -->
 		<requestIp>210.5.158.31</requestIp>
 	</sms>
 	
-	<!-- 
-		邮件发送，需jar包：
-			mail.jar
-	-->
 	<mail>
 		<!-- mail.smtp.host -->
-		<host>smtp.163.com</host>
+		<host>smtpdm.aliyun.com</host>
 		<!-- 邮箱登陆的用户名、邮箱名、邮箱地址，如xnx3@163.com -->
-		<username>xnx3_cs@163.com</username>
+		<username>123@wang.market</username>
 		<!-- 登陆密码 -->
 		<password>123456</password>
 		<!-- 是否开启调试日志 -->
 		<debug>true</debug>
 	</mail>
 	
-	<!-- 
-		FastDFS分布式文件上传配置，需jar包：
-			fastdfs.jar
-	-->
+	<!-- FastDFS分布式文件上传配置 -->
 	<FastDFS>
 		<connect_timeout>2</connect_timeout>
 		<network_timeout>30</network_timeout>
@@ -56,71 +48,36 @@
 		<default_fileSuffix>unknow</default_fileSuffix>
 		<tracker_servers>
 			<!-- ip:端口号 -->
-			<tracker_server>115.29....:22122</tracker_server>
+			<tracker_server>115...111:22122</tracker_server>
 		</tracker_servers>
 	</FastDFS>
 	
-	<!-- 
-		微信开发，需jar包：
-			ezmorph-***.jar
-			json-lib-***-jdk15.jar
-	-->
-	<weixin>
-		<!-- AppID(应用ID) -->
-		<AppId>111111111111111111</AppId>
-		<!-- AppSecret(应用密钥) -->
-		<AppSecret>11111111111111111111111111111111</AppSecret>
-		<!-- 调试日志是否打印 -->
-		<debug>true</debug>
-	</weixin>
-	
-	<!-- 
-		ping++支付，需jar包：
-			commons-codec-***.jar
-			gson-***.jar
-			pingpp-java-***.jar
-			json-lib-2.4-***.jar
-	-->
+	<!-- ping++支付 -->
 	<pingxx>
-		<apiKey>sk_live_aaaaaaaa</apiKey>
-		<appId>app_aaaaaaa</appId>
+		<apiKey>sk_test_aaaaaaaaaaaaaaaaaaaaaaaa</apiKey>
+		<appId>app_aaaaaaaaaaaaaaaa</appId>
 		<!-- 私钥 -->
-		<privateKey>MIICXAIBAAKBgaaaaaaaaaaaaa=</privateKey>
+		<privateKey>111111/11111/111111/11111+1111</privateKey>
 		<!-- 公钥 -->
-		<publicKey>aaaaaaaaaaa</publicKey>
+		<publicKey>1111111111</publicKey>
 		<!-- 控制台是否开启打印错误日志 -->
 		<debug>true</debug>
 	</pingxx>
 	
-	<!-- 
-		阿里云 OSS，需jar包： 
-			aliyun-sdk-oss-***.jar
-			commons-codec-***.jar
-			commons-logging-***.jar
-			hamcrest-core-***.jar
-			httpclient-***.jar
-			httpcore-***.jar
-			jdom-***.jar
-			
-			若使用STS三方授权，还需加入
-			aliyun-java-sdk-sts-***.jar
-			aliyun-java-sdk-core-***.jar
-	-->
+	<!-- 阿里云 OSS -->
 	<aliyunOSS>
 		<!-- oss-cn-qingdao.aliyuncs.com -->
-		<endpoint>oss-cn-qingdao.aliyuncs.com</endpoint>
+		<endpoint>oss-cn-hongkong.aliyuncs.com</endpoint>
 		<!-- AccessKeyId -->
-		<accessKeyId>aaaaaa</accessKeyId>
+		<accessKeyId>w75nv9SG2222222</accessKeyId>
 		<!-- AccessKeySecret -->
-		<accessKeySecret>aaaaaaaa</accessKeySecret>
-		<!-- BucketName -->
-		<bucketName>aaaaa</bucketName>
-		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 ，可为空，若为空则会根据以上配置自动拼接生成url，若填写，格式如 oss.xnx3.com -->
-		<url></url>
-		<!-- STS 授权三方控制，临时访问凭证 在阿里云控制台－访问控制－角色管理获取，详情参考 http://www.xnx3.com/software/iw/20160707/957.html -->
-		<roleArn>acs:ram::1080155601964922:role/ceshiossarmrole</roleArn>
+		<accessKeySecret>AJ971Cyfh22222222</accessKeySecret>
+		<!-- Bucket名称 -->
+		<bucketName>baidu</bucketName>
+		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 ，若为空则会根据以上配置自动拼接生成url -->
+		<url>http://cdn.baidu.com</url>
+		<roleArn>acs:ram::108111111111:role/cesh111111111e</roleArn>
 	</aliyunOSS>
-	
 	
 	<!-- 
 		友盟APP消息推送，需jar包：
@@ -134,8 +91,8 @@
 	<umengPush>
 		<!-- 友盟推送里面，增加的Android应用的相关信息 -->
 		<android>
-			<appKey>577c668ce0f55ab7a3002e01</appKey>
-			<appMasterSecret>5mymjfprgcmp90xfzcgn9szo0iypdeib</appMasterSecret>
+			<appKey>577c668ce0f551111111111</appKey>
+			<appMasterSecret>5mymjfprgcmp90xfzcgn1111111</appMasterSecret>
 		</android>
 		<!-- 友盟推送里面，增加的iOS应用的相关信息 -->
 		<ios>
@@ -143,5 +100,6 @@
 			<appMasterSecret></appMasterSecret>
 		</ios>
 	</umengPush>
+	
 	
 </configuration>
