@@ -1,26 +1,20 @@
 package com.xnx3.net;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import java.util.Date;
-import net.sf.json.JSONObject;
+
 import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.exception.*;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
-import com.aliyun.openservices.log.common.Consts.CursorMode;
-import com.aliyun.openservices.log.common.LogGroupData;
 import com.aliyun.openservices.log.common.LogItem;
-import com.aliyun.openservices.log.common.Logs.Log;
-import com.aliyun.openservices.log.common.Logs.Log.Content;
-import com.aliyun.openservices.log.common.Logs.LogGroup;
 import com.aliyun.openservices.log.common.QueriedLog;
 import com.xnx3.DateUtil;
 import com.xnx3.exception.NotReturnValueException;
 
 /**
- * 阿里云日志服务
+ * 阿里云日志服务，基础操作
  * 需Jar包：
  * <br/>aliyun-log-0.6.1.jar
  * <br/>commons-codec-1.4.jar
@@ -37,7 +31,6 @@ import com.xnx3.exception.NotReturnValueException;
  * <br/>json-lib-2.4-jdk15.jar
  * <br/>lz4-1.3.0.jar
  * <br/>protobuf-java-2.5.0.jar
- * 
  * @author 管雷鸣
  */
 public class AliyunLogUtil {
@@ -47,29 +40,47 @@ public class AliyunLogUtil {
 	/**
 	 * 提交日志的累计条数，当 {@link #logGroup}内的日志条数累计到这里指定的条数时，才回提交到阿里云日志服务中去
 	 */
-	public int logGroupSubmitNumber = 100;
-	public Vector<LogItem> logGroup;	//日志组，执行单条日志插入时，累计到多少条后便会自动推送到阿里云日志服务中去
+	public Vector<LogItem> logGroupCache;	//日志组，执行单条日志插入时，累计到多少条后便会自动推送到阿里云日志服务中去
+	private int cacheLogMaxNumber = 20;		//缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为20
 	
 	// 构建一个客户端实例
 	private Client client;
 	
 	/**
-	 * 
+	 * 创建阿里云日志服务工具类
+	 * <br/>阿里云日志服务控制台： <a href="https://sls.console.aliyun.com">https://sls.console.aliyun.com</a>
 	 * @param endpoint 如 cn-hongkong.log.aliyuncs.com
-	 * @param accessKeyId
-	 * @param accessKeySecret
-	 * @param project 项目
-	 * @param logstore 日志库
+	 * @param accessKeyId 阿里云访问密钥 AccessKeyId
+	 * @param accessKeySecret 阿里云 AccessKeySecret
+	 * @param project 日志服务中，创建的项目名称
+	 * @param logstore 日志服务中，创建的项目下的日志库名称
 	 */
 	public AliyunLogUtil(String endpoint, String accessKeyId, String accessKeySecret, String project, String logstore) {
 		this.project = project;
 		this.logstore = logstore;
 		client = new Client(endpoint, accessKeyId, accessKeySecret);
 		
-		logGroup = new Vector<LogItem>();
+		logGroupCache = new Vector<LogItem>();
 	}
 	
-	// 列出当前 project 下的所有日志库名称
+	/**
+	 * 设置缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为1，即不缓存。最大支持4096
+	 * <br/>配合 {@link #save(String, String, LogItem)} 使用，当调用save方法保存的缓存池中的日志数量达到多少条时触发，提交缓存池中的日志到阿里云日志服务中。
+	 * 		<ul>
+	 * 			<li>当不调用此方法设置时，默认为缓存20条</li>
+	 * 			<li>当设置为大于1的数时，启用缓存。当数量达到这里设定的数量时，才会提交到阿里云日志服务中。</li>
+	 * 		</ul>
+	 * @param cacheLogMaxNumber 要缓存的日志条数
+	 */
+	public void setCacheLogMaxNumber(int cacheLogMaxNumber) {
+		this.cacheLogMaxNumber = cacheLogMaxNumber;
+	}
+	
+	/**
+	 * 列出当前日志服务下的所有日志库名称
+	 * @return 返回日志库名称数组
+	 * @throws LogException
+	 */
 	public ArrayList<String> getLogStore() throws LogException{
 		int offset = 0;
         int size = 100;
@@ -77,7 +88,6 @@ public class AliyunLogUtil {
 		ListLogStoresRequest req1 = new ListLogStoresRequest(project, offset, size, logStoreSubName);
 		ArrayList<String> logStores;
 		logStores = client.ListLogStores(req1).GetLogStores();
-		System.out.println("ListLogs:" + logStores.toString() + "\n");
 		return logStores;
 	}
 	
@@ -98,15 +108,48 @@ public class AliyunLogUtil {
 	 * </pre>
 	 * @param topic 用户自定义字段，用以标记一批日志（例如：访问日志根据不同的站点进行标记）。默认该字段为空字符串（空字符串也是一个有效的主题）。任意不超过 128 字节的字符串。
 	 * @param source 日志的来源地，例如产生该日志机器的 IP 地址。默认该字段为空。任意不超过 128 字节的字符串。
-	 * @param logItem 要保存的单条日志。可以通过  {@link #newLogItem()} 创建。如
+	 * @param logItem 要保存的日志，可用 {@link AliyunLogUtil#newLogItem()} 获取创建 {@link LogItem} 对象，然后将要记录的日志类似JSON， {@link LogItem#PushBack(String, String)} 加入
 	 * @return {@link PutLogsResponse}
 	 * @throws LogException
 	 */
 	public PutLogsResponse save(String topic, String source, LogItem logItem) throws LogException{
-        Vector<LogItem> logGroup = new Vector<LogItem>();
+		Vector<LogItem> logGroup = new Vector<LogItem>();
         logGroup.add(logItem);
         PutLogsRequest req2 = new PutLogsRequest(project, logstore, topic, source, logGroup);
         return client.PutLogs(req2);
+	}
+	
+	/**
+	 * 缓存日志。缓存的并不会立即联网提交到阿里云日志服务，而是达到一定条数 {@link #setCacheLogMaxNumber(int)} 达到这里设置的条数后才会触发 {@link #cacheCommit()} 提交到阿里云日志服务
+	 * <br/>这里缓存的日志，没提供设置topic、source，可以将其记录到日志本身中去 
+	 * @param logItem 要缓存的日志，可用 {@link AliyunLogUtil#newLogItem()} 获取创建 {@link LogItem} 对象，然后将要记录的日志类似JSON， {@link LogItem#PushBack(String, String)} 加入
+	 * @throws LogException
+	 */
+	public void cacheLog(LogItem logItem) throws LogException{
+		if(logItem != null){
+			logGroupCache.add(logItem);
+		}
+		if(logGroupCache.size() > cacheLogMaxNumber){
+			//超过定义的缓存最大值，那么将缓存中的日志数据提交到阿里日志服务中去
+			cacheCommit();
+		}
+	}
+	
+	/**
+	 * 手动将 {@link #cacheLog(LogItem)} 缓存中的数据提交到阿里云日志服务中去。若提交成功，便清空缓存。
+	 * <br/>此方法会在 {@link #cacheLog(LogItem)} 向缓存中添加日志时，当达到 {@link #setCacheLogMaxNumber(int)} 设置的缓存最大条数后会自动触发。
+	 * <br/>当然，比如Tomcat停止时，或者其他意外情况，也可以手动调用此处方法触发提交到阿里云日志服务中的命令
+	 * @return {@link PutLogsResponse} 提交返回的结果
+	 * @throws LogException
+	 */
+	public PutLogsResponse cacheCommit() throws LogException{
+		PutLogsRequest req2 = new PutLogsRequest(project, logstore, "", "", logGroupCache);
+		PutLogsResponse r = client.PutLogs(req2);
+		if(r != null && r.GetRequestId() != null && r.GetRequestId().length() > 0){
+			//数据提交成功，清空缓存
+			logGroupCache.clear();
+		}
+        return r;
 	}
 	
 	/**
@@ -142,45 +185,12 @@ public class AliyunLogUtil {
 	
 	/**
 	 * 创建一个新的 {@link LogItem} 不过相比于原本的，这里不用传入当前时间了，自动赋予当前时间戳
-	 * @return
+	 * @return 自动加入了当前时间的 {@link LogItem}
 	 */
 	public LogItem newLogItem(){
 		return new LogItem((int) (new Date().getTime() / 1000));
 	}
 	
-	
-	public void read() throws LogException{
-		// 把 0 号 shard 中，最近 1 分钟写入的数据都读取出来。
-        int shard_id = 0;
-        long curTimeInSec = System.currentTimeMillis() / 1000;
-        GetCursorResponse cursorRes = client.GetCursor(project, logstore, shard_id, curTimeInSec - 60);
-        String beginCursor = cursorRes.GetCursor();
-        cursorRes = client.GetCursor(project, logstore, shard_id, CursorMode.END);
-        String endCursor = cursorRes.GetCursor();
-        String curCursor = beginCursor;
-        while (curCursor.equals(endCursor) == false) {
-            int loggroup_count = 2; // 每次读取两个 loggroup
-            BatchGetLogResponse logDataRes = client.BatchGetLog(project, logstore, shard_id, loggroup_count, curCursor,
-                    endCursor);
-            // 读取LogGroup的List
-            List<LogGroupData> logGroups = logDataRes.GetLogGroups(); 
-            for (LogGroupData logGroupData : logGroups) {
-                // 直接使用Protocol buffer格式的LogGroup进行
-                LogGroup log_group_pb = logGroupData.GetLogGroup();  
-                System.out.println("Source:" + log_group_pb.getSource());
-                System.out.println("Topic:" + log_group_pb.getTopic());
-                System.out.println(log_group_pb.getLogsList().size());
-                for(Log log_pb: log_group_pb.getLogsList()){
-                    System.out.println("LogTime:" + log_pb.getTime());
-                    for(Content content: log_pb.getContentsList()) {
-                        System.out.println(content.getKey() + ":" + content.getValue());
-                    }
-                }
-            }
-            String next_cursor = logDataRes.GetNextCursor();
-            curCursor = next_cursor;
-        }
-	}
 	
 	/**
 	 * 统计符合条件的日志的记录条数
@@ -235,47 +245,38 @@ public class AliyunLogUtil {
 	 * 				<li>true : 逆序，时间越大越靠前</li>
 	 * 				<li>false : 顺序，时间越大越靠后</li>
 	 * 			</ul>			
-	 * @return {@link QueriedLog}数组，将每条日志内容都详细列出来
+	 * @return {@link QueriedLog}数组，将每条日志内容都详细列出来。若返回null，则是读取失败
 	 * @throws LogException 
 	 */
 	public ArrayList<QueriedLog> queryList(String query, String topic, int startTime, int endTime, int offset, int line, boolean reverse) throws LogException{
-		//查询日志条数
-		long total_log_lines = queryCount(query, topic, startTime, endTime);
-		
-		ArrayList<QueriedLog> qlList = new ArrayList<QueriedLog>();
-		
-        while (offset <= total_log_lines) {
-        	GetLogsResponse res4 = null;
-        	//对于每个 log offset,一次读取 10 行 log，如果读取失败，最多重复读取 3 次。
-        	for (int retry_time = 0; retry_time < 3; retry_time++) {
-        		GetLogsRequest req4 = new GetLogsRequest(project, logstore, startTime, endTime, topic, query, offset, line, reverse);
-        		res4 = client.GetLogs(req4);
-        		if (res4 != null && res4.IsCompleted()) {
-        			break;
-        		}
-        	}
-        	ArrayList<QueriedLog> ql = res4.GetLogs();
-        	qlList.addAll(ql);
-        	
-        	offset += line;
-        }
-        
-        return qlList;
+    	GetLogsResponse res4 = null;
+    	//对于每个 log offset,一次读取 10 行 log，如果读取失败，最多重复读取 3 次。
+    	for (int retry_time = 0; retry_time < 3; retry_time++) {
+    		GetLogsRequest req4 = new GetLogsRequest(project, logstore, startTime, endTime, topic, query, offset, line, reverse);
+    		res4 = client.GetLogs(req4);
+    		if (res4 != null && res4.IsCompleted()) {
+    			break;
+    		}
+    	}
+    	if(res4 == null){
+    		return null;
+    	}
+        return res4.GetLogs();
 	}
-	
 	
 	public static void main(String args[]) throws LogException, InterruptedException, NotReturnValueException {
 	        AliyunLogUtil aliyunLogUtil = new AliyunLogUtil("cn-hongkong.log.aliyuncs.com", "121212", "121212", "requestlog", "fangwen");
-
-	        ArrayList<QueriedLog> qlList = aliyunLogUtil.queryList("", "leiwen.wang.market", DateUtil.timeForUnix10()-10000, DateUtil.timeForUnix10(), 0, 100, true);
+		
+	        ArrayList<QueriedLog> qlList = aliyunLogUtil.queryList("*", "leiwen.wang.market", DateUtil.timeForUnix10()-10000000, DateUtil.timeForUnix10(), 0, 100, true);
         	for (int i = 0; i < qlList.size(); i++) {
         		System.out.println(i);
         		QueriedLog ll = qlList.get(i);
         		LogItem li = ll.GetLogItem();
-        		JSONObject json = JSONObject.fromObject(li.ToJsonString());
-        		System.out.println(DateUtil.dateFormat(json.getLong("logtime"), com.xnx3.DateUtil.FORMAT_DEFAULT)+"__"+li.ToJsonString());
+        		System.out.println(li.GetLogContents().toString());
         	} 
         	System.out.println("qlList  :  "+qlList.size());
 	    }
+
+	
 	
 }

@@ -213,4 +213,22 @@ public class DateUtil {
 		Calendar cal=Calendar.getInstance();
 		return cal.get(Calendar.DAY_OF_WEEK);
 	}
+	
+
+	/**
+	 * 传入一个10位的时间戳，返回当前时间戳所在的当天0点的10位时间戳
+	 * @param time 10位的时间戳
+	 * @return 当天0点的时间戳。若失败，返回0
+	 */
+	public static int getDateZeroTime(int time){
+		String ls;
+		try {
+			ls = DateUtil.dateFormat(time, "yyyy-MM-dd");
+		} catch (NotReturnValueException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		return DateUtil.StringToInt(ls+" 00:00:00", "yyyy-MM-dd hh:mm:ss");
+	}
+
 }

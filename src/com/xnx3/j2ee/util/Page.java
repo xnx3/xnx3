@@ -17,10 +17,10 @@ public class Page{
 	 */
 	public final static String CURRENTPAGENAME="currentPage";
 	/**
-	 * 默认向上列出5页跳转、向下列出5页跳转
+	 * 默认向上列出3页跳转、向下列出3页跳转
 	 * {@link #getUpList()} {@link #getNextList()}会用到
 	 */
-	public static int listNumber = 5;
+	private int listNumber = 3;
 	
 	private int limitStart;	//limit 的开始
 	private String url;	//当前列表网址，后跟随除CURRENTPAGENAME外的其他所有参数
@@ -415,11 +415,19 @@ public class Page{
 	}
 
 	public static void main(String[] args) {
-		Page page = new Page(11, 10);
+		Page page = new Page(110, 10);
 		page.setUrlByStringUrl("");
-		page.setCurrentPageNumber(1);
+		page.setCurrentPageNumber(6);
 		
 		System.out.println(page.toString());
+	}
+
+	/**
+	 * 使用 {@link #getUpList()} 、 {@link #getNextList()} 获取上几页、下几页得跳转时用到，设置出现得上几页、下几页跳转按钮的个数。若不设置为默认向上列出3页跳转、向下列出3页跳转
+	 * @param listNumber 设置出现得上几页、下几页跳转按钮的个数
+	 */
+	public void setListNumber(int listNumber) {
+		this.listNumber = listNumber;
 	}
 	
 }
