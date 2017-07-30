@@ -382,6 +382,90 @@ public class StringUtil {
 		return new ByteArrayInputStream(text.getBytes(encode));  
 	}
 	
+
+	/**
+	 * 将当前字符串内的空格、换行、tab缩进等空白符号移除
+	 * <br/>若传入null，会原样返回
+	 * @param str 要移除空白符号的字符串
+	 * @return 移除空白字符后的字符串
+	 */
+	public static String removeBlank(String str) {
+        String newStr = null;
+        if (str!=null) {
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(str);
+            newStr = m.replaceAll("");
+        }
+        return newStr;
+    }
+	
+	/**
+	 * 两个String字符串比较是否相等。可一个为null、一个不为null进行对比
+	 * @param S1 要比较的第一个字符串
+	 * @param S2 要比较的第二个字符串
+	 * @return true:相等
+	 */
+	public static boolean StringEqual(String S1, String S2){
+		return StringEqual(S1, S2, false);
+	}
+	
+	/**
+	 * 两个String字符串比较是否相等。可一个为null、一个不为null进行对比
+	 * @param S1 要比较的第一个字符串
+	 * @param S2 要比较的第二个字符串
+	 * @param removeBlank 是否移除空格、换行、tab缩进等空白符号，true为自动将两个字符串的空符移除掉后在进行比较
+	 * @return true:相等
+	 */
+	public static boolean StringEqual(String S1, String S2, boolean removeBlank){
+		return StringEqual(S1, S2, removeBlank , false);
+	}
+	
+	/**
+	 * 两个String字符串比较是否相等。可一个为null、一个不为null进行对比
+	 * @param S1 要比较的第一个字符串
+	 * @param S2 要比较的第二个字符串
+	 * @param removeBlank 是否移除空格、换行、tab缩进等空白符号，true为自动将两个字符串的空符移除掉后在进行比较
+	 * @param ignoreNull 忽略空，若为true，即 null 跟 空字符串"" 视为相等的。若是字符串为"null"，也会自动视为空字符串
+	 * @return true:相等
+	 */
+	public static boolean StringEqual(String S1, String S2, boolean removeBlank, boolean ignoreNull){
+		if(ignoreNull){
+			if(S1 == null || S1.equals("null")){
+				S1 = "";
+			}
+			if(S2 == null || S2.equals("null")){
+				S2 = "";
+			}
+		}else{
+			//先进行为空判断
+			if(S1 == null && S2 != null){
+				return false;
+			}
+			if(S1 != null && S2 == null){
+				return false;
+			}
+			if(S1 == null && S2 == null){
+				return true;
+			}
+		}
+		
+		//若都不是为空，有字符，在对字符进行判断
+		if(removeBlank){
+			if(S1.length() > 0){
+				S1 = removeBlank(S1);
+			}
+			if(S2.length() > 0){
+				S2 = removeBlank(S2);
+			}
+		}
+		
+		if(S1.equals(S2)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	public static void main(String[] args) {
 		String a = "<script>addhkjhkj<iframe src=";
 		System.out.println(filterXss(a));
