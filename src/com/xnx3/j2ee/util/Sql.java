@@ -68,7 +68,6 @@ public class Sql {
 	public String setSearchColumn(String[] column){
 		if(column != null){
 			//先将自定义设置的，搜索哪些列，判断出来，放入list，以供使用
-//			List<SqlColumn> columnList = new ArrayList<SqlColumn>();
 			Map<String, SqlColumn> columnMap = new HashMap<String, SqlColumn>();		//sql数据表的列名  －>  SqlColumn
 			String columns = ",";
 			for (int i = 0; i < column.length; i++) {
@@ -179,79 +178,6 @@ public class Sql {
 		}
 		
 		
-//		if(column!=null){
-//			Enumeration<String> p = request.getParameterNames();
-//			while(p.hasMoreElements()){
-//				String name = p.nextElement();
-//				for (int i = 0; i < column.length; i++) {
-//					SqlColumn sqlColumn = new SqlColumn(column[i]);
-//					
-//					//如果是大于等于 <> ，区间运算符，查询两者之间，单独判断
-//					if(sqlColumn.getOperators() != null && sqlColumn.getOperators().equals("<>")){
-//						String start = request.getParameter(name+"_start");
-//						String end = request.getParameter(name+"_end");
-//						if(start != null && start.length() > 0){
-//							start = inject(start);
-//							if(start.length() > 0){
-//								if(sqlColumn.getDateFormat()!=null){
-//									//将value转换为10位的时间戳
-//									start = ""+DateUtil.StringToInt(start, sqlColumn.getDateFormat());
-//								}
-//								
-//								if(where.equals("")){
-//									where=" WHERE ";
-//								}else{
-//									where = where + " AND ";
-//								}
-//								
-//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" >= "+start.replaceAll(" ", "");
-//							}
-//						}
-//						if(end != null && end.length() > 0){
-//							end = inject(end);
-//							if(end.length() > 0){
-//								if(sqlColumn.getDateFormat()!=null){
-//									//将value转换为10位的时间戳
-//									end = ""+DateUtil.StringToInt(end, sqlColumn.getDateFormat());
-//								}
-//								
-//								if(where.equals("")){
-//									where=" WHERE ";
-//								}else{
-//									where = where + " AND ";
-//								}
-//								
-//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" <= "+end.replaceAll(" ", "");
-//							}
-//						}
-//						
-//					}
-//					
-//					//正常运算符，如 <、 >、 =、 <=、 >=
-//					if(sqlColumn.getColumnName().equals(name)){
-//						String value = inject(request.getParameter(name));
-//						if(value.length()>0){
-//							if(sqlColumn.getDateFormat()!=null){
-//								//将value转换为10位的时间戳
-//								value = ""+DateUtil.StringToInt(value, sqlColumn.getDateFormat());
-//							}
-//							
-//							if(where.equals("")){
-//								where=" WHERE ";
-//							}else{
-//								where = where + " AND ";
-//							}
-//							
-//							if(sqlColumn.getOperators() == null ){
-//								where = where +getSearchColumnTableName()+sqlColumn.getColumnName()+" LIKE '%"+value+"%'";
-//							}else{
-//								where = where + getSearchColumnTableName()+sqlColumn.getColumnName()+" "+sqlColumn.getOperators()+" '"+value+"' ";
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
 		return where;
 	}
 	
@@ -404,20 +330,7 @@ class SqlColumn{
 		for (int i = 0; i < Sql.COLUMN_GROUP.length; i++) {
 			if(groupColumn.indexOf(Sql.COLUMN_GROUP[i])>0){
 				this.operators = Sql.COLUMN_GROUP[i];
-//				if(this.operators.equals("<>")){
-//					if(groupColumn.indexOf("_start")>-1){
-//						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_start", "");
-//						this.operators = ">=";
-//					}else if (groupColumn.indexOf("_end")>-1) {
-//						this.columnName = groupColumn.replace(this.operators, "").replaceAll("_end", "");
-//						this.operators = "<=";
-//					}else{
-//						System.out.println("传入的数据列检索数据有错："+groupColumn);
-//					}
-//				}else{
-					this.columnName = groupColumn.replace(this.operators, "");
-//				}
-				
+				this.columnName = groupColumn.replace(this.operators, "");
 				break;
 			}
 		}
@@ -459,14 +372,4 @@ class SqlColumn{
 		this.dateFormat = dateFormat;
 	}
 
-	@Override
-	public String toString() {
-		return "SqlColumn [operators=" + operators + ", columnName="
-				+ columnName + ", dateFormat=" + dateFormat
-				+ ", getOperators()=" + getOperators() + ", getColumnName()="
-				+ getColumnName() + ", getDateFormat()=" + getDateFormat()
-				+ "]";
-	}
-	
-	
 }

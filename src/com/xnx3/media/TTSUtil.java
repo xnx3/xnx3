@@ -85,7 +85,6 @@ public class TTSUtil {
 	}
 	
 	public static void main(String[] args) throws MalformedURLException, IOException, JavaLayerException {
-		new TTSUtil().speak("输入文字，以女声读出");
 		new TTSUtil().speak("哈哈哈哈哈上");
 		TTSUtil.speakByThread("管雷鸣");
 	}

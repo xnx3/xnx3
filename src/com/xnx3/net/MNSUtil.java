@@ -191,16 +191,8 @@ public class MNSUtil {
      */
     public List<Message> listMessage(String queueName){
     	List<Message> batchPopMessage = null;
-    	try{
-    		CloudQueue queue = getMNSClient().getQueueRef(queueName);// replace with your queue name
-    		batchPopMessage = queue.batchPopMessage(15);  
-    	} catch (ClientException ce){
-    		clientException(ce);
-        } catch (ServiceException se){
-        	serviceException(se);
-        } catch (Exception e){
-        	exception(e);
-        }
+		CloudQueue queue = getMNSClient().getQueueRef(queueName);// replace with your queue name
+		batchPopMessage = queue.batchPopMessage(15);  
         
     	if(batchPopMessage == null){
     		//避免空指针异常

@@ -41,7 +41,13 @@ public class AliyunLogUtil {
 	 * 提交日志的累计条数，当 {@link #logGroup}内的日志条数累计到这里指定的条数时，才回提交到阿里云日志服务中去
 	 */
 	public Vector<LogItem> logGroupCache;	//日志组，执行单条日志插入时，累计到多少条后便会自动推送到阿里云日志服务中去
-	private int cacheLogMaxNumber = 20;		//缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为20
+	public int cacheLogMaxNumber = 100;		//缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为100
+	//缓存日志的最大时间，单位为秒。超过这个时间后，将会自动提交日志。即每隔多长时间就自动提交日志，然后清空（ {@link #logGroup} ）重新开始累计。数据由 systemConfig.xml的log.logService.log_cache_max_time提供
+	public int cacheLogMaxTime = 600;
+	//Thread.currentThread().getStackTrace()[3] 追溯调用此方法的函数，数字越大追溯位置越考前,默认为0，不启用
+	public int stack_trace_deep = 0;
+	//最后一次提交日志的时间 （ {@link #logGroup} ）动态时间，每次提交日志后，都会重新刷新此时间
+	public int lastSubmitTime = DateUtil.timeForUnix10();
 	
 	// 构建一个客户端实例
 	private Client client;
@@ -64,16 +70,43 @@ public class AliyunLogUtil {
 	}
 	
 	/**
-	 * 设置缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为1，即不缓存。最大支持4096
+	 * 建议使用  {@link #setCacheAutoSubmit(int, int)}
+	 * <br/>设置缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为1，即不缓存。最大支持4096
 	 * <br/>配合 {@link #save(String, String, LogItem)} 使用，当调用save方法保存的缓存池中的日志数量达到多少条时触发，提交缓存池中的日志到阿里云日志服务中。
 	 * 		<ul>
 	 * 			<li>当不调用此方法设置时，默认为缓存20条</li>
 	 * 			<li>当设置为大于1的数时，启用缓存。当数量达到这里设定的数量时，才会提交到阿里云日志服务中。</li>
 	 * 		</ul>
 	 * @param cacheLogMaxNumber 要缓存的日志条数
+	 * @deprecated 
 	 */
 	public void setCacheLogMaxNumber(int cacheLogMaxNumber) {
 		this.cacheLogMaxNumber = cacheLogMaxNumber;
+	}
+	
+
+	/**
+	 * 设置日志缓存自动提交服务器的临界点，可以通过此来设置。若不设置，默认是最大100条、最长缓存时间600秒。
+	 * <br/><b>注意，这两项是同时生效的，最大支持4096条，10MB的数据，一般设置为几百条或者默认即可</b>
+	 * <br/>1.当日志缓存条数达到多少条时，自动提交日志，并清空日志缓存重新记录
+	 * <br/>2.当日志缓存时间达到多少秒没有提交时，超过指定秒数后，再此写入日志时，会触发，使其自动提交日志，并清空日志缓存重新记录
+	 * @param maxNumber (单位:条)当日志缓存条数达到多少条时，自动提交日志，并清空日志缓存重新记录。
+	 * 				<br/>若设为1，则不缓存，插入就立即提交。
+	 * @param maxTime (单位:秒)当日志缓存时间达到多少秒没有提交时，超过指定秒数后，再此写入日志时，会触发，使其自动提交日志，并清空日志缓存重新记录
+	 */
+	public void setCacheAutoSubmit(int maxNumber, int maxTime){
+		this.cacheLogMaxNumber = maxNumber;
+		this.cacheLogMaxTime = maxTime;
+	}
+	
+	/**
+	 * Thread.currentThread().getStackTrace()[3] 追溯调用此方法的函数，数字越大追溯位置越靠外
+	 * <br/>若不设置，默认为0，不启用程序具体执行类及函数的记录
+	 * <br/>此方法主要用于，当扩展此类，或继承等，日志中记录的执行类及执行方法，便是依据此，来自动获得并记入日志的
+	 * @param deep 追溯级别，数字越大追溯位置越靠外，可以从1开始挨个变大，设置几个数字挨个试试。
+	 */
+	public void setStackTraceDeep(int deep){
+		stack_trace_deep = deep;
 	}
 	
 	/**
@@ -126,11 +159,33 @@ public class AliyunLogUtil {
 	 * @throws LogException
 	 */
 	public void cacheLog(LogItem logItem) throws LogException{
-		if(logItem != null){
-			logGroupCache.add(logItem);
+		if(logItem == null){
+			return;
 		}
+		
+		/*使用的类的信息，来源位置*/
+		if(stack_trace_deep > 0){
+			StackTraceElement st = Thread.currentThread().getStackTrace()[stack_trace_deep];
+			logItem.PushBack("className", st.getClassName());
+			logItem.PushBack("methodName", st.getMethodName());
+			logItem.PushBack("fileName", st.getFileName());
+		}
+		
+		logGroupCache.add(logItem);
+		
+		boolean submit = false;	//提交日志
 		if(logGroupCache.size() > cacheLogMaxNumber){
 			//超过定义的缓存最大值，那么将缓存中的日志数据提交到阿里日志服务中去
+			submit = true;
+		}else{
+			int currentTime = DateUtil.timeForUnix10();	//当前时间
+			if(lastSubmitTime + cacheLogMaxTime < currentTime){
+				submit = true;
+				lastSubmitTime = currentTime;
+			}
+		}
+		
+		if(submit){
 			cacheCommit();
 		}
 	}
@@ -143,11 +198,17 @@ public class AliyunLogUtil {
 	 * @throws LogException
 	 */
 	public PutLogsResponse cacheCommit() throws LogException{
-		PutLogsRequest req2 = new PutLogsRequest(project, logstore, "", "", logGroupCache);
-		PutLogsResponse r = client.PutLogs(req2);
+		PutLogsResponse r = saveByGroup("", "", logGroupCache);
 		if(r != null && r.GetRequestId() != null && r.GetRequestId().length() > 0){
-			//数据提交成功，清空缓存
+			//数据提交成功
+
+			//清空日志缓存及条数
 			logGroupCache.clear();
+			//同步最后提交时间
+			int currentTime = DateUtil.timeForUnix10();	//当前时间
+			if(lastSubmitTime < currentTime){
+				lastSubmitTime = currentTime;
+			}
 		}
         return r;
 	}

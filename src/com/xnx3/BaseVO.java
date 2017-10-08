@@ -98,4 +98,5 @@ public class BaseVO {
 		vo.setBaseVO(BaseVO.FAILURE, info);
 		return vo;
 	}
+	
 }

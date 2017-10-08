@@ -248,6 +248,7 @@ public class OSSUtils {
 	public static void main(String[] args) throws FileNotFoundException {
 //		
 		OSSUtils o = new OSSUtils("oss-cn-hongkong.aliyuncs.com", ".....", "...", "...", "http://www.baidu.com/");
+		
 		System.out.println(o.putStringFile("ceshi.txt", "哈哈"));
 //		putStringFile("test.txt", "test");
 	}

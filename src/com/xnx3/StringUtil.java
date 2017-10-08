@@ -173,6 +173,10 @@ public class StringUtil {
 	 * @return 16进制编码，如\u7ba1\u96f7\u9e23
 	 */
 	public static String Utf8ToString(String text){
+		if(text == null){
+			return null;
+		}
+		
         StringBuffer output = new StringBuffer();
         for (int j = 0; j < text.length(); j++){
         	String s=Integer.toString(text.charAt(j), 16);
@@ -464,6 +468,40 @@ public class StringUtil {
 		}else{
 			return false;
 		}
+	}
+	
+
+	/**
+	 * 字符串中
+	 * <br/>1.首先，若首字母是大写，则转小写
+	 * <br/>2.然后将字符串中出现的大写字母转为下划线加小写
+	 * <br/>（相当于JPA实体类，会自动将数据表的名字转换成数据库名一般）
+	 * @param s 要转换的字符串
+	 */
+	public static String firstCharToLowerCase(String s){
+		if(s==null || s.equals("")){    
+			return "";    
+        }
+		
+		//首字母转小写
+		if(Character.isLowerCase(s.charAt(0))){
+		}else{
+			s = (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+		}
+
+		//中间大写字母，专为下划线+小写字母
+		Pattern p=Pattern.compile("[A-Z]");    
+        StringBuilder builder=new StringBuilder(s);    
+        Matcher mc=p.matcher(s);    
+        int i=0;    
+        while (mc.find()) {  
+            builder.replace(mc.start()+i, mc.end()+i, "_"+mc.group().toLowerCase());    
+            i++;    
+        }    
+        if('_' == builder.charAt(0)){    
+            builder.deleteCharAt(0);    
+        }
+        return builder.toString();    
 	}
 	
 	public static void main(String[] args) {

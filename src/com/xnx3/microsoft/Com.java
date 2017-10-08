@@ -20,6 +20,9 @@ import com.xnx3.robot.Robot;
  * <br/><i>xnx3-dll.jar</i>
  * <br/><i>jacob.jar</i>
  * <li>须使用Jre1.7作为运行环境，下载地址： <a href="http://www.xnx3.com/doc/jre1.7.html">http://www.xnx3.com/doc/jre1.7.html</a>
+ * <br/>
+ * C:\\dm.dll
+ * 
  * @author 管雷鸣
  */
 public class Com {
@@ -176,7 +179,7 @@ public class Com {
 		try {
 			//1.
 			String msvcr100="C:\\WINDOWS\\system32\\msvcr100.dll";
-			if(!FileUtil.exists(msvcr100)||new File(msvcr100).length()!=this.msvcr100Length){
+			if(!FileUtil.exists(msvcr100)){
 				this.createSuccess=false;
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/msvcr100.dll"), msvcr100);
 				if(FileUtil.exists(msvcr100)){
@@ -194,7 +197,7 @@ public class Com {
 			//2.
 			String jacobX64=Lang.getCurrentJrePath()+"\\bin\\jacob-1.18-M2-x64.dll";
 			String jacobX86=Lang.getCurrentJrePath()+"\\bin\\jacob-1.18-M2-x86.dll";
-			if(!FileUtil.exists(jacobX64)||new File(jacobX64).length()!=this.jacobX64Length||!FileUtil.exists(jacobX86)||new File(jacobX86).length()!=this.jacobX86Length){
+			if(!FileUtil.exists(jacobX64)||!FileUtil.exists(jacobX86)){
 				this.createSuccess=false;
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/jacob-1.18-M2-x64.dll"), jacobX64);
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/jacob-1.18-M2-x86.dll"), jacobX86);
@@ -209,7 +212,7 @@ public class Com {
 			//3.
 			String JIntellitype=Lang.getCurrentJrePath()+"\\bin\\JIntellitype.dll";
 			String JIntellitype64=Lang.getCurrentJrePath()+"\\bin\\JIntellitype64.dll";
-			if(!FileUtil.exists(JIntellitype)||new File(JIntellitype).length()!=this.JIntellitypeLength||!FileUtil.exists(JIntellitype64)||new File(JIntellitype64).length()!=this.JIntellitype64Length){
+			if(!FileUtil.exists(JIntellitype)||!FileUtil.exists(JIntellitype64)){
 				this.createSuccess=false;
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/JIntellitype.dll"), JIntellitype);
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/JIntellitype64.dll"), JIntellitype64);
@@ -244,24 +247,21 @@ public class Com {
 			e.printStackTrace();
 			//检测dm.dll是否放到了C:下
 			String dm="C:\\dm.dll";
-			if(!FileUtil.exists(dm)||new File(dm).length()!=this.dmLength){
+			if(!FileUtil.exists(dm)){
 				this.createSuccess=false;
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/dm.dll"), dm);
 				SystemUtil.registerDll(dm);
 				log.debug(this, "initRegisterDll()", "注册dm.dll完毕");
 			}
 			
-			
 			//检测Plug365New.dll是否放到了C:下
 			String plug365="C:\\Plug365New.dll";
-			if(!FileUtil.exists(plug365)||new File(plug365).length()!=this.plug365Length){
+			if(!FileUtil.exists(plug365)){
 				this.createSuccess=false;
 				FileUtil.inputStreamToFile(this.getClass().getResourceAsStream("dll/Plug365New.dll"), plug365);
 				SystemUtil.registerDll(plug365);
 				log.debug(this, "initRegisterDll()", "注册Plug365New.dll完毕");
 			}
-			
-			
 			
 			try {
 				activeBean.setDm(new ActiveXComponent("dm.dmsoft"));		//创建大漠对象
