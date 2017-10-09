@@ -347,6 +347,9 @@ public class StringUtil {
 	 * @return 生成的无XSS的安全字符
 	 */
 	public static String filterXss(String text){
+		if(text == null){
+			return null;
+		}
 		//过滤，忽略大小写
 		String[] filterTagArray = {"script","frame "};
 		for (int i = 0; i < filterTagArray.length; i++) {
