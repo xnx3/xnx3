@@ -76,11 +76,18 @@ public class ImageUtil {
      * 等比例缩放
      * <br/>判断图像的宽度，若是宽度大于传入的值，则进行等比例压缩到指定宽高。若是图片小于指定的值，则不处理
      * @param inputStream 原图
-     * @param maxWidth 缩放后的宽度。若大于这个宽度才会进行等比例缩放。否则不进行处理
+     * @param maxWidth 缩放后的宽度。若大于这个宽度才会进行等比例缩放。否则不进行处理。传入0则不处理，忽略
      * @param suffix 图片的后缀名，如png、jpg
      * @return 处理好的
      */
     public static InputStream proportionZoom(InputStream inputStream,int maxWidth,String suffix){
+    	if(inputStream == null){
+    		return null;
+    	}
+    	if(maxWidth == 0 || maxWidth < 0){
+    		return inputStream;
+    	}
+    	
     	try {
 			BufferedImage bi = ImageIO.read(inputStream);
 			BufferedImage b = proportionZoom(bi, maxWidth);
@@ -102,6 +109,13 @@ public class ImageUtil {
      * @return 处理好的
      */
     public static BufferedImage proportionZoom(BufferedImage bufferedImage,int maxWidth){
+    	if(maxWidth == 0 || maxWidth < 0){
+    		return bufferedImage;
+    	}
+    	if(bufferedImage == null){
+    		return null;
+    	}
+    	
     	//原始图像的宽度
     	int originalWidth = bufferedImage.getWidth();	
     	if(maxWidth < originalWidth){
