@@ -469,6 +469,7 @@ public class Robot{
 		if(localImg == null){
 			return null;
 		}else{
+			bufferedImageList.put(fileName, localImg);
 			return localImg;
 		}
 	}

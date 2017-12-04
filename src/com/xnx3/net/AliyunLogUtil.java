@@ -50,7 +50,7 @@ public class AliyunLogUtil {
 	public int lastSubmitTime = DateUtil.timeForUnix10();
 	
 	// 构建一个客户端实例
-	private Client client;
+	public Client client;
 	
 	/**
 	 * 创建阿里云日志服务工具类

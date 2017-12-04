@@ -98,6 +98,28 @@ public class Lang {
 		return xnx3_result;
 	}
 	
+	/**
+	 * 字符串转换为long
+	 * @param param  要转换的字符串
+	 * @param defaultValue  转换出错异常时返回的值
+	 * @return  返回long
+	 */
+	public static long stringToLong(String param,long defaultValue){
+		long xnx3_result=0;
+		
+		//首先判断字符串不能为空
+		if(param==null||param.equalsIgnoreCase("null")){
+			xnx3_result = defaultValue;
+		}else{
+			try {
+				xnx3_result=Long.parseLong(param);
+			} catch (Exception e) {
+				xnx3_result=defaultValue;
+			}
+		}
+		
+		return xnx3_result;
+	}
 	
 	/**
 	 * 字符串转换为各个进制的整数型

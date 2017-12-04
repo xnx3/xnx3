@@ -169,10 +169,21 @@ public class StringUtil {
 
 	/**
 	 * 字符串转UTF8编码(16进制如\u7ba1\u96f7\u9e23)
+	 * <br/>建议使用 StringToUtf8
 	 * @param text 要转成utf8的文字
 	 * @return 16进制编码，如\u7ba1\u96f7\u9e23
+	 * @deprecated
 	 */
 	public static String Utf8ToString(String text){
+		return StringToUtf8(text);
+	}
+	
+	/**
+	 * 字符串转UTF8编码字符串
+	 * @param text 要转化你的字符串，如“管雷鸣”
+	 * @return UTF8编码字符串，如“\u7ba1\u96f7\u9e23”
+	 */
+	public static String StringToUtf8(String text){
 		if(text == null){
 			return null;
 		}
@@ -187,8 +198,6 @@ public class StringUtil {
         }
         return output.toString();
 	}
-	
-	
 
 	/**
 	 * 获取制定的utf-8文字编码是哪国什么语言，中文、英语、阿拉伯语、.....
@@ -505,6 +514,20 @@ public class StringUtil {
             builder.deleteCharAt(0);    
         }
         return builder.toString();    
+	}
+	
+	/**
+	 * 对某个字符串进行位移操作，利用位移来进行简单的加密、解密
+	 * @param text 要加密或者解密的字符串
+	 * @param shiftNum 位移的值
+	 * @return 加密或者解密的字符串
+	 */
+	public static String encrypt(String text, int shiftNum){
+		char[] array = text.toCharArray();// 获取字符数组  
+		for (int i = 0; i < array.length; i++) {// 遍历字符数组  
+            array[i] = (char) (array[i] ^ 1);// 对每个数组元素进行异或运算  
+        }
+		return new String(array);
 	}
 	
 	public static void main(String[] args) {

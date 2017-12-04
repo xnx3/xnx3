@@ -33,17 +33,10 @@ public class Sql {
 	private Page page;
 	private HttpServletRequest request;
 	private String groupBy = "";	//GROUP BY
+	private String[] orderByField = {};	//允许进行OrderBy排序的数据库字段,可通过 setOrderByField()进行设置
 
 	public Sql(HttpServletRequest request) {
 		this.request = request;
-		String ob = request.getParameter("orderBy");
-		if(ob != null && ob.length()>0){
-			if(ob.indexOf("_ASC")>0){
-				orderBy = " ORDER BY "+ob.replace("_ASC", "")+" ASC";
-			}else if (ob.indexOf("_DESC")>0) {
-				orderBy = " ORDER BY "+ob.replace("_DESC", "")+" DESC";
-			}
-		}
 	}
 	
 	/**
@@ -153,7 +146,7 @@ public class Sql {
 								int va = 0;
 								StringBuffer appendWhere = new StringBuffer();	//通过这个参数组合成的要追加的where条件，where条件的值可能只有一个，也可能由多个，多个值之间用,分割，会自动组合加上OR
 								while (valueArray.length > va) {
-									String val = valueArray[va];
+									String val = filter(valueArray[va]);
 									if(val == null || val.length() == 0){
 										va++;
 										continue;
@@ -254,7 +247,7 @@ public class Sql {
 		if(value == null){
 			return null;
 		}
-		return value.trim().replaceAll("\\s", "");
+		return value.trim().replaceAll("\\s", "").replaceAll("'", "");
 	}
 	
 	/**
@@ -281,7 +274,8 @@ public class Sql {
 	
 	/**
 	 * 排序规则，传入的数值如： user.id DESC
-	 * <br/>若设置了此项，get传入的排序方式则不起作用
+	 * <br/>注意，此项对传入值需要自行进行防注入判断！
+	 * <br/>注意，此项同 {@link #setOrderByField(String[])}，若在这个之后使用，则前的{@link #setOrderByField(String[])}会被覆盖掉，反之同理。
 	 * @param orderBy 如： user.id DESC
 	 */
 	public void setOrderBy(String orderBy) {
@@ -300,15 +294,50 @@ public class Sql {
 	}
 	
 	/**
+	 * orderBy排序，允许用户传入哪些字段进行排序（数据库的列名）
+	 * <br/>若不设置此项，则orderBy排序不起作用！
+	 * <br/>设置的同时，也是自动进行将用户选择进行排序，组合排序SQL
+	 * <br/>注意，在此之后前若是调用 {@link #setOrderBy(String)}，则此会把之前的{@link #setOrderBy(String)}给覆盖掉
+	 * <br/>可直接使用，对数据列会自动进行SQL防注入
+	 * @param orderByField 允许进行排序的字段集合，在这个数组中的字段可以进行ASC、DESC排序。传入如{"id","addtime"}
+	 * @return 返回组合好的排序SQL，如" ORDER BY id DESC"，若用户自己选择的排序不在指定的排序字段中(违法，入侵系统)时，会返回空字符串
+	 * 			<br/>此可忽略，提供调试使用。执行此项后，会自动将组合好的ORDER BY 存入本Sql对象中，在调用 {@link #getSql()}时自动组合上
+	 */
+	public String setOrderByField(String[] orderByField) {
+		String ob = request.getParameter("orderBy");
+		if(ob != null && ob.length()>0){
+			String sc = ""; //ASC、DESC
+			String value = "";	//具体的数据列
+			//取得倒序还是正序，以及排序的数据列
+			if(ob.indexOf("_ASC")>0){
+				sc = "ASC";
+				value = ob.replace("_ASC", "");
+			}else if (ob.indexOf("_DESC")>0) {
+				sc = "DESC";
+				value = ob.replace("_DESC", "");
+			}
+			
+			//判断数据列是否在指定的可以进行排序的数据里中，进行过滤，只有指定可以排序的数据列，才可以进行排序
+			if(orderByField.length > 0){
+				for (int i = 0; i < orderByField.length; i++) {
+					if(orderByField[i].length() > 0 && orderByField[i].equals(value)){
+						//用户选择的排序方式符合指定的排序列，那么才会进行保存排序规则，组合排序SQL
+						orderBy = " ORDER BY "+orderByField[i]+" "+sc;
+						return orderBy;
+					}
+				}
+			}
+		}
+		
+		return "";
+	}
+	
+	/**
 	 * 设置 GROUP BY 条件。
 	 * @param groupBy 传入字段名如： user.id
 	 */
 	public void setGroupBy(String groupBy){
 		this.groupBy = " GROUP BY " + groupBy;
-	}
-
-	public static void main(String[] args) {
-		SqlColumn s = new SqlColumn("money<>");
 	}
 }
 
@@ -371,5 +400,5 @@ class SqlColumn{
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
 	}
-
+	
 }

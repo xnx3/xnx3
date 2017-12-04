@@ -8,7 +8,7 @@
 		commons-logging-1.2.jar
 	 -->
 
-	<!-- 短信发送配置,若使用了短信发送功能，需配置此项 -->
+	<!-- 短信发送配置,若使用了短信发送功能，需配置此项，使用的希奥信息 -->
 	<sms>
 		<!-- 用户ID -->
 		<uid>80...</uid>
@@ -24,9 +24,13 @@
 		<!-- mail.smtp.host -->
 		<host>smtpdm.aliyun.com</host>
 		<!-- 邮箱登陆的用户名、邮箱名、邮箱地址，如xnx3@163.com -->
-		<username>123@wang.market</username>
+		<username>12345@mail.wang.market</username>
 		<!-- 登陆密码 -->
-		<password>123456</password>
+		<password>1234567890</password>
+		<!-- 默认这里不用填写，使用的便是默认端口，也就是不填写默认使用的是25端口。
+			但是阿里云的Docker服务安全考虑，是关闭25端口的，使用80端口代替，所以如果遇到这种情况时，可以在此配置发信端口
+		 -->
+		<mailSmtpPort></mailSmtpPort>
 		<!-- 是否开启调试日志 -->
 		<debug>true</debug>
 	</mail>
@@ -100,6 +104,4 @@
 			<appMasterSecret></appMasterSecret>
 		</ios>
 	</umengPush>
-	
-	
 </configuration>
