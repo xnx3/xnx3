@@ -3,6 +3,7 @@ package com.xnx3.file;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import com.xnx3.StringUtil;
 import com.xnx3.net.HttpsUtil.TrustAnyHostnameVerifier;
 import com.xnx3.net.HttpsUtil.TrustAnyTrustManager;
 
@@ -323,11 +325,16 @@ public class FileUtil {
 			// 告诉服务器book.rar这个文件从nStartPos字节开始传
 			httpConnection.setRequestProperty("RANGE", sProperty);
 			InputStream input = httpConnection.getInputStream();
-			byte[] b = new byte[1024];
-			// 读取网络文件,写入指定的文件中
-			while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
-				oSavedFile.write(b, 0, nRead);
-				nStartPos += nRead;
+			if(nEndPos == -1){
+				//没有取得长度字节数，那么就直接将其保存就好了
+				oSavedFile.write(inputstreamToByte(input));
+			}else{
+				byte[] b = new byte[1024];
+				// 读取网络文件,写入指定的文件中
+				while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
+					oSavedFile.write(b, 0, nRead);
+					nStartPos += nRead;
+				}
 			}
 			
 			httpConnection.disconnect();
@@ -357,11 +364,17 @@ public class FileUtil {
 			// 告诉服务器book.rar这个文件从nStartPos字节开始传
 //			conn.setRequestProperty("RANGE", sProperty);
 			InputStream input = conn.getInputStream();
-			byte[] b = new byte[1024];
-			// 读取网络文件,写入指定的文件中
-			while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
-				oSavedFile.write(b, 0, nRead);
-				nStartPos += nRead;
+			
+			if(nEndPos == -1){
+				//没有取得长度字节数，那么就直接将其保存就好了
+				oSavedFile.write(inputstreamToByte(input));
+			}else{
+				byte[] b = new byte[1024];
+				// 读取网络文件,写入指定的文件中
+				while ((nRead = input.read(b, 0, 1024)) > 0 && nStartPos < nEndPos) {
+					oSavedFile.write(b, 0, nRead);
+					nStartPos += nRead;
+				}
 			}
 			
 			conn.disconnect();
@@ -412,9 +425,22 @@ public class FileUtil {
 		}
 		return str;
 	}
-
+	
+	/**
+	 * 将 {@link InputStream} 转化为 byte[]
+	 * @throws IOException
+	 */
+	public static byte[] inputstreamToByte(InputStream input) throws IOException {
+	    ByteArrayOutputStream output = new ByteArrayOutputStream();
+	    byte[] buffer = new byte[4096];
+	    int n = 0;
+	    while (-1 != (n = input.read(buffer))) {
+	        output.write(buffer, 0, n);
+	    }
+	    return output.toByteArray();
+	}
+	
     public static void main(String[] args) throws IOException {
 //		downFileaa("http://www.xnx3.com/down/java/j2se_util.zip", "/music/a.zip");
-    	downFiles("https://mmbiz.qlogo.cn/mmbiz/cZV2hRpuAPjFyMrRy9J00JLdWSKC8mLZpsTtU31XOojhYhohT7tlBuXAfqRWpjAZYzdj6MsFJHSE8JbvWicuhaw/0", "/Users/apple/Desktop/template/a.jpg");
 	}
 }

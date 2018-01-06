@@ -212,8 +212,10 @@ public class Lang {
 
     /**
      * UTF-8格式汉字转换为%E4%BD%A0形式
+     * <br/>以废弃，使用 StringUtil.stringToUrl
      * @param content
-     * @return String 
+     * @return String
+     * @deprecated 
      */
     public static String stringToUrl(String content) {
         StringBuffer sb = new StringBuffer();
@@ -241,9 +243,11 @@ public class Lang {
     }
 
     /**
-     * 将%E4%BD%A0转换为UTF-8格式汉字 
+     * 将%E4%BD%A0转换为UTF-8格式汉字
+     * <br/>以废弃，使用  StringUtil
      * @param content
      * @return String
+     * @deprecated
      */
     public static String urlToString(String content) {
         StringBuffer sbuf = new StringBuffer();

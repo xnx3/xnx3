@@ -1,7 +1,7 @@
 package com.xnx3.net;
+import java.security.GeneralSecurityException;
 import java.util.Date;  
 import java.util.Properties;  
-
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -15,15 +15,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.Transport;  
 
-import com.xnx3.ConfigManagerUtil;
+import com.sun.mail.util.MailSSLSocketFactory;
 
 /**
  * 邮件发送
- * <br/>使用示例
- * <pre>
- * 		//加入配置文件 src/xnx3Config.xml  ，配置其mail节点的参数。
- * 		MailUtil.sendMail("123456@qq.com", "这是标题", "这是内容");
- * </pre>
  * <br><b>需导入</b> 
  * <br/>mail.jar
  * <br/>commons-configuration-1.7.jar
@@ -33,44 +28,76 @@ import com.xnx3.ConfigManagerUtil;
  * <br/>commons-logging-1.2.jar
  * @author 管雷鸣
  */
-public class MailUtil {  
-	private static Properties properties;  
-	private static boolean debug=true;	//调试日志
-	public static final String BR = "\n";	//内容里的换行符
+public class MailsUtil {  
+	private Properties properties;  
+	public boolean debug=false;	//调试日志
+	public final String BR = "\n";	//内容里的换行符
 	
-	private static String host;	//mail.smtp.host
-	private static String username;	//登录用户名
-	private static String password;	//登录密码
+//	private String host;	//mail.smtp.host
+	private String username;	//登录用户名
+	private String password;	//登录密码
+	private String mailSmtpPort = "25";	//发送邮件的端口，默认是25
 	
-	static{
-		host = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.host");
-		username = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.username");
-		password = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.password");
-		String d = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.debug");
-		String mailSmtpPort = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.mailSmtpPort");
-		
-		if(d != null){
-			debug = d.equals("true");
-		}
-		properties = new Properties();  
+	public MailsUtil(String host, String username, String password) {
+		properties = new Properties();
 		//设置邮件服务器  
 		properties.put("mail.smtp.host", host);  
 		//验证  
 		properties.put("mail.smtp.auth", "true");  
 		
-		//阿里云服务器安全考虑禁用了25端口，所以判断如果是阿里云的，则用80端口
-		if(mailSmtpPort != null && mailSmtpPort.length() > 0){
-			properties.put("mail.smtp.port", mailSmtpPort);
-		}
+		this.username = username;
+		this.password = password;
 	}
 	
+	public void setSSLSmtpPort(String mailSmtpPort){
+		this.mailSmtpPort = mailSmtpPort;
+		MailSSLSocketFactory sf = null;
+		try {
+			sf = new MailSSLSocketFactory();
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+		}
+		
+		sf.setTrustAllHosts(true);
+		properties.put("mail.smtp.ssl.enable", "true");
+		properties.put("mail.smtp.ssl.socketFactory", sf);
+		properties.put("mail.smtp.port", mailSmtpPort);
+	}
+	
+//	static{
+//		//阿里云服务器安全考虑禁用了25端口，所以判断如果是阿里云的，则用80端口
+//		if(mailSmtpPort != null && mailSmtpPort.length() > 0){
+//			properties.put("mail.smtp.port", mailSmtpPort);
+//		}
+//	}
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
+	/**
+	 * 是否开启邮件发送的日志打印
+	 * @param debug true：开启
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+	
+	/**
+	 * 阿里云服务器安全考虑禁用了25端口，所以判断如果是阿里云的，则用80端口。默认无需设置，使用25端口
+	 * @param mailSmtpPort 端口号
+	 */
+	public void setMailSmtpPort(String mailSmtpPort) {
+		this.mailSmtpPort = mailSmtpPort;
+	}
+
+
 	/**
 	 * 发送Txt纯文字邮件
 	 * @param targetMail  发送至的邮箱账号
 	 * @param title  邮件标题
 	 * @param content 邮件发送的内容
 	 */
-	public static void sendMail(String targetMail,String title,String content) {  
+	public void sendMail(String targetMail,String title,String content) {  
 		Transport trans = null;
 		try {  
 			//根据属性新建一个邮件会话  
@@ -111,14 +138,13 @@ public class MailUtil {
 		}  
 	}  
 	
-
 	/**
 	 * 发送HTML格式邮件
 	 * @param targetMail  发送至的邮箱账号
 	 * @param title  邮件标题
 	 * @param content 邮件发送的HTML内容，直接写html即可，无需html、body等
 	 */
-	public static void sendHtmlMail(String targetMail,String title,String content) {  
+	public void sendHtmlMail(String targetMail,String title,String content) {  
 		sendHtmlMail(targetMail, title, content, null);
 	}
 	
@@ -128,15 +154,15 @@ public class MailUtil {
 	 * @param title  邮件标题
 	 * @param content 邮件发送的HTML内容，直接写html即可，无需html、body等
 	 */
-	public static void sendHtmlMail(String targetMail,String title,String content, String replayTo) {  
+	public void sendHtmlMail(String targetMail,String title,String content, String replayTo) {  
 		Transport trans = null;
 		try {  
 			//根据属性新建一个邮件会话  
 			Session mailSession = Session.getInstance(properties,  
 			new Authenticator() {  
 				public PasswordAuthentication getPasswordAuthentication() {  
-					  return new PasswordAuthentication(username,password);  
-				  }
+					return new PasswordAuthentication(username,password);  
+				}
 			});  
 			mailSession.setDebug(debug);  
 			//建立消息对象  
@@ -183,8 +209,4 @@ public class MailUtil {
 		}  
 	}  
 	
-	public static void main(String[] args) {
-		MailUtil.sendHtmlMail("921153866@qq.com", "这是标题", "这是内容", "hezuo@wang.market");
-	}
-
 }

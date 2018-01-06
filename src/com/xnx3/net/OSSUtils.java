@@ -156,7 +156,7 @@ public class OSSUtils {
 			suffix = "jpg";
 		}
 		
-    	return OSSUtil.put(filePath+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
+    	return put(filePath+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
 	}
 	
 	
@@ -204,7 +204,7 @@ public class OSSUtils {
 			if(nextMarker != null){
 				listObjectsRequest.setMarker(nextMarker);
 			}
-			ObjectListing listO = OSSUtil.getOSSClient().listObjects(listObjectsRequest);
+			ObjectListing listO = getOSSClient().listObjects(listObjectsRequest);
 			
 		    for (OSSObjectSummary objectSummary : listO.getObjectSummaries()) {
 		        size += objectSummary.getSize();  
@@ -233,7 +233,7 @@ public class OSSUtils {
 			if(nextMarker != null){
 				listObjectsRequest.setMarker(nextMarker);
 			}
-			ObjectListing listO = OSSUtil.getOSSClient().listObjects(listObjectsRequest);
+			ObjectListing listO = getOSSClient().listObjects(listObjectsRequest);
 			
 		    for (OSSObjectSummary objectSummary : listO.getObjectSummaries()) {
 		    	list.add(objectSummary);

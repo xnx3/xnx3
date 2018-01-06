@@ -74,6 +74,13 @@ public class OSSUtil {
 		bucketName = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.bucketName");
 		roleArn = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.roleArn");
 		
+		refreshUrl();
+	}
+	
+	/**
+	 * 重新刷新 {@link OSSUtil#url} 的值。此项很少用到。除非你手动给AccessKeyId、、、等赋值后才要重新刷新
+	 */
+	public static void refreshUrl(){
 		url = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.url");
 		if(url == null || url.length() == 0){
 			url = bucketName+"."+endpoint;
@@ -93,7 +100,12 @@ public class OSSUtil {
 	public static OSSClient getOSSClient(){
 		if(ossClient == null){
 			System.out.println("create OSSCLient");
-			ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+			if(accessKeyId.length() < 10){
+				System.out.println("您未开启OSS对象存储服务！若要使用OSS，可参考：http://www.guanleiming.com/2327.html");
+				return null;
+			}else{
+				ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+			}
 		}
 		return ossClient;
 	}

@@ -200,6 +200,32 @@ public class StringUtil {
 	}
 
 	/**
+	 * 将UTF-8编码的字符串转换为正常字符串
+	 * @param text UTF-8的字符串，如  \u7ba1\u96f7\u9e23
+	 * @return 正常字符，如 管雷鸣
+	 */
+	public static String utf8ToString(String text){
+//        String str = null;  
+        if(text == null){
+        	return null;
+        }
+        
+        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");  
+	    Matcher matcher = pattern.matcher(text);  
+	    char ch;  
+	    while (matcher.find()) {  
+	        //group 6728  
+	        String group = matcher.group(2);  
+	        //ch:'木' 26408  
+	        ch = (char) Integer.parseInt(group, 16);  
+	        //group1 \u6728  
+	        String group1 = matcher.group(1);  
+	        text = text.replace(group1, ch + "");  
+	    }
+	    return text;  
+	}
+	
+	/**
 	 * 获取制定的utf-8文字编码是哪国什么语言，中文、英语、阿拉伯语、.....
 	 * @param text 要检测的UTF8编码，可传入：
 	 * 				<li>16进制字符串，如 "\u7ba1"
@@ -530,8 +556,92 @@ public class StringUtil {
 		return new String(array);
 	}
 	
+	 /**
+     * UTF-8格式汉字转换为%E4%BD%A0形式
+     * @param content 要转换的字符串内容
+     * @return String 转换好的字符串
+     */
+    public static String stringToUrl(String content) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < content.length(); i++) {
+            char c = content.charAt(i);
+            if (c >= 0 && c <= 255) {
+                sb.append(c);
+            } else {
+                byte[] b;
+                try {
+                    b = String.valueOf(c).getBytes("utf-8");
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                    b = new byte[0];
+                }
+                for (int j = 0; j < b.length; j++) {
+                    int k = b[j];
+                    if (k < 0)
+                        k += 256;
+                    sb.append("%" + Integer.toHexString(k).toUpperCase());
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将%E4%BD%A0转换为UTF-8格式汉字 
+     * @param content 要转换的内容
+     * @return String 转换好的内容
+     */
+    public static String urlToString(String content) {
+        StringBuffer sbuf = new StringBuffer();
+        int l = content.length();
+        int ch = -1;
+        int b, sumb = 0;
+        for (int i = 0, more = -1; i < l; i++) {
+            /* Get next byte b from URL segment s */
+            switch (ch = content.charAt(i)) {
+            case '%':
+                ch = content.charAt(++i);
+                int hb = (Character.isDigit((char) ch) ? ch - '0'
+                        : 10 + Character.toLowerCase((char) ch) - 'a') & 0xF;
+                ch = content.charAt(++i);
+                int lb = (Character.isDigit((char) ch) ? ch - '0'
+                        : 10 + Character.toLowerCase((char) ch) - 'a') & 0xF;
+                b = (hb << 4) | lb;
+                break;
+            case '+':
+                b = ' ';
+                break;
+            default:
+                b = ch;
+            }
+            /* Decode byte b as UTF-8, sumb collects incomplete chars */
+            if ((b & 0xc0) == 0x80) { // 10xxxxxx (continuation byte)   
+                sumb = (sumb << 6) | (b & 0x3f); // Add 6 bits to sumb   
+                if (--more == 0)
+                    sbuf.append((char) sumb); // Add char to sbuf   
+            } else if ((b & 0x80) == 0x00) { // 0xxxxxxx (yields 7 bits)   
+                sbuf.append((char) b); // Store in sbuf   
+            } else if ((b & 0xe0) == 0xc0) { // 110xxxxx (yields 5 bits)   
+                sumb = b & 0x1f;
+                more = 1; // Expect 1 more byte   
+            } else if ((b & 0xf0) == 0xe0) { // 1110xxxx (yields 4 bits)   
+                sumb = b & 0x0f;
+                more = 2; // Expect 2 more bytes   
+            } else if ((b & 0xf8) == 0xf0) { // 11110xxx (yields 3 bits)   
+                sumb = b & 0x07;
+                more = 3; // Expect 3 more bytes   
+            } else if ((b & 0xfc) == 0xf8) { // 111110xx (yields 2 bits)   
+                sumb = b & 0x03;
+                more = 4; // Expect 4 more bytes   
+            } else /*if ((b & 0xfe) == 0xfc)*/{ // 1111110x (yields 1 bit)   
+                sumb = b & 0x01;
+                more = 5; // Expect 5 more bytes   
+            }
+            /* We don't test if the UTF-8 encoding is well-formed */
+        }
+        return sbuf.toString();
+    }
+	
 	public static void main(String[] args) {
-		String a = "<script>addhkjhkj<iframe src=";
-		System.out.println(filterXss(a));
 	}
 }

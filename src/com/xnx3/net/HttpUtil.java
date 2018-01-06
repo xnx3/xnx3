@@ -180,8 +180,13 @@ public class HttpUtil {
 	 * @return 完整的GET方式网址
 	 */
 	public static String mapToUrl(String url,Map<String, String> parameters){
+		int i = 0; 
+		if(url.indexOf("?") > 0){
+			i = 1;
+		}
+		
 		StringBuffer param = new StringBuffer(); 
-        int i = 0; 
+        
         for (String key : parameters.keySet()) { 
             if (i == 0){
             	param.append("?");
