@@ -642,6 +642,24 @@ public class StringUtil {
         return sbuf.toString();
     }
 	
+    /**
+	 * 正则替换
+	 * @param text 操作的内容源，主体
+	 * @param regex 替换掉的
+	 * @param replacement 替换成新的，取而代之的
+	 * @return 替换好的内容
+	 */
+	public static String replaceAll(String text, String regex, String replacement){
+		String s[] = {"?","(",")"}; 
+		for (int i = 0; i < s.length; i++) {
+			regex = regex.replaceAll("\\"+s[i], "\\\\"+s[i]);
+		}
+		text = text.replaceAll(regex, replacement);
+		
+		return text;
+	}
+	
+    
 	public static void main(String[] args) {
 	}
 }
