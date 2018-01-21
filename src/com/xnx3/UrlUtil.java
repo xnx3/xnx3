@@ -119,4 +119,23 @@ public class UrlUtil {
 		return "";
 	}
 	
+	/**
+	 * 获取文件前缀名字。
+	 * @param fileName 传入的文件名字。如传入 test.jpg ，则会返回不带后缀的名字： test
+	 * @return 若传入null，则返回空字符串""
+	 */
+	public static String getFileBeforeName(String fileName){
+		if(fileName == null){
+			return "";
+		}
+		
+		String htmlFile = "";
+		if(fileName.indexOf(".") > 0){
+			String s[] = fileName.split("\\.");
+			htmlFile = s[0];
+		}else{
+			htmlFile = fileName;
+		}
+		return htmlFile;
+	}
 }
