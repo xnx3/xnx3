@@ -155,7 +155,7 @@ public class UI {
 	 */
 	public static JLabel showMessageForMouse(int x,int y,int width,int height,String html){
 		jlabelMessageForMouse.setText("<html>"+html);
-		jframeMessageForMouse.setBounds(x, y, width, height);
+		jframeMessageForMouse.setBounds(x+10, y+10, width, height);
 		jframeMessageForMouse.setVisible(true);
 		
 		return jlabelMessageForMouse;

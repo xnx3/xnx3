@@ -60,7 +60,7 @@ public class ImageUtil {
      * 对图片进行放大
      * @param originalImage 原始图片
      * @param times 放大倍数
-     * @return
+     * @return 放大后的图片
      */
     public static BufferedImage bigImage(BufferedImage  originalImage, Integer times){
         int width = originalImage.getWidth()*times;

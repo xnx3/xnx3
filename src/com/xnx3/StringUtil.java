@@ -377,7 +377,7 @@ public class StringUtil {
     }
 
 	/**
-	 * 过滤XSS攻击有关的字符。将其转化为无效标签。过滤script、frame
+	 * 过滤XSS攻击有关的字符。将其转化为无效标签。过滤script、frame、;、等
 	 * @param text 要过滤的原始字符
 	 * @return 生成的无XSS的安全字符
 	 */
@@ -385,6 +385,9 @@ public class StringUtil {
 		if(text == null){
 			return null;
 		}
+		
+		text = text.replaceAll(";", "；");
+		
 		//过滤，忽略大小写
 		String[] filterTagArray = {"script","frame "};
 		for (int i = 0; i < filterTagArray.length; i++) {
@@ -392,6 +395,16 @@ public class StringUtil {
 	        Matcher m = p.matcher(text);  
 	        text = m.replaceAll("xss_"+filterTagArray[i]);  
 		}
+		
+		text = text.replaceAll("<", "&lt;");
+		text = text.replaceAll(">", "&gt;");
+		
+		text = text.replaceAll("\\(", "&#40;");
+		text = text.replaceAll("\\)", "&#41;");
+		
+		text = text.replaceAll("'", "&#39;");
+		text = text.replaceAll("eval\\((.*)\\)", "");
+		text = text.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
         
 		return text;
 	}
@@ -659,7 +672,34 @@ public class StringUtil {
 		return text;
 	}
 	
-    
+
+	
+	/**
+	 * 过滤英文特殊字符 `~!@#$%^&*()+=|{}':;',\\[\\].<>/?~
+	 * @param text 要过滤得原始字符串
+	 * @return 过滤完后得字符串
+	 */
+	public static String filterEnglishSpecialSymbol(String text){
+		String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~]"; 
+		Pattern p = Pattern.compile(regEx); 
+		Matcher m = p.matcher(text);
+		return m.replaceAll("").trim();
+	}
+	
+	/**
+	 * 过滤中文特殊字符 ！@#￥%……&*（）——+|{}【】‘；：”“’。，、？
+	 * @param text 要过滤得原始字符串
+	 * @return 过滤完后得字符串
+	 */
+	public static String filterChineseSpecialSymbol(String text){
+		String regEx="[！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]"; 
+		Pattern p = Pattern.compile(regEx); 
+		Matcher m = p.matcher(text);
+		return m.replaceAll("").trim();
+	}
+	
 	public static void main(String[] args) {
+		String xss = "<script>alert('12');</script>";
+		System.out.println(filterXss(xss));
 	}
 }

@@ -138,4 +138,25 @@ public class UrlUtil {
 		}
 		return htmlFile;
 	}
+	
+	/**
+	 * 获取当前url的协议，返回如 http 、 https 、 ftp 、 file 等
+	 * @param url 绝对路径，必须是全的，包含协议的，如 http://www.xnx3.com
+	 * @return 自动截取的协议，如 http 。若取不到，则返回null
+	 */
+	public static String getProtocols(String url){
+		if(url == null){
+			return null;
+		}
+		
+		if(url.indexOf("//") > 1){
+			return url.substring(0, url.indexOf("//") - 1);
+		}
+		return null;
+	}
+	
+	
+	public static void main(String[] args) {
+		System.out.println(getProtocols("http://www.xnx3.com"));
+	}
 }

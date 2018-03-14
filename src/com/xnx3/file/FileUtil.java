@@ -16,13 +16,22 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import com.xnx3.Lang;
 import com.xnx3.StringUtil;
 import com.xnx3.net.HttpsUtil.TrustAnyHostnameVerifier;
 import com.xnx3.net.HttpsUtil.TrustAnyTrustManager;
@@ -356,7 +365,7 @@ public class FileUtil {
 	        conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
 	        
 	        //文件的长度
-	        int nEndPos = Integer.parseInt( conn.getHeaderField("Content-Length"));
+	        int nEndPos = Lang.stringToInt(conn.getHeaderField("Content-Length"), -1);
 
 	        RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
 //	        conn.setRequestProperty("User-Agent", "Internet Explorer");
@@ -438,6 +447,27 @@ public class FileUtil {
 	        output.write(buffer, 0, n);
 	    }
 	    return output.toByteArray();
+	}
+	
+	/**
+	 * 输入文件路径，返回这个文件的创建时间
+	 * @param filePath 要获取创建时间的文件的路径，绝对路径
+	 * @return 此文件创建的时间
+	 */
+	public static Date getCreateTime(String filePath){  
+		Path path=Paths.get(filePath);    
+		BasicFileAttributeView basicview=Files.getFileAttributeView(path, BasicFileAttributeView.class,LinkOption.NOFOLLOW_LINKS );  
+		BasicFileAttributes attr;  
+		try {
+			attr = basicview.readAttributes();  
+			Date createDate = new Date(attr.creationTime().toMillis());  
+			return createDate;  
+		} catch (Exception e) {  
+			e.printStackTrace();  
+		}
+		Calendar cal = Calendar.getInstance();  
+		cal.set(1970, 0, 1, 0, 0, 0);  
+		return cal.getTime();  
 	}
 	
     public static void main(String[] args) throws IOException {
