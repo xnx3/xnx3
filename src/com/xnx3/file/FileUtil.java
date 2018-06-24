@@ -26,6 +26,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -313,6 +314,26 @@ public class FileUtil {
 	 * @throws IOException 
 	 */
 	public static void downFiles(String downUrl,String savePath) throws IOException{
+		downFiles(downUrl, savePath, null);
+	}
+	
+	/**
+	 * 从互联网下载文件。适用于http、https协议
+	 * <li>下载过程会阻塞当前线程
+	 * <li>若文件存在，会先删除存在的文件，再下载
+	 * @param downUrl 下载的目标文件网址 如 "http://www.xnx3.com/down/java/j2se_util.zip"
+	 * @param savePath 下载的文件保存路径。如 "C:\\test\\j2se_util.zip"
+	 * @param param 包含在请求头中的一些参数。比如 User-Agent 等。若为空，则不传递任何参数。<br/>例如：
+	 * 			<ul>
+	 * 				<li>key:User-Agent &nbsp;&nbsp;&nbsp;&nbsp; value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36</li>
+	 * 				<li>key:Host &nbsp;&nbsp;&nbsp;&nbsp; value:xnx3.com</li>
+	 * 			</ul>
+	 * @return 返回下载出现的异常
+	 * 			<li>若返回null，则为下载成功，下载完毕，没有出现异常
+	 * 			<li>若返回具体字符串，则出现了异常，被try捕获到了，返回e.getMessage()异常信息
+	 * @throws IOException 
+	 */
+	public static void downFiles(String downUrl,String savePath, Map<String, String> param) throws IOException{
 		//判断文件是否已存在，若存在，则先删除
 		if(exists(savePath)){
 			FileUtil.deleteFile(savePath);
@@ -329,7 +350,13 @@ public class FileUtil {
 			long nEndPos = getFileSize(downUrl);
 			
 			RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
-			httpConnection.setRequestProperty("User-Agent", "Internet Explorer");
+			if(param != null){
+				for (Map.Entry<String, String> entry : param.entrySet()) {
+					httpConnection.setRequestProperty(entry.getKey(), entry.getValue());
+				}
+			}else{
+				httpConnection.setRequestProperty("User-Agent", "Internet Explorer");
+			}
 			String sProperty = "bytes=" + nStartPos + "-";
 			// 告诉服务器book.rar这个文件从nStartPos字节开始传
 			httpConnection.setRequestProperty("RANGE", sProperty);
@@ -368,6 +395,13 @@ public class FileUtil {
 	        int nEndPos = Lang.stringToInt(conn.getHeaderField("Content-Length"), -1);
 
 	        RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");
+	        if(param != null){
+				for (Map.Entry<String, String> entry : param.entrySet()) {
+					conn.setRequestProperty(entry.getKey(), entry.getValue());
+				}
+			}else{
+				conn.setRequestProperty("User-Agent", "Internet Explorer");
+			}
 //	        conn.setRequestProperty("User-Agent", "Internet Explorer");
 			String sProperty = "bytes=" + nStartPos + "-";
 			// 告诉服务器book.rar这个文件从nStartPos字节开始传
@@ -471,6 +505,6 @@ public class FileUtil {
 	}
 	
     public static void main(String[] args) throws IOException {
-//		downFileaa("http://www.xnx3.com/down/java/j2se_util.zip", "/music/a.zip");
+		downFiles("http://conference.cioe.cn/skin/gaofeng/js/js.js?version=2018/6/1%2020:20:17", "/images/js/a.js");
 	}
 }

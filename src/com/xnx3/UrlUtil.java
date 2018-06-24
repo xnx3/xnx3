@@ -67,6 +67,21 @@ public class UrlUtil {
 	 * @return url所在地址的路径，返回如 http://www.wscso.com/test/
 	 */
 	public static String getPath(String url){
+		//排除问号及其后的字符串
+		int wenhao = url.lastIndexOf("?");
+		if(wenhao > -1){
+			//发现问号的存在，那么将问号后面的字符删除掉
+			url = url.substring(0, wenhao);
+		}
+		
+		//排除 # 及其后的字符串
+		int jinghao = url.lastIndexOf("#");
+		if(jinghao > -1){
+			//发现问号的存在，那么将问号后面的字符删除掉
+			url = url.substring(0, jinghao);
+		}
+		
+		
 		int last = url.lastIndexOf("/");
 		if(last > 8){
 			url = url.substring(0, last+1);
@@ -81,15 +96,29 @@ public class UrlUtil {
 	 * @return 返回访问的文件名，如以上url返回： a.jpg
 	 */
 	public static String getFileName(String url){
+		//排除问号及其后的字符串
+		int wenhao = url.lastIndexOf("?");
+		if(wenhao > -1){
+			//发现问号的存在，那么将问号后面的字符删除掉
+			url = url.substring(0, wenhao);
+		}
+		
+		//排除 # 及其后的字符串
+		int jinghao = url.lastIndexOf("#");
+		if(jinghao > -1){
+			//发现问号的存在，那么将问号后面的字符删除掉
+			url = url.substring(0, jinghao);
+		}
+		
 		int last = url.lastIndexOf("/");
 		if(last > 8){
 			url = url.substring(last+1, url.length());
-			if(url.indexOf("?") > 0){
-				url = url.substring(0, url.indexOf("?"));
-			}
-			if(url.indexOf("#") > 0){
-				url = url.substring(0, url.indexOf("#"));
-			}
+//			if(url.indexOf("?") > 0){
+//				url = url.substring(0, url.indexOf("?"));
+//			}
+//			if(url.indexOf("#") > 0){
+//				url = url.substring(0, url.indexOf("#"));
+//			}
 			return url;
 		}else{
 			//不是正常的url地址
@@ -157,6 +186,6 @@ public class UrlUtil {
 	
 	
 	public static void main(String[] args) {
-		System.out.println(getProtocols("http://www.xnx3.com"));
+		System.out.println(getPath("http://conference.cioe.cn/skin/gaofeng/css/reset.css?version=2018/6/1%2020:20:49"));
 	}
 }
