@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -13,6 +14,17 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 
 public class StringUtil {
+	private static final String X36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+	/**
+	 * 0-9 、 a-z 一共36个字符
+	 */
+	public static final char[] AZ09CHAR_36 = {'0','1','2','3','4','5','6','7','8','9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+	
+    /**
+     * 26个字母
+     */
+    public static final char[] AZCHAR_26 = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
 	/**
 	 * UTF8编码，16进制区间
@@ -167,6 +179,38 @@ public class StringUtil {
 					};
 	
 
+	/**
+	 * 将 十进制 的int数，转化为 0-9 + a-z 的36进制字符串，从而所见其长度
+	 * @param num 要转换的十进制数
+	 * @return 转换好的36进制字符串
+	 */
+	public static String intTo36(int num) {
+        StringBuffer sBuffer = new StringBuffer();
+        if(num == 0) {
+            sBuffer.append("0");
+        }
+        while(num > 0) {
+            sBuffer.append(AZ09CHAR_36[num % 36]);
+            num = num / 36;
+        }
+        return sBuffer.reverse().toString();
+    }
+
+    public static int _36ToInt(String string) {
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        for (int i = 0; i < X36.length(); i++) {
+            map.put(X36.charAt(i), i);
+        }
+        int size = string.length();
+        int num = 0;
+        for(int i = 0; i<size; i++) {
+            String char2str = String.valueOf(string.charAt(i)).toUpperCase();
+            num = (int) (map.get(char2str.charAt(0)) * Math.pow(36, size - i - 1) + num);
+        }
+        return num;
+    }
+
+	
 	/**
 	 * 字符串转UTF8编码(16进制如\u7ba1\u96f7\u9e23)
 	 * <br/>建议使用 StringToUtf8
@@ -361,21 +405,45 @@ public class StringUtil {
     	final int  maxNum = 26;
     	int i;  //生成的随机数
     	int count = 0; //生成的密码的长度
-    	final char[] str = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
+    	
     	StringBuffer pwd = new StringBuffer("");
     	Random r = new Random();
     	while(count < length){
     		//生成随机数，取绝对值，防止生成负数，
-    		i = Math.abs(r.nextInt(maxNum));  //生成的数最大为36-1
-    		if (i >= 0 && i < str.length) {
-    			pwd.append(str[i]);
+    		i = Math.abs(r.nextInt(maxNum));  //生成的数最大为26-1
+    		if (i >= 0 && i < AZCHAR_26.length) {
+    			pwd.append(AZCHAR_26[i]);
     			count ++;
     		}
     	}
     	return pwd.toString();
     }
 
+    /**
+     * 生成随机长度的英文+数字（0-9 10个数字、a－z，26个英文字母）
+     * @param length 生成字符串的长度
+     * @return 字符串
+     */
+    public static String getRandom09AZ(int length){
+    	//字符长度
+    	final int  maxNum = 36;
+    	int i;  //生成的随机数
+    	int count = 0; //生成的密码的长度
+    	
+    	StringBuffer pwd = new StringBuffer("");
+    	Random r = new Random();
+    	while(count < length){
+    		//生成随机数，取绝对值，防止生成负数，
+    		i = Math.abs(r.nextInt(maxNum));  //生成的数最大为26-1
+    		if (i >= 0 && i < AZ09CHAR_36.length) {
+    			pwd.append(AZ09CHAR_36 [i]);
+    			count ++;
+    		}
+    	}
+    	return pwd.toString();
+    }
+
+    
 	/**
 	 * 过滤XSS攻击有关的字符。将其转化为无效标签。过滤script、frame、;、等
 	 * @param text 要过滤的原始字符
@@ -699,7 +767,6 @@ public class StringUtil {
 	}
 	
 	public static void main(String[] args) {
-		String xss = "<script>alert('12');</script>";
-		System.out.println(filterXss(xss));
+		System.out.println(intTo36(90));
 	}
 }

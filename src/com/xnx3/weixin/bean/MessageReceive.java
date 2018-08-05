@@ -35,6 +35,12 @@ public class MessageReceive {
 	/*关注、取消关注*/
 	private String event;
 	
+	/*带参数的二维码，扫描后附带的参数*/
+	//事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+	private String eventKey;
+	//二维码的ticke，可以用来换取二维码图片
+	private String ticket;
+	
 	/**
 	 * 消息类型，link，超链接
 	 */
@@ -233,15 +239,39 @@ public class MessageReceive {
 		this.receiveBody = receiveBody;
 	}
 
+	/**
+	 * 事件key值，是一个32位无符号整数，即创建二维码时的二维码scene_id
+	 */
+	public String getEventKey() {
+		return eventKey;
+	}
+
+	public void setEventKey(String eventKey) {
+		this.eventKey = eventKey;
+	}
+
+	/**
+	 * 二维码的ticke，可以用来换取二维码图片
+	 */
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
 	@Override
 	public String toString() {
-		return "MessageReceive [toUserName=" + toUserName + ", fromUserName="
-				+ fromUserName + ", createTime=" + createTime + ", msgType="
-				+ msgType + ", msgId=" + msgId + ", content=" + content
-				+ ", picUrl=" + picUrl + ", mediaId=" + mediaId + ", format="
-				+ format + ", thumbMediaId=" + thumbMediaId + ", title="
-				+ title + ", description=" + description + ", url=" + url
-				+ ", event=" + event + "]";
+		return "MessageReceive [receiveBody=" + receiveBody + ", toUserName="
+				+ toUserName + ", fromUserName=" + fromUserName
+				+ ", createTime=" + createTime + ", msgType=" + msgType
+				+ ", msgId=" + msgId + ", content=" + content + ", picUrl="
+				+ picUrl + ", mediaId=" + mediaId + ", format=" + format
+				+ ", thumbMediaId=" + thumbMediaId + ", title=" + title
+				+ ", description=" + description + ", url=" + url + ", event="
+				+ event + ", eventKey=" + eventKey + ", ticket=" + ticket + "]";
 	}
+
 	
 }

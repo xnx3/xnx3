@@ -94,7 +94,7 @@ public class WeiXinUtil {
 		UserInfo userInfo = null;
 		HttpResponse httpResponse = httpUtil.get(USER_INFO_URL.replace("ACCESS_TOKEN", getAccessToken().getAccess_token()).replace("OPENID", openId));
 		JSONObject json = JSONObject.fromObject(httpResponse.getContent());
-		if(json.get("errcode") != null){
+		if(json.get("subscribe") != null){
 			userInfo = new UserInfo();
 			userInfo.setSubscribe(json.getString("subscribe").equals("1"));
 			if(userInfo.isSubscribe()){
@@ -107,6 +107,12 @@ public class WeiXinUtil {
 				userInfo.setProvince(json.getString("province"));
 				userInfo.setSex(json.getInt("sex"));
 				userInfo.setSubscribeTime(json.getInt("subscribe_time"));
+				userInfo.setUnionid(json.getString("unionid"));
+				userInfo.setRemark(json.getString("remark"));
+				userInfo.setGroupid(json.getInt("groupid"));
+				userInfo.setSubscribeScene(json.getString("subscribe_scene"));
+				userInfo.setQr_scene(json.getString("qr_scene"));
+				userInfo.setQrSceneStr(json.getString("qr_scene_str"));
 			}
 		}else{
 			debug("获取用户信息失败！用户openid:"+openId+"，微信回执："+httpResponse.getContent());
@@ -322,7 +328,14 @@ public class WeiXinUtil {
 		if(e.element("Event") != null){
 			mr.setEvent(e.element("Event").getText());
 		}
-			
+		
+		if(e.element("EventKey") != null){
+			mr.setEventKey(e.element("EventKey").getText());
+		}
+		if(e.element("Ticket") != null){
+			mr.setTicket(e.element("Ticket").getText());
+		}
+		
 		return mr;
 	}
 	

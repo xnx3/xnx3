@@ -66,8 +66,14 @@ public class HttpsUtil {
 
 	public static void main(String[] args) {
 		HttpsUtil h = new HttpsUtil();
-		System.out.println(h.get("https://www.baidu.com"));
-		new HttpsUtil().get("https://www.baidu.com").getContent();
+		
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("touser", "o7swM5Mj4o7pn0eJxxJdLTeveK0k");
+		param.put("template_id", "5xG4kIG-WCdGjnNUVJ2i9ycf6_xNzhBK1wwGKymqvx4");
+		param.put("form_id", "wx16151340469812fdb73ab5e51779898834");
+		
+		HttpResponse hr = h.post("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=123", param);
+		System.out.println(hr.getContent());
 	}
 	
 	

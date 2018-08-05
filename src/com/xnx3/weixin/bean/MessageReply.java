@@ -2,6 +2,7 @@ package com.xnx3.weixin.bean;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,6 +47,37 @@ public class MessageReply {
 		reply(response, text);
 	}
 	
+	/**
+	 * 向微信服务器进行图文回复（MsgType=news）的XML格式字符串，可以将此直接回复微信服务器即可达到回复效果。
+	 * <br/>此项即向微信服务器自动回复xml
+	 * @param response {@link HttpServletResponse}响应，输出返回值给微信服务器。
+	 * @param content 微信自动回复用户的内容
+	 */
+	public void replyNews(HttpServletResponse response, List<NewsItem> itemList){
+		String items = "";
+		for (int i = 0; i < itemList.size(); i++) {
+			items = items + itemList.get(i).getXMLString();
+		}
+		String text = "<xml>"
+				+ "<ToUserName><![CDATA["+this.toUserName+"]]></ToUserName>"
+				+ "<FromUserName><![CDATA["+this.fromUserName+"]]></FromUserName>"
+				+ "<CreateTime>"+DateUtil.timeForUnix10()+"</CreateTime>"
+				+ "<MsgType><![CDATA[news]]></MsgType>"
+				+ "<ArticleCount><![CDATA["+itemList.size()+"]]></ArticleCount>"
+				+ "<Articles>"+items+"</Articles>"
+				+ "</xml>";
+		System.out.println("--------");
+		System.out.println(text);
+		System.out.println("--------");
+		reply(response, text);
+	}
+	
+	
+	/**
+	 * 微信公众号回复给咨询者。 这里需要自己组合返回的 xml
+	 * @param response
+	 * @param text 回复微信服务器的 xml 格式数据
+	 */
 	public void reply(HttpServletResponse response, String text){
 		response.setCharacterEncoding("UTF-8");  
 	    response.setContentType("application/json; charset=utf-8");  

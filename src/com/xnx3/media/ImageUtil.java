@@ -1,8 +1,10 @@
 package com.xnx3.media;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -143,7 +145,6 @@ public class ImageUtil {
 		try {
 			url = new URL(imageUrl);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
         BufferedImage bufferedImage = null;
@@ -266,7 +267,6 @@ public class ImageUtil {
 			out = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, imageSuffix, out);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(out == null){
@@ -324,10 +324,33 @@ public class ImageUtil {
          return tag;
     }
     
+    /**
+     * 图片水印
+     * @param originalImage 原图，大图。比如，可用 {@link ImageUtil#getBufferedImageByUrl(String)} 获取
+     * @param shuiyinImage 水印图，小图，要水印到大图的水印图。
+     * @param startX 水印开始地点，原图的左上角，X坐标
+     * @param startY水印开始地点，原图的左上角，Y坐标
+     * @param width	宽度的像素点，会将整个图片压缩或放大整个图水印上。
+     * @param height 高度的像素点
+     * @return 已经水印好的图片的 {@link BufferedImage} 对象
+     */
+    public static BufferedImage watermark(BufferedImage originalImage, BufferedImage shuiyinImage, int startX, int startY ,int width, int height){
+    	Graphics2D g = originalImage.createGraphics();
+    	g.drawImage(shuiyinImage, startX, startY, width, height, null);
+    	
+    	return originalImage;
+    }
+    
     public static void main(String[] args) throws IOException {
-    	BufferedImage bufferedImage = loadLocalhostImage("/images/xnx3/qrcode_for_gh_674025ffa56e_430.jpg");
-        BufferedImage tag = formatConversion(bufferedImage);
-		saveToLocalhost(tag, "png", "/images/xnx3/ceshi.png");
+    	BufferedImage bufferedImage = getBufferedImageByUrl("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQEB8TwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyN09JNUl3ZVVjLWwxc2FOZjFyY0sAAgSKtkZbAwSAOgkA");
+    	//大图，要水印的图
+    	BufferedImage img = getBufferedImageByUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533032575755&di=daf281102c2cd8c874f87ae140ccc13c&imgtype=0&src=http%3A%2F%2Fimg00.deviantart.net%2F43d7%2Fi%2F2018%2F016%2Ff%2Fd%2Fadventures__g__by_moonfiire-dc07aj8.jpg");
+    	
+    	
+        Graphics2D g = img.createGraphics();
+        g.drawImage(bufferedImage, 100, 100, 120, 120, null);
+    	
+		saveToLocalhost(img, "png", "/images/xnx3/ceshi.png");
 	}
     
 	

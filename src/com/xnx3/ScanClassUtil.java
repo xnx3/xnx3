@@ -34,6 +34,28 @@ public class ScanClassUtil {
 	}
 	
 	/**
+	 * 从 指定的一堆 {@link Class} 中，找出某个接口的实现类，放入 List 返回。只要类中有过实现这个接口，便将这个类返回
+	 * @param classList 要找的一堆 {@link Class}
+	 * @param interfaceName 如：com.xnx3.wangmarket.weixin.interfaces.AutoReply
+	 * @return 将有此接口实现的类用 List 返回
+	 */
+	public static List<Class<?>> searchByInterfaceName(List<Class<?>> classList, String interfaceName){
+        Iterator<Class<?>> iterator = classList.iterator();
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        while (iterator.hasNext()) {
+            Class<?> cls = iterator.next();
+            Class<?>[] ic = cls.getInterfaces();
+            for (int i = 0; i < ic.length; i++) {
+				Class<?> c = ic[i];
+				if(c.getName().equals(interfaceName)){
+					list.add(cls);
+				}
+			}
+        }
+        return list;
+	}
+	
+	/**
 	 * 从 指定的一堆 {@link Class} 中，找出类上有某个指定注解的类，放入 List 返回。
 	 * <pre>
 	 * //使用如:
@@ -69,6 +91,7 @@ public class ScanClassUtil {
 	 * @param clazz
 	 * @param classesAll
 	 * @return
+	 * @deprecated
 	 */
     public static List<Class<?>> getByInterface(Class clazz, List<Class<?>> classesAll) {
         List<Class<?>> classList = new ArrayList<Class<?>>();

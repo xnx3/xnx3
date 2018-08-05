@@ -34,8 +34,8 @@ import com.xnx3.exception.NotReturnValueException;
  * @author 管雷鸣
  */
 public class AliyunLogUtil {
-	private String project = ""; // 上面步骤创建的项目名称
-	private String logstore = ""; // 上面步骤创建的日志库名称
+	public String project = ""; // 上面步骤创建的项目名称
+	public String logstore = ""; // 上面步骤创建的日志库名称
 	
 	/**
 	 * 提交日志的累计条数，当 {@link #logGroup}内的日志条数累计到这里指定的条数时，才回提交到阿里云日志服务中去
@@ -71,7 +71,7 @@ public class AliyunLogUtil {
 	
 	/**
 	 * 建议使用  {@link #setCacheAutoSubmit(int, int)}
-	 * <br/>设置缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为1，即不缓存。最大支持4096
+	 * <br/>设置缓存日志的最大条数。当达到这个条数后，将自动提交日志。默认为0，即不缓存。最大支持4096
 	 * <br/>配合 {@link #save(String, String, LogItem)} 使用，当调用save方法保存的缓存池中的日志数量达到多少条时触发，提交缓存池中的日志到阿里云日志服务中。
 	 * 		<ul>
 	 * 			<li>当不调用此方法设置时，默认为缓存20条</li>
@@ -91,7 +91,7 @@ public class AliyunLogUtil {
 	 * <br/>1.当日志缓存条数达到多少条时，自动提交日志，并清空日志缓存重新记录
 	 * <br/>2.当日志缓存时间达到多少秒没有提交时，超过指定秒数后，再此写入日志时，会触发，使其自动提交日志，并清空日志缓存重新记录
 	 * @param maxNumber (单位:条)当日志缓存条数达到多少条时，自动提交日志，并清空日志缓存重新记录。
-	 * 				<br/>若设为1，则不缓存，插入就立即提交。
+	 * 				<br/>若设为0，则不缓存，插入就立即提交。
 	 * @param maxTime (单位:秒)当日志缓存时间达到多少秒没有提交时，超过指定秒数后，再此写入日志时，会触发，使其自动提交日志，并清空日志缓存重新记录
 	 */
 	public void setCacheAutoSubmit(int maxNumber, int maxTime){
