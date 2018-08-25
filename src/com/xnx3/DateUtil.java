@@ -230,5 +230,37 @@ public class DateUtil {
 		}
 		return DateUtil.StringToInt(ls+" 00:00:00", "yyyy-MM-dd hh:mm:ss");
 	}
+	
+
+	/**
+	 * 判断指定的日期是星期几
+	 * @param stringTime 日期，传入如： 2019-8-18
+	 * @return 返回值 int 0～7： 
+	 * 			<ul>
+	 * 				<li>0:失败</li>
+	 * 				<li>1:周末</li>
+	 * 				<li>2:周一</li>
+	 * 				<li>...</li>
+	 * 				<li>6:周五</li>
+	 * 				<li>7:周六</li>
+	 * 			</ul>
+	 */
+	public static int getWeekForTime(String pTime){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		try {
+			c.setTime(format.parse(pTime));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		int dayForWeek = 0;
+		if(c.get(Calendar.DAY_OF_WEEK) == 1){
+			dayForWeek = 7;
+		}else{
+			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+		}
+		return dayForWeek;
+	}
 
 }

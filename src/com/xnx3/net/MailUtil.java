@@ -34,13 +34,13 @@ import com.xnx3.ConfigManagerUtil;
  * @author 管雷鸣
  */
 public class MailUtil {  
-	private static Properties properties;  
-	private static boolean debug=true;	//调试日志
+	public static Properties properties;  
+	public static boolean debug=true;	//调试日志
 	public static final String BR = "\n";	//内容里的换行符
 	
-	private static String host;	//mail.smtp.host
-	private static String username;	//登录用户名
-	private static String password;	//登录密码
+	public static String host;	//mail.smtp.host
+	public static String username;	//登录用户名
+	public static String password;	//登录密码
 	
 	static{
 		host = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("mail.host");
