@@ -3,6 +3,8 @@ package com.xnx3;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+
+import com.blogspot.radialmind.html.HTMLParser;
+import com.blogspot.radialmind.html.HandlingException;
+import com.blogspot.radialmind.xss.XSSFilter;
 
 public class StringUtil {
 	private static final String X36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -443,7 +449,7 @@ public class StringUtil {
     	return pwd.toString();
     }
 
-    
+//    public final String XSS_
 	/**
 	 * 过滤XSS攻击有关的字符。将其转化为无效标签。过滤script、frame、;、等
 	 * @param text 要过滤的原始字符
@@ -464,18 +470,80 @@ public class StringUtil {
 	        text = m.replaceAll("xss_"+filterTagArray[i]);  
 		}
 		
+		
+		// 避免空字符串
+		text = text.replaceAll(" ", "");
+        // 避免script 标签
+        Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 避免src形式的表达式
+        scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        text = scriptPattern.matcher(text).replaceAll("");
+        scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 删除单个的 </script> 标签
+        scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 删除单个的<script ...> 标签
+        scriptPattern = Pattern.compile("<script(.*?)>",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 避免 e­xpression(...) 表达式
+        scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 避免 javascript: 表达式
+        scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 避免 vbscript:表达式
+        scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
+        text = scriptPattern.matcher(text).replaceAll("");
+        // 避免 onload= 表达式
+        scriptPattern = Pattern.compile("onload(.*?)=",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        text = scriptPattern.matcher(text).replaceAll("");
+		
+		
+		// 移除特殊标签
 		text = text.replaceAll("<", "&lt;");
 		text = text.replaceAll(">", "&gt;");
-		
 		text = text.replaceAll("\\(", "&#40;");
 		text = text.replaceAll("\\)", "&#41;");
-		
 		text = text.replaceAll("'", "&#39;");
 		text = text.replaceAll("eval\\((.*)\\)", "");
 		text = text.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+		text = text.replaceAll("script", "");
         
-		return text;
+        return text;  
 	}
+	
+	/**
+	 * 过滤HTML中，XSS攻击有关的字符。
+	 * @param html 要过滤的原始字符
+	 * @return 生成的无XSS的安全字符，还保留原本的 HTML 格式，输出HTML
+	 * @throws NullPointerException 需要 try catch 抛出异常，如果是这个异常，那么是html标签不规整，例如没有闭合标签等
+	 */
+	public static String htmlFilterXSS(String html) throws NullPointerException{  
+        StringReader reader = new StringReader( html );  
+        StringWriter writer = new StringWriter();  
+        String text = null;  
+        try {  
+            HTMLParser.process( reader, writer, new XSSFilter(), true );  
+            text =  writer.toString();  
+        } catch (HandlingException e) {  
+        	e.printStackTrace();
+        }finally{  
+            try {  
+                writer.close();  
+                reader.close();  
+            } catch (IOException e) {                 
+                e.printStackTrace();  
+            }             
+        }
+        return text;  
+    } 
 	
 	/**
 	 * 将输入流 {@link InputStream} 转化为 {@link String}
@@ -766,7 +834,32 @@ public class StringUtil {
 		return m.replaceAll("").trim();
 	}
 	
+	/**
+	 * 半角字符串转成全角字符串
+	 * @param str 要转换的半角字符串
+	 * @return 转换好的全角字符串
+	 */
+	public static String halfToFullChar(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        char[] cha = str.toCharArray();
+ 
+        /**
+         * full blank space is 12288, half blank space is 32
+         * others :full is 65281-65374,and half is 33-126.
+         */
+        for (int i = 0; i < cha.length; i++) {
+            if (cha[i] == 32) {
+                cha[i] = (char) 12288;
+            } else if (cha[i] < 127) {
+                cha[i] = (char) (cha[i] + 65248);
+            }
+        }
+        return new String(cha);
+    }
+	
 	public static void main(String[] args) {
-		System.out.println(intTo36(90));
+		System.out.println(filterXss("HJW-822喷水织机"));
 	}
 }

@@ -22,11 +22,6 @@ public class Sql {
 	 */
 	final static String[] COLUMN_GROUP = {">=","<=","=","<>",">","<"};
 	
-	/**
-	 * 防止SQL注入的关键字
-	 */
-	final static String[] INJECT_KEYWORD = {"AND","EXEC","INSERT","SELECT","DELETE","UPDATE","COUNT","MASTER","TRUNCATE","CHAR","DECLARE","OR"};
-	
 	private String where = "";		//当前的SQL查询中的 WHERE条件 
 	private String orderBy = "";	//排序规则
 	private String selectFrom = "";	//如 SELECT * FROM user ，只有SELECT 跟 FROM 
@@ -230,16 +225,22 @@ public class Sql {
 	 * @return 防注入检测字符串完毕后返回的内容。若检测到敏感词出现，返回空字符串""
 	 */
 	public String inject(String content){
-		for (int i = 0; i < INJECT_KEYWORD.length; i++) {
-			if(content.toUpperCase().indexOf(INJECT_KEYWORD[i])!=-1){
-				return "";
-			}
-		}
-		return content;
+		return filter(content);
 	}
 	
+	
+	/**
+	 * 防止SQL注入的关键字,  * + 在方法内单独判断
+	 */
+	final static String[] INJECT_KEYWORD = {"'", "sitename", "net user", "xp_cmdshell", "like'", "and", "exec", "execute", "insert", "create", "drop", "table", "from", "grant", "use", "group_concat", "column_name", "information_schema.columns", "table_schema", "union", "where", "select", "delete", "update", "order", "by", "count", "chr", "mid", "master", "truncate", "char", "declare", "or", ";", "-", "--", ",", "like", "//", "/", "%", "#","*","+"};
+	/**
+	 * 防止SQL注入的关键字对应的全角字符
+	 */
+	final static String[] KEYWORD_FULL_STR = {"＇", "ｓｉｔｅｎａｍｅ", "ｎｅｔ　ｕｓｅｒ", "ｘｐ＿ｃｍｄｓｈｅｌｌ", "ｌｉｋｅ＇", "ａｎｄ", "ｅｘｅｃ", "ｅｘｅｃｕｔｅ", "ｉｎｓｅｒｔ", "ｃｒｅａｔｅ", "ｄｒｏｐ", "ｔａｂｌｅ", "ｆｒｏｍ", "ｇｒａｎｔ", "ｕｓｅ", "ｇｒｏｕｐ＿ｃｏｎｃａｔ", "ｃｏｌｕｍｎ＿ｎａｍｅ", "ｉｎｆｏｒｍａｔｉｏｎ＿ｓｃｈｅｍａ．ｃｏｌｕｍｎｓ", "ｔａｂｌｅ＿ｓｃｈｅｍａ", "ｕｎｉｏｎ", "ｗｈｅｒｅ", "ｓｅｌｅｃｔ", "ｄｅｌｅｔｅ", "ｕｐｄａｔｅ", "ｏｒｄｅｒ", "ｂｙ", "ｃｏｕｎｔ", "ｃｈｒ", "ｍｉｄ", "ｍａｓｔｅｒ", "ｔｒｕｎｃａｔｅ", "ｃｈａｒ", "ｄｅｃｌａｒｅ", "ｏｒ", "；", "－", "－－", "，", "ｌｉｋｅ", "／／", "／", "％", "＃", "＊","＋"};
+
 	/**
 	 * 过滤字符串的值，防止被sql注入
+	 * 不能全部转换为小写，待完善
 	 * @param value 要过滤的字符串
 	 * @return 将有危险的字符去掉
 	 */
@@ -247,7 +248,48 @@ public class Sql {
 		if(value == null){
 			return null;
 		}
-		return value.trim().replaceAll("\\s", "").replaceAll("'", "");
+		//原始的，未进行全部转化为小写的字符串，每次找到风险关键词后，替换完毕每一个都会更新到此处。
+		String originalValue = value;	
+		
+		//是否发现危险字符或者关键词，如果发现了，则为true，未发现，则为false，将value原样返回即可
+		boolean find = false;	 
+		
+		for (int i = 0; i < INJECT_KEYWORD.length; i++) {
+			//统一转为小写后进行判断
+			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD[i]);
+			if(index != -1){
+				//发现了风险关键词，进行字符串重组
+				originalValue = originalValue.substring(0, index) + KEYWORD_FULL_STR[i] + originalValue.substring(index+INJECT_KEYWORD[i].length(), originalValue.length());
+				find = true;
+			}
+		}
+		
+//		
+//		for (int i = 0; i < INJECT_KEYWORD.length; i++) {
+//			//统一转为小写后进行判断
+//			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD[i]);
+//			if(index != -1){
+//				//发现了风险关键词，进行字符串重组
+//				originalValue = originalValue.substring(0, originalValue.indexOf("-")) + KEYWORD_FULL_STR[i] + originalValue.substring(originalValue.indexOf(INJECT_KEYWORD[i])+INJECT_KEYWORD[i].length(), originalValue.length());
+//				find = true;
+//			}
+//		}
+//		
+		//特殊字符，需要加双斜杠的
+//		String INJECT_KEYWORD_SPECIAL[] = {"*","+"};
+//		String INJECT_KEYWORD_SPECIAL_FULL_STR[] = {"＊","＋"};
+//		for (int i = 0; i < INJECT_KEYWORD_SPECIAL.length; i++) {
+//			//统一转为小写后进行判断
+//			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD_SPECIAL[i]);
+//			if(index != -1){
+//				//发现了风险关键词，进行字符串重组
+//				originalValue = originalValue.substring(0, originalValue.indexOf("-")) + INJECT_KEYWORD_SPECIAL_FULL_STR[i] + originalValue.substring(originalValue.indexOf(INJECT_KEYWORD_SPECIAL[i])+INJECT_KEYWORD_SPECIAL[i].length(), originalValue.length());
+//				find = true;
+//			}
+//		}
+//		
+		
+		return originalValue;
 	}
 	
 	/**
@@ -299,7 +341,7 @@ public class Sql {
 	 * <br/>设置的同时，也是自动进行将用户选择进行排序，组合排序SQL
 	 * <br/>注意，在此之后前若是调用 {@link #setOrderBy(String)}，则此会把之前的{@link #setOrderBy(String)}给覆盖掉
 	 * <br/>可直接使用，对数据列会自动进行SQL防注入
-	 * @param orderByField 允许进行排序的字段集合，在这个数组中的字段可以进行ASC、DESC排序。传入如{"id","addtime"}
+	 * @param orderByField 允许进行排序的字段集合，在这个数组中的字段可以进行ASC、DESC排序。传入如 new String[]{"id","addtime"}
 	 * @return 返回组合好的排序SQL，如" ORDER BY id DESC"，若用户自己选择的排序不在指定的排序字段中(违法，入侵系统)时，会返回空字符串
 	 * 			<br/>此可忽略，提供调试使用。执行此项后，会自动将组合好的ORDER BY 存入本Sql对象中，在调用 {@link #getSql()}时自动组合上
 	 */
