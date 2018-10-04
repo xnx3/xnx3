@@ -222,7 +222,7 @@ public class Sql {
 	/**
 	 * 防sql注入
 	 * @param content 检查的内容
-	 * @return 防注入检测字符串完毕后返回的内容。若检测到敏感词出现，返回空字符串""
+	 * @return 防注入检测字符串完毕后返回的内容。若检测到敏感词出现，则用该关键词的全角字符替换之
 	 */
 	public String inject(String content){
 		return filter(content);
@@ -242,7 +242,7 @@ public class Sql {
 	 * 过滤字符串的值，防止被sql注入
 	 * 不能全部转换为小写，待完善
 	 * @param value 要过滤的字符串
-	 * @return 将有危险的字符去掉
+	 * @return 将有危险的字符，替换为其全角字符
 	 */
 	public static String filter(String value){
 		if(value == null){
