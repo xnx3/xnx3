@@ -230,7 +230,7 @@ public class Sql {
 	
 	
 	/**
-	 * 防止SQL注入的关键字,  * + 在方法内单独判断
+	 * 防止SQL注入的关键字
 	 */
 	final static String[] INJECT_KEYWORD = {"'", "sitename", "net user", "xp_cmdshell", "like'", "and", "exec", "execute", "insert", "create", "drop", "table", "from", "grant", "use", "group_concat", "column_name", "information_schema.columns", "table_schema", "union", "where", "select", "delete", "update", "order", "by", "count", "chr", "mid", "master", "truncate", "char", "declare", "or", ";", "-", "--", ",", "like", "//", "/", "%", "#","*","+"};
 	/**
@@ -240,7 +240,6 @@ public class Sql {
 
 	/**
 	 * 过滤字符串的值，防止被sql注入
-	 * 不能全部转换为小写，待完善
 	 * @param value 要过滤的字符串
 	 * @return 将有危险的字符，替换为其全角字符
 	 */
@@ -263,31 +262,6 @@ public class Sql {
 				find = true;
 			}
 		}
-		
-//		
-//		for (int i = 0; i < INJECT_KEYWORD.length; i++) {
-//			//统一转为小写后进行判断
-//			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD[i]);
-//			if(index != -1){
-//				//发现了风险关键词，进行字符串重组
-//				originalValue = originalValue.substring(0, originalValue.indexOf("-")) + KEYWORD_FULL_STR[i] + originalValue.substring(originalValue.indexOf(INJECT_KEYWORD[i])+INJECT_KEYWORD[i].length(), originalValue.length());
-//				find = true;
-//			}
-//		}
-//		
-		//特殊字符，需要加双斜杠的
-//		String INJECT_KEYWORD_SPECIAL[] = {"*","+"};
-//		String INJECT_KEYWORD_SPECIAL_FULL_STR[] = {"＊","＋"};
-//		for (int i = 0; i < INJECT_KEYWORD_SPECIAL.length; i++) {
-//			//统一转为小写后进行判断
-//			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD_SPECIAL[i]);
-//			if(index != -1){
-//				//发现了风险关键词，进行字符串重组
-//				originalValue = originalValue.substring(0, originalValue.indexOf("-")) + INJECT_KEYWORD_SPECIAL_FULL_STR[i] + originalValue.substring(originalValue.indexOf(INJECT_KEYWORD_SPECIAL[i])+INJECT_KEYWORD_SPECIAL[i].length(), originalValue.length());
-//				find = true;
-//			}
-//		}
-//		
 		
 		return originalValue;
 	}

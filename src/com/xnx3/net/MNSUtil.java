@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
+import com.aliyun.mns.client.CloudTopic;
 import com.aliyun.mns.client.MNSClient;
 import com.aliyun.mns.common.ClientException;
 import com.aliyun.mns.common.ServiceException;
 import com.aliyun.mns.common.utils.ServiceSettings;
 import com.aliyun.mns.model.Message;
 import com.aliyun.mns.model.QueueMeta;
+import com.aliyun.mns.model.SubscriptionMeta;
+import com.aliyun.mns.model.TopicMeta;
+import com.aliyun.mns.sample.HttpEndpoint;
+import com.xnx3.BaseVO;
 
 /**
  * 阿里云 消息服务
@@ -260,6 +265,48 @@ public class MNSUtil {
     	 System.out.println("Unknown exception happened!，exception:"+e.getMessage());
          e.printStackTrace();
     }
+    
+    /**
+     * 创建主题
+     * @param topicName 要创建的主题的名字
+     */
+    public void createTopic(String topicName){
+        TopicMeta meta = new TopicMeta();
+        meta.setTopicName(topicName);
+        try {
+            CloudTopic topic = getMNSClient().createTopic(meta);
+        } catch (Exception e){
+        	System.out.println("create topic error, " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 创建订阅
+     * @param topicName 要在哪个主题下创建订阅，这个是主题的名字
+     * @param subMeta 要创建的订阅的对象
+     * @return 
+     */
+    public BaseVO createSubScription(String topicName, SubscriptionMeta subMeta){
+    	BaseVO vo = new BaseVO();
+    	CloudTopic topic = getMNSClient().getTopicRef(topicName);
+        try {
+//            SubscriptionMeta subMeta = new SubscriptionMeta();
+//            subMeta.setSubscriptionName("TestSub");
+//            subMeta.setEndpoint(HttpEndpoint.GenEndpointLocal());
+//            subMeta.setNotifyContentFormat(SubscriptionMeta.NotifyContentFormat.XML);
+//            //subMeta.setFilterTag("filterTag"); //设置订阅的filterTag
+            String subUrl = topic.subscribe(subMeta);
+            vo.setBaseVO(BaseVO.SUCCESS, subUrl);
+        } catch (Exception e) {
+        	vo.setBaseVO(BaseVO.FAILURE, e.getMessage());
+        	System.out.println("subscribe/unsubribe error");
+        	e.printStackTrace();
+        }
+        
+        return vo;
+    }
+  
     
     /**
      * 不是实时的，测试应该有个几秒的误差延迟
