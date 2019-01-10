@@ -81,7 +81,6 @@ public class OSSUtil {
 	 * 重新刷新 {@link OSSUtil#url} 的值。此项很少用到。除非你手动给AccessKeyId、、、等赋值后才要重新刷新
 	 */
 	public static void refreshUrl(){
-		url = ConfigManagerUtil.getSingleton("xnx3Config.xml").getValue("aliyunOSS.url");
 		if(url == null || url.length() == 0){
 			url = bucketName+"."+endpoint;
 		}

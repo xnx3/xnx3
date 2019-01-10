@@ -472,7 +472,7 @@ public class StringUtil {
 		
 		
 		// 避免空字符串
-		text = text.replaceAll(" ", "");
+		//text = text.replaceAll(" ", "");
         // 避免script 标签
         Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
         text = scriptPattern.matcher(text).replaceAll("");
@@ -816,6 +816,9 @@ public class StringUtil {
 	 * @return 过滤完后得字符串
 	 */
 	public static String filterEnglishSpecialSymbol(String text){
+		if(text == null){
+			return null;
+		}
 		String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~]"; 
 		Pattern p = Pattern.compile(regEx); 
 		Matcher m = p.matcher(text);
