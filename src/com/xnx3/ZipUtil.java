@@ -24,6 +24,18 @@ import java.util.zip.ZipOutputStream;
  */
 
 public class ZipUtil {
+	private static String OSName;	//当前操作系统的名字，全部为小些字母
+	/**
+	 * 当前系统是否是windows
+	 * @return 是，则为true
+	 */
+	private static boolean isWindowsOS(){
+		if(OSName == null){
+			OSName = System.getProperties().getProperty("os.name").trim().toLowerCase();
+		}
+		return OSName.indexOf("window") > -1;
+	}
+	
 
     /**
      * @param args 主方法
@@ -120,6 +132,16 @@ public class ZipUtil {
 				}
 //				System.out.println("isfile");
 			}
+			
+			if(isWindowsOS()){
+				//如果是windows平台，那么要将盘符前的 / 去掉，如 /G:/wangmarket/
+				if(srcRootDir.indexOf("/") == 0){
+					srcRootDir = srcRootDir.substring(1, srcRootDir.length());
+				}
+				//然后将所有 / 替换为 \
+				srcRootDir = srcRootDir.replaceAll("/", "\\\\");
+			}
+			
 			// 调用递归压缩方法进行目录或文件压缩
 			zip(srcRootDir, srcFile, zos);
 			zos.flush();
@@ -204,14 +226,12 @@ public class ZipUtil {
 			byte data[] = new byte[bufferLen];
 			// 获取文件相对于压缩文件夹根目录的子路径
 			String subPath = file.getAbsolutePath();
-//			System.out.println(subPath);
 			int index = subPath.indexOf(srcRootDir);
 			if (index != -1) {
 				int srdLength = srcRootDir.length();
 				subPath = subPath.substring( (srdLength > 1 ? srdLength-1 : srdLength) + File.separator.length());
 			}
 			ZipEntry entry = new ZipEntry(subPath);
-//			System.out.println(subPath);
 			BufferedInputStream bis = null;
 			try {
 				bis = new BufferedInputStream(new FileInputStream(file));
