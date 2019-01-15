@@ -26,8 +26,10 @@ public class HttpUtil {
     private String cookies="";	//每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
     
     public static void main(String[] args) {
-		HttpUtil h = new HttpUtil();
-		h.get("http://localhost:8082/selfSite/userLoginForClient.do?username=cc&password=cc").toString();
+    	HttpUtil http = new HttpUtil(HttpUtil.UTF8);
+		HttpResponse hr = http.get("http://cloud.wscso.com/templatelist");
+		System.out.println(hr.toString());
+		
 	}
    
     /**
@@ -313,6 +315,8 @@ public class HttpUtil {
      * @throws IOException
      */ 
     private HttpResponse makeContent(String urlString, HttpURLConnection urlConnection) throws IOException { 
+    	urlConnection.setConnectTimeout(30000);
+    	urlConnection.setReadTimeout(30000);
         HttpResponse httpResponser = new HttpResponse(); 
         try { 
             InputStream in = urlConnection.getInputStream(); 
