@@ -43,12 +43,12 @@ public class ZipUtil {
      */
     public static void main(String[] args) throws Exception {
     	try {
-			ZipUtil.zip("/Users/apple/git/wangmarket/target/classes/plugin/siteTransfer/export/219/", "/Users/apple/Desktop", "sitedata.zip");
+			ZipUtil.zip("/Users/apple/git/wangmarket/target/classes/static/", "/Users/apple/Desktop", "sitedata.zip");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 //    	try {
-//			unzip("/Users/apple/Desktop/s.zip","/Users/apple/Desktop/12/haha/");
+//			unzip("/Users/apple/Downloads/template_qiye2.zip","/Users/apple/Desktop/12/haha/");
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
@@ -138,8 +138,6 @@ public class ZipUtil {
 				if(srcRootDir.indexOf("/") == 0){
 					srcRootDir = srcRootDir.substring(1, srcRootDir.length());
 				}
-				//然后将所有 / 替换为 \
-				srcRootDir = srcRootDir.replaceAll("/", "\\\\");
 			}
 			
 			// 调用递归压缩方法进行目录或文件压缩
@@ -206,14 +204,9 @@ public class ZipUtil {
 	 
 	/**
 	 * 递归压缩文件夹
-	 * 
-	 * @param srcRootDir
-	 *            * 压缩文件夹根目录 *
-	 * @param file
-	 *            * 当前递归压缩的文件或目录对象
-	 * 
-	 * @param zos
-	 *            * 压缩文件存储对象 *
+	 * @param srcRootDir 压缩文件夹根目录
+	 * @param file 当前递归压缩的文件或目录对象
+	 * @param zos 压缩文件存储对象
 	 * @throws IOException
 	 */
 	private static void zip(String srcRootDir, File file, ZipOutputStream zos) throws IOException {
@@ -226,6 +219,11 @@ public class ZipUtil {
 			byte data[] = new byte[bufferLen];
 			// 获取文件相对于压缩文件夹根目录的子路径
 			String subPath = file.getAbsolutePath();
+			if(isWindowsOS()){
+				//如果是在Windows，需要将所有 \ 替换为 / ，以使其跟linux相同。不然windowx压缩的，在mac上解压出来会没有目录结构
+				subPath = subPath.replaceAll("\\\\", "/");
+			}
+			
 			int index = subPath.indexOf(srcRootDir);
 			if (index != -1) {
 				int srdLength = srcRootDir.length();

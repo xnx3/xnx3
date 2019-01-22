@@ -24,6 +24,7 @@ public class HttpUtil {
 	
     private String encode; 	//默认编码格式
     private String cookies="";	//每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
+    private int timeout = 30000;	//超时时间，默认30秒
     
     public static void main(String[] args) {
     	HttpUtil http = new HttpUtil(HttpUtil.UTF8);
@@ -31,6 +32,14 @@ public class HttpUtil {
 		System.out.println(hr.toString());
 		
 	}
+    
+    /**
+     * 设置超时时间
+     * @param secend 单位：秒
+     */
+    public void setTimeout(int secend){
+    	this.timeout = secend * 1000;
+    }
    
     /**
      * 设置好编码类型，若不设置，默认是Java虚拟机当前的文件编码
@@ -315,8 +324,8 @@ public class HttpUtil {
      * @throws IOException
      */ 
     private HttpResponse makeContent(String urlString, HttpURLConnection urlConnection) throws IOException { 
-    	urlConnection.setConnectTimeout(30000);
-    	urlConnection.setReadTimeout(30000);
+    	urlConnection.setConnectTimeout(this.timeout);
+    	urlConnection.setReadTimeout(this.timeout);
         HttpResponse httpResponser = new HttpResponse(); 
         try { 
             InputStream in = urlConnection.getInputStream(); 
