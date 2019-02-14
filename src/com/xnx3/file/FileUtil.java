@@ -317,6 +317,7 @@ public class FileUtil {
 		downFiles(downUrl, savePath, null);
 	}
 	
+
 	/**
 	 * 从互联网下载文件。适用于http、https协议
 	 * <li>下载过程会阻塞当前线程
@@ -334,6 +335,28 @@ public class FileUtil {
 	 * @throws IOException 
 	 */
 	public static void downFiles(String downUrl,String savePath, Map<String, String> param) throws IOException{
+		//默认超时是30秒
+		downFiles(downUrl, savePath, param, 30000);
+	}
+	
+	/**
+	 * 从互联网下载文件。适用于http、https协议
+	 * <li>下载过程会阻塞当前线程
+	 * <li>若文件存在，会先删除存在的文件，再下载
+	 * @param downUrl 下载的目标文件网址 如 "http://www.xnx3.com/down/java/j2se_util.zip"
+	 * @param savePath 下载的文件保存路径。如 "C:\\test\\j2se_util.zip"
+	 * @param param 包含在请求头中的一些参数。比如 User-Agent 等。若为空，则不传递任何参数。<br/>例如：
+	 * 			<ul>
+	 * 				<li>key:User-Agent &nbsp;&nbsp;&nbsp;&nbsp; value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36</li>
+	 * 				<li>key:Host &nbsp;&nbsp;&nbsp;&nbsp; value:xnx3.com</li>
+	 * 			</ul>
+	 * @param timeout 超时时间，单位毫秒
+	 * @return 返回下载出现的异常
+	 * 			<li>若返回null，则为下载成功，下载完毕，没有出现异常
+	 * 			<li>若返回具体字符串，则出现了异常，被try捕获到了，返回e.getMessage()异常信息
+	 * @throws IOException 
+	 */
+	public static void downFiles(String downUrl,String savePath, Map<String, String> param, int timeout) throws IOException{
 		//判断文件是否已存在，若存在，则先删除
 		if(exists(savePath)){
 			FileUtil.deleteFile(savePath);
@@ -346,6 +369,7 @@ public class FileUtil {
 		if(downUrl.indexOf("http://") > -1){
 			// 打开连接
 			HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+			httpConnection.setConnectTimeout(timeout);	//超时30秒
 			// 获得文件长度
 			long nEndPos = getFileSize(downUrl);
 			
@@ -377,6 +401,7 @@ public class FileUtil {
 			oSavedFile.close();
 		}else if(downUrl.indexOf("https://") > -1){
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			conn.setConnectTimeout(timeout);
 			SSLContext sc = null;
 			try {
 				sc = SSLContext.getInstance("SSL");
