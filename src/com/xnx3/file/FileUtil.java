@@ -370,6 +370,8 @@ public class FileUtil {
 			// 打开连接
 			HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
 			httpConnection.setConnectTimeout(timeout);	//超时30秒
+			httpConnection.setReadTimeout(timeout);
+			
 			// 获得文件长度
 			long nEndPos = getFileSize(downUrl);
 			
@@ -402,6 +404,8 @@ public class FileUtil {
 		}else if(downUrl.indexOf("https://") > -1){
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 			conn.setConnectTimeout(timeout);
+			conn.setReadTimeout(timeout);
+			
 			SSLContext sc = null;
 			try {
 				sc = SSLContext.getInstance("SSL");
