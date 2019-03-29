@@ -232,11 +232,11 @@ public class Sql {
 	/**
 	 * 防止SQL注入的关键字
 	 */
-	final static String[] INJECT_KEYWORD = {"'", "sitename", "net user", "xp_cmdshell", "like'", "and", "exec", "execute", "insert", "create", "drop", "table", "from", "grant", "use", "group_concat", "column_name", "information_schema.columns", "table_schema", "union", "where", "select", "delete", "update", "order", "by", "count", "chr", "mid", "master", "truncate", "char", "declare", "or", ";", "-", "--", ",", "like", "//", "/", "%", "#","*","+"};
+	final static String[] INJECT_KEYWORD = {"'", "sitename", "net user", "xp_cmdshell", "like'", "and", "exec", "execute", "insert", "create", "drop", "table", "from", "grant", "use", "group_concat", "column_name", "information_schema.columns", "table_schema", "union", "where", "select", "delete", "update", "order", "by", "count", "chr", "mid", "master", "truncate", "char", "declare", "or", ";", "-", "--", ",", "like", "%", "#","*","+"};
 	/**
 	 * 防止SQL注入的关键字对应的全角字符
 	 */
-	final static String[] KEYWORD_FULL_STR = {"＇", "ｓｉｔｅｎａｍｅ", "ｎｅｔ　ｕｓｅｒ", "ｘｐ＿ｃｍｄｓｈｅｌｌ", "ｌｉｋｅ＇", "ａｎｄ", "ｅｘｅｃ", "ｅｘｅｃｕｔｅ", "ｉｎｓｅｒｔ", "ｃｒｅａｔｅ", "ｄｒｏｐ", "ｔａｂｌｅ", "ｆｒｏｍ", "ｇｒａｎｔ", "ｕｓｅ", "ｇｒｏｕｐ＿ｃｏｎｃａｔ", "ｃｏｌｕｍｎ＿ｎａｍｅ", "ｉｎｆｏｒｍａｔｉｏｎ＿ｓｃｈｅｍａ．ｃｏｌｕｍｎｓ", "ｔａｂｌｅ＿ｓｃｈｅｍａ", "ｕｎｉｏｎ", "ｗｈｅｒｅ", "ｓｅｌｅｃｔ", "ｄｅｌｅｔｅ", "ｕｐｄａｔｅ", "ｏｒｄｅｒ", "ｂｙ", "ｃｏｕｎｔ", "ｃｈｒ", "ｍｉｄ", "ｍａｓｔｅｒ", "ｔｒｕｎｃａｔｅ", "ｃｈａｒ", "ｄｅｃｌａｒｅ", "ｏｒ", "；", "－", "－－", "，", "ｌｉｋｅ", "／／", "／", "％", "＃", "＊","＋"};
+	final static String[] KEYWORD_FULL_STR = {"＇", "ｓｉｔｅｎａｍｅ", "ｎｅｔ　ｕｓｅｒ", "ｘｐ＿ｃｍｄｓｈｅｌｌ", "ｌｉｋｅ＇", "ａｎｄ", "ｅｘｅｃ", "ｅｘｅｃｕｔｅ", "ｉｎｓｅｒｔ", "ｃｒｅａｔｅ", "ｄｒｏｐ", "ｔａｂｌｅ", "ｆｒｏｍ", "ｇｒａｎｔ", "ｕｓｅ", "ｇｒｏｕｐ＿ｃｏｎｃａｔ", "ｃｏｌｕｍｎ＿ｎａｍｅ", "ｉｎｆｏｒｍａｔｉｏｎ＿ｓｃｈｅｍａ．ｃｏｌｕｍｎｓ", "ｔａｂｌｅ＿ｓｃｈｅｍａ", "ｕｎｉｏｎ", "ｗｈｅｒｅ", "ｓｅｌｅｃｔ", "ｄｅｌｅｔｅ", "ｕｐｄａｔｅ", "ｏｒｄｅｒ", "ｂｙ", "ｃｏｕｎｔ", "ｃｈｒ", "ｍｉｄ", "ｍａｓｔｅｒ", "ｔｒｕｎｃａｔｅ", "ｃｈａｒ", "ｄｅｃｌａｒｅ", "ｏｒ", "；", "－", "－－", "，", "ｌｉｋｅ", "％", "＃", "＊","＋"};
 
 	/**
 	 * 过滤字符串的值，防止被sql注入

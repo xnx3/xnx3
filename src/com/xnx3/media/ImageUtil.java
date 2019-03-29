@@ -11,8 +11,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,6 +26,8 @@ import javax.imageio.stream.ImageInputStream;
 
 import com.xnx3.net.HttpUtil;
 import com.xnx3.net.OSSUtil;
+
+import sun.misc.BASE64Decoder;
 
 
 public class ImageUtil {
@@ -342,15 +346,7 @@ public class ImageUtil {
     }
     
     public static void main(String[] args) throws IOException {
-    	BufferedImage bufferedImage = getBufferedImageByUrl("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQEB8TwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyN09JNUl3ZVVjLWwxc2FOZjFyY0sAAgSKtkZbAwSAOgkA");
-    	//大图，要水印的图
-    	BufferedImage img = getBufferedImageByUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533032575755&di=daf281102c2cd8c874f87ae140ccc13c&imgtype=0&src=http%3A%2F%2Fimg00.deviantart.net%2F43d7%2Fi%2F2018%2F016%2Ff%2Fd%2Fadventures__g__by_moonfiire-dc07aj8.jpg");
     	
-    	
-        Graphics2D g = img.createGraphics();
-        g.drawImage(bufferedImage, 100, 100, 120, 120, null);
-    	
-		saveToLocalhost(img, "png", "/images/xnx3/ceshi.png");
 	}
     
 	
