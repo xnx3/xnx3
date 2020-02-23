@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import com.xnx3.ConfigManagerUtil;
-import com.xnx3.j2ee.util.CookieUtil;
 
 /**
  * 语言包。

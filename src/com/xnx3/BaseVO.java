@@ -2,8 +2,8 @@ package com.xnx3;
 
 /**
  * <b>result</b>：执行成功{@link #SUCCESS}/失败{@link #FAILURE}
- * <br/><b>info</b>：执行结果，若成功，此项可忽略，若失败，返回失败原因
- * <br/>(所有JSON返回值VO的父类)
+ * <p><b>info</b>：执行结果，若成功，此项可忽略，若失败，返回失败原因</p>
+ * <p>(所有JSON返回值VO的父类)</p>
  * @author 管雷鸣
  *
  */
@@ -33,8 +33,10 @@ public class BaseVO {
 	
 	/**
 	 * @param result 执行状态
-	 * 				<li>{@link BaseVO#SUCCESS} 	：失败
-	 * 				<li>{@link BaseVO#FAILURE} 	：成功
+	 * 			<ul>
+	 * 				<li>{@link BaseVO#SUCCESS} 	：失败</li>
+	 * 				<li>{@link BaseVO#FAILURE} 	：成功</li>
+	 * 			</ul>
 	 * @param info 执行信息,如执行成功，会返回执行成功的信息，执行失败，会返回为什么会失败的信息
 	 */
 	public void setBaseVO(int result,String info) {
@@ -57,9 +59,11 @@ public class BaseVO {
 
 	/**
 	 * 执行结果
-	 * @param result
-	 * 		<li>{@link BaseVO#SUCCESS} 	：失败
-	 * 		<li>{@link BaseVO#FAILURE} 	：成功
+	 * @param result 返回的结果，取值：
+	 * 		<ul>
+	 * 			<li>{@link BaseVO#SUCCESS} 	：失败
+	 * 			<li>{@link BaseVO#FAILURE} 	：成功
+	 * 		</ul>
 	 */
 	public void setResult(int result) {
 		this.result = result;
@@ -71,7 +75,7 @@ public class BaseVO {
 
 	/**
 	 * 执行信息,如执行成功，会返回执行成功的信息，执行失败，会返回为什么会失败的信息
-	 * @param info
+	 * @param info 成功的文字说明，或者成功要传回什么字符串
 	 */
 	public void setInfo(String info) {
 		this.info = info;

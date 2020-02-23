@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
+import com.xnx3.SqlInjectionUtil;
 
 /**
  * sql查询相关
@@ -228,42 +229,14 @@ public class Sql {
 		return filter(content);
 	}
 	
-	
-	/**
-	 * 防止SQL注入的关键字
-	 */
-	final static String[] INJECT_KEYWORD = {"'", "sitename", "net user", "xp_cmdshell", "like'", "and", "exec", "execute", "insert", "create", "drop", "table", "from", "grant", "use", "group_concat", "column_name", "information_schema.columns", "table_schema", "union", "where", "select", "delete", "update", "order", "by", "count", "chr", "mid", "master", "truncate", "char", "declare", "or", ";", "-", "--", ",", "like", "%", "#","*","+"};
-	/**
-	 * 防止SQL注入的关键字对应的全角字符
-	 */
-	final static String[] KEYWORD_FULL_STR = {"＇", "ｓｉｔｅｎａｍｅ", "ｎｅｔ　ｕｓｅｒ", "ｘｐ＿ｃｍｄｓｈｅｌｌ", "ｌｉｋｅ＇", "ａｎｄ", "ｅｘｅｃ", "ｅｘｅｃｕｔｅ", "ｉｎｓｅｒｔ", "ｃｒｅａｔｅ", "ｄｒｏｐ", "ｔａｂｌｅ", "ｆｒｏｍ", "ｇｒａｎｔ", "ｕｓｅ", "ｇｒｏｕｐ＿ｃｏｎｃａｔ", "ｃｏｌｕｍｎ＿ｎａｍｅ", "ｉｎｆｏｒｍａｔｉｏｎ＿ｓｃｈｅｍａ．ｃｏｌｕｍｎｓ", "ｔａｂｌｅ＿ｓｃｈｅｍａ", "ｕｎｉｏｎ", "ｗｈｅｒｅ", "ｓｅｌｅｃｔ", "ｄｅｌｅｔｅ", "ｕｐｄａｔｅ", "ｏｒｄｅｒ", "ｂｙ", "ｃｏｕｎｔ", "ｃｈｒ", "ｍｉｄ", "ｍａｓｔｅｒ", "ｔｒｕｎｃａｔｅ", "ｃｈａｒ", "ｄｅｃｌａｒｅ", "ｏｒ", "；", "－", "－－", "，", "ｌｉｋｅ", "％", "＃", "＊","＋"};
-
 	/**
 	 * 过滤字符串的值，防止被sql注入
 	 * @param value 要过滤的字符串
-	 * @return 将有危险的字符，替换为其全角字符
+	 * @return 将有危险的字符，替换为其全角字符，将安全的字符串返回
+	 * @see 这里实际是调用的这个方法SqlInjectionUtil#filter(String) 
 	 */
 	public static String filter(String value){
-		if(value == null){
-			return null;
-		}
-		//原始的，未进行全部转化为小写的字符串，每次找到风险关键词后，替换完毕每一个都会更新到此处。
-		String originalValue = value;	
-		
-		//是否发现危险字符或者关键词，如果发现了，则为true，未发现，则为false，将value原样返回即可
-		boolean find = false;	 
-		
-		for (int i = 0; i < INJECT_KEYWORD.length; i++) {
-			//统一转为小写后进行判断
-			int index = originalValue.toLowerCase().indexOf(INJECT_KEYWORD[i]);
-			if(index != -1){
-				//发现了风险关键词，进行字符串重组
-				originalValue = originalValue.substring(0, index) + KEYWORD_FULL_STR[i] + originalValue.substring(index+INJECT_KEYWORD[i].length(), originalValue.length());
-				find = true;
-			}
-		}
-		
-		return originalValue;
+		return SqlInjectionUtil.filter(value);
 	}
 	
 	/**
