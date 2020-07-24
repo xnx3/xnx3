@@ -1,23 +1,33 @@
 package com.xnx3.bean;
 
+import java.util.Date;
 import com.xnx3.net.FastDFSUtil;
 
 /**
  * FastDFS文件上传的返回对象
+ * 原本是继承 extends org.csource_.fastdfs.FileInfo  ，但是类扫描时失败，所以去掉继承了
  * @author 管雷鸣
  * @see FastDFSUtil#upload(String)
  */
-public class UploadBean extends org.csource_.fastdfs.FileInfo {
+public class UploadBean{
 	private boolean isSuccess;	//成功：true
 	private String groupName;
 	private String remoteFileName;
 	private String errorInfo;	//若是失败，调用错误信息
 	private String consumeTime;	//执行耗时
 	
+	private long fileSize;
+	private Date createTimestamp;
+	private int crc32;
+	private String sourceIpAddr;
 	
 	public UploadBean(long file_size, int create_timestamp, int crc32,
 			String source_ip_addr) {
-		super(file_size, create_timestamp, crc32, source_ip_addr);
+//		super(file_size, create_timestamp, crc32, source_ip_addr);
+		this.fileSize = file_size;
+		this.createTimestamp = new Date();	//要把int转为data类型，待转换
+		this.crc32 = crc32;
+		this.sourceIpAddr = source_ip_addr;
 		this.isSuccess=true;
 	}
 	
@@ -88,25 +98,45 @@ public class UploadBean extends org.csource_.fastdfs.FileInfo {
 	public void setConsumeTime(String consumeTime) {
 		this.consumeTime = consumeTime;
 	}
+	
+	
+	public long getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}
+
+	public Date getCreateTimestamp() {
+		return createTimestamp;
+	}
+	
+	public void setCreateTimestamp(Date createTimestamp) {
+		this.createTimestamp = createTimestamp;
+	}
+
+	public int getCrc32() {
+		return crc32;
+	}
+
+	public void setCrc32(int crc32) {
+		this.crc32 = crc32;
+	}
+
+	public String getSourceIpAddr() {
+		return sourceIpAddr;
+	}
+
+	public void setSourceIpAddr(String sourceIpAddr) {
+		this.sourceIpAddr = sourceIpAddr;
+	}
 
 	@Override
 	public String toString() {
-		return "UploadBean [isSuccess=" + isSuccess + ", groupName="
-				+ groupName + ", remoteFileName=" + remoteFileName
-				+ ", errorInfo=" + errorInfo + ", source_ip_addr="
-				+ source_ip_addr + ", file_size=" + file_size
-				+ ", create_timestamp=" + create_timestamp + ", crc32=" + crc32
-				+ ", getGroupName()=" + getGroupName()
-				+ ", getRemoteFileName()=" + getRemoteFileName()
-				+ ", isSuccess()=" + isSuccess() + ", getErrorInfo()="
-				+ getErrorInfo() + ", getSourceIpAddr()=" + getSourceIpAddr()
-				+ ", getFileSize()=" + getFileSize()
-				+ ", getCreateTimestamp()=" + getCreateTimestamp()
-				+ ", getCrc32()=" + getCrc32() + ", toString()="
-				+ super.toString() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + "]";
+		return "UploadBean [isSuccess=" + isSuccess + ", groupName=" + groupName + ", remoteFileName=" + remoteFileName
+				+ ", errorInfo=" + errorInfo + ", consumeTime=" + consumeTime + ", fileSize=" + fileSize
+				+ ", createTimestamp=" + createTimestamp + ", crc32=" + crc32 + ", sourceIpAddr=" + sourceIpAddr + "]";
 	}
-	
-	
 
 }
