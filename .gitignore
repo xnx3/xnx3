@@ -22,3 +22,5 @@ bin/com/xnx3/Update.log
 
 bin/xnx3Config.xml
 /bin/
+/target/
+/.settings/
