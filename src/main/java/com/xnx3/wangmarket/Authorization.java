@@ -1,7 +1,5 @@
 package com.xnx3.wangmarket;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,14 @@ public class Authorization {
 	public static String auth_id;	//授权码
 	private static String domain;	//泛解析的二级域名
 	private static int version;		//当前系统的版本号，格式如 4001000
-	private static int softType = 1;	//当前系统类型，1:网市场云建站(默认)  2:网市场云商城  。。。
+	 
+	/*
+	 * 当前系统类型，
+	 * 1:网市场云建站(默认)  
+	 * 2:网市场云商城
+	 * 3:网市场云建站无服务器版本
+	 */
+	private static int softType = 1;	
 	
 	private static int sleeptime;	//延迟等待的时间，单位毫秒 
 	
@@ -58,46 +63,47 @@ public class Authorization {
 	 */
 	public static void auth(){
 		if(thread == null){
-			//会先从wangMarketConfig.xml中取，如果没有配置，再从  application.properties 中取
-			ConfigManagerUtil c = ConfigManagerUtil.getSingleton("wangMarketConfig.xml");
-			auth_id = c.getValue("authorize");
-			if(auth_id == null || auth_id.equals("")){
-				//再去读application.properties配置文件中的授权码
-				String className = "com.xnx3.j2ee.util.ApplicationPropertiesUtil";
-				try {
-					Class<?> cla = Class.forName(className);
-					Object invoke = null;
+			if(auth_id == null || auth_id.length() == 0) {
+				//会先从wangMarketConfig.xml中取，如果没有配置，再从  application.properties 中取
+				ConfigManagerUtil c = ConfigManagerUtil.getSingleton("wangMarketConfig.xml");
+				auth_id = c.getValue("authorize");
+				if(auth_id == null || auth_id.equals("")){
+					//再去读application.properties配置文件中的授权码
+					String className = "com.xnx3.j2ee.util.ApplicationPropertiesUtil";
 					try {
-						invoke = cla.newInstance();
-						//运用newInstance()来生成这个新获取方法的实例  
-						Method m = cla.getMethod("getProperty",new Class[]{String.class});
-						//动态构造的Method对象invoke委托动态构造的InvokeTest对象，执行对应形参的add方法
-						Object o = m.invoke(invoke, new Object[]{"authorize"});
-						if(o != null && !o.equals("null")){
-							auth_id = o.toString();
+						Class<?> cla = Class.forName(className);
+						Object invoke = null;
+						try {
+							invoke = cla.newInstance();
+							//运用newInstance()来生成这个新获取方法的实例  
+							Method m = cla.getMethod("getProperty",new Class[]{String.class});
+							//动态构造的Method对象invoke委托动态构造的InvokeTest对象，执行对应形参的add方法
+							Object o = m.invoke(invoke, new Object[]{"authorize"});
+							if(o != null && !o.equals("null")){
+								auth_id = o.toString();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
+					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
-					}
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} 
+					} 
+				}
+				if(auth_id != null && auth_id.trim().length() == 64){
+					//是64位授权码，可以判断是否是真的授权，每间隔半小时进行一次
+					sleeptime = 1000 * 60 * 30;
+				}else{
+					//授权码都没有，肯定未授权用户
+					sleeptime = 1000 * 60 * 60 * 24;	//一天请求一次
+				}
 			}
-			if(auth_id != null && auth_id.trim().length() == 64){
-				//是64位授权码，可以判断是否是真的授权，每间隔半小时进行一次
-				sleeptime = 1000 * 60 * 30;
-			}else{
-				//授权码都没有，肯定未授权用户
-				sleeptime = 1000 * 60 * 60 * 24;	//一天请求一次
-			}
-			
 			
 			//创建授权线程
 			thread = new Thread(new Runnable() {
 				public void run() {
-					//给30秒延迟时间，给启动项目时间
+					//给1min延迟时间，给启动项目时间
 					try {
-						Thread.sleep(30*1000);
+						Thread.sleep(6*1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -109,10 +115,11 @@ public class Authorization {
 						params.put("domain", domain);
 						params.put("softType", softType+"");
 						params.put("version", Authorization.version+"");
-						
+						String requestUrl = "http://cloud.wscso.com/auth?auth="+auth_id+"&version="+Authorization.version+"&softType="+softType+"&domain="+domain;
+
 						HttpResponse hr = null;
 						try {
-							hr = http.post("http://cloud.wscso.com/auth", params);
+							hr = http.post(requestUrl, params);
 						} catch (Exception e) {
 							System.out.println("authorization service exception, but does not affect the system, you can still feel free to use !");
 							//如果异常，那估计就是联网不大行了，退出 ，并按照已授权来处理
@@ -157,11 +164,13 @@ public class Authorization {
 					}
 				}
 			});
+			
+			thread.start();//启动
 		}
 	}
 	
 	public static void main(String[] args) {
-		
+		auth();
 	}
 	
 	static{
